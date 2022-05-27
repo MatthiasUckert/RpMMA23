@@ -1,0 +1,364 @@
+---
+title: "Business Case"
+author: "Matthias Uckert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    self_contained: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(here::here())) 
+knitr::opts_chunk$set(root.dir = normalizePath(here::here()))
+```
+
+```{r include=FALSE}
+library(plotly)
+library(tidyverse)
+library(htmlwidgets)
+library(openxlsx)
+library(janitor)
+library(furrr)
+library(scales)
+library(ggthemes)
+library(patchwork)
+options(scipen = 999)
+source("1_code/functions/f-02_business_case.R", encoding = "UTF-8")
+source("1_code/functions/v-02_business_case_default_values.R")
+```
+
+# Define Input Functions
+
+To derive our our profitability of our product, we first must define
+some input function. Namely, we need a function that defines the
+**Variable Costs**, **Product Fixed Costs**, and **Revenue**
+
+## Function: Variable Cost
+
+We define a function for the **Variable Costs**: *fnc_var_cost()* with
+the following Input Parameters:
+
+-   **.cv (Variable Cost):** Initial Variable
+
+-   **.v (Volume):** The volume we want to derive the total variable
+    cost for.
+
+-   **.vb (Base Volume):** The base (minimum) volume. for ever
+    additional x (.vd) volume we get an y (.d) discount on our variable
+    cost.
+
+-   **.vc (Cap Volume):** The cap (maximum) volume. After this volume no
+    discount is granted anymore.
+
+-   **.vd (Volume Discount):** For ever x (.vd) additional unit over the
+    base volume (.vb) we get an y (.d) percent discount.
+
+-   **.d (Discount):** The discount we get for ever x (.vd) additional
+    unit over the base volume (.vb)
+
+```{r}
+fnc_var_disc <- function(.v, .vb, .vc, .vd, .d) {
+  vu_ <- dplyr::case_when(
+    .v < .vb ~ .vb,
+    .v > .vc ~ .vc,
+    TRUE ~ .v
+  )
+  floor((vu_ - .vb) / .vd) * .d
+}
+
+fnc_var_unit <- function(.cv, .v, .vb, .vc, .vd, .d) {
+  disc_ <- fnc_var_disc(.v, .vb, .vc, .vd, .d)
+  .cv * (1 - disc_)
+}
+
+fnc_var_cost <- function(.cv, .v, .vb, .vc, .vd, .d) {
+  .v * fnc_var_unit(.cv, .v, .vb, .vc, .vd, .d)
+}
+
+```
+
+For convenience we added two helper functions *fnc_var_disc() and
+fnc_var_unit()* that calculate the discount as a function of volume and
+the unit cost of our product. Those functions will result in so-called
+**Step Functions.** Next we plot this functions with the following
+values:
+
+-   **.cv (Variable Cost):** 1
+
+-   **.v (Volume):** Range between 500 and 10,000
+
+-   **.vb (Base Volume):** 2,500
+
+-   **.vc (Cap Volume):** 7,500
+
+-   **.vd (Volume Discount):** 1,000
+
+-   **.d (Discount):** 5.00%
+
+```{r echo=FALSE}
+.seq <- seq(500, 10000, 5)
+tab_vc <- get_input_table(
+  .cv = .def_cv, .v = .seq, .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d
+  )
+tab_vc <- tab_vc %>%
+  mutate(
+    discount = fnc_var_disc(.v = v, .vb = vb, .vc = vc, .vd = vd, .d = d),
+    var_unit = fnc_var_unit(.cv = cv, .v = v, .vb = vb, .vc = vc, .vd = vd, .d = d),
+    var_cost = fnc_var_cost(.cv = cv, .v = v, .vb = vb, .vc = vc, .vd = vd, .d = d)
+  )
+
+gg_vc_unit <- plot_points(tab_vc, v, var_unit, NULL, NULL, "Unit Variable Cost", .size = 11)
+gg_vc_tot  <- plot_points(tab_vc, v, var_cost, NULL, NULL, "Total Variable Cost", .size = 11)
+gg_vc_unit + gg_vc_tot
+```
+
+## Function: Fixed Cost
+
+We define a function for the **Fixed Costs**: *fnc_var_cost()* with the
+following Input Parameters:
+
+-   **.cf (Variable Cost):** Initial Fixed Costs
+
+-   **.v (Volume):** The volume we want to derive the total variable
+    cost for.
+
+-   **.vm (Volume Multiplier):** Fixed Cost double at this point
+
+```{r message=FALSE, warning=FALSE}
+fnc_fix_mult <- function(.v, .vm) {
+  ceiling(.v / .vm)
+}
+
+fnc_fix_cost <- function(.cf, .v, .vm) {
+  .cf * fnc_fix_mult(.v, .vm)
+}
+
+fnc_fix_unit <- function(.cf, .v, .vm) {
+  (.cf * fnc_fix_mult(.v, .vm)) / .v
+}
+
+```
+
+For convenience we added two helper functions *fnc_fix_disc() and
+fnc_fix_unit()* that calculate the multiplier as a function of volume
+and the directly attributable unit fix cost of our product. Next we plot
+this functions with the following values:
+
+-   **.cf (Fixed Cost):** 1
+
+-   **.v (Volume):** Range between 500 and 10,000
+
+-   **.vm (Volume Multiplier):** 1,000
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+.seq <- seq(500, 10000, 5)
+tab_cf <- get_input_table(.cf = .def_cf, .v = .seq, .vm = .def_vm)
+tab_cf <- tab_cf %>%
+  mutate(
+    multiple = fnc_fix_mult(.v = v, .vm = vm),
+    var_unit = fnc_fix_unit(.cf = cf, .v = v, .vm = vm),
+    var_cost = fnc_fix_cost(.cf = cf, .v = v, .vm = vm)
+  )
+
+gg_cf_unit <- plot_points(tab_cf, v, var_unit, NULL, NULL, "Unit Fixed Cost", .size = 11)
+gg_cf_tot  <- plot_points(tab_cf, v, var_cost, NULL, NULL, "Total Fixed Cost", .size = 11)
+gg_cf_unit + gg_cf_tot
+```
+
+## Function: Price (Revenue)
+
+We define a function for the **Revenue**: *fnc_rev()* with the following
+Input Parameters:
+
+-   **.v (Volume):** The volume we want to derive the total variable
+    cost for.
+
+-   **.p (Price):** Initial Price
+
+To do so, we first model the price as a function of volume by using a
+so-called sigmoid function.
+
+We limit the resulting S-Curve between .6 to 1. The idea behind this is,
+that for every addition unit we want to sell, we have to lower the price
+by a certain amount.
+
+```{r message=FALSE, warning=FALSE}
+fnc_rev_sigmoid <- function(.v) {
+  (1 - (1 / (1 + exp(-((.v / 1000) - 4.25))))) * .4 + .6
+}
+
+fnc_rev_unit <- function(.p, .v) {
+  .p * fnc_rev_sigmoid(.v)
+}
+
+fnc_rev <- function(.p, .v) {
+  .v * fnc_rev_unit(.p, .v)
+}
+```
+
+Next we plot this functions with the following values:
+
+-   **.p(Price):** 750
+
+-   **.v (Volume):** Range between 500 and 10,000
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+.seq <- seq(500, 10000, 5)
+tab_rv <- get_input_table(.p = .def_p, .v = .seq)
+tab_rv <- tab_rv %>%
+  mutate(
+    sigmoid = fnc_rev_sigmoid(.v = v),
+    price    = fnc_rev_unit(.p = p, .v = v),
+    revenue  = fnc_rev(.p = p, .v = v)
+  )
+
+gg_rv_unit <- plot_points(tab_rv, v, price, NULL, NULL, "Price", .size = 11)
+gg_rv_tot  <- plot_points(tab_rv, v, revenue, NULL, NULL, "Revenue", .size = 11)
+gg_rv_unit + gg_rv_tot
+```
+
+# CM I, CM II, and Profit
+
+```{r echo=FALSE}
+tab_ <- get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+)
+
+s1 <- mutate(tab_, v = 2500) %>%
+  get_profit() %>%
+  get_cm_table() %>%
+  rename(`# 2,500` = value, `% 2,500` = perc)
+
+s2 <- mutate(tab_, v = 5000) %>%
+  get_profit() %>%
+  get_cm_table() %>%
+  rename(`# 5,000` = value, `% 5,000` = perc)
+
+s3 <- mutate(tab_, v = 7500) %>%
+  get_profit() %>%
+  get_cm_table() %>%
+  rename(`# 7,500` = value, `% 7,500` = perc)
+
+s4 <- mutate(tab_, v = 10000) %>%
+  get_profit() %>%
+  get_cm_table() %>%
+  rename(`# 10,000` = value, `% 10,000` = perc)
+
+s1 %>%
+  left_join(s2, by = "name") %>%
+  left_join(s3, by = "name") %>%
+  left_join(s4, by = "name") %>%
+  kableExtra::kbl(align = "lcccccc", col.names = NULL) %>%
+  kableExtra::kable_paper(html_font = "Times New Roman") %>%
+  kableExtra::column_spec(column = c(1, 3, 5, 7), border_right = TRUE) %>%
+  kableExtra::row_spec(row = c(1, 3, 5, 7), bold = TRUE) %>%
+  kableExtra::add_header_above(
+    c(" " = 1, "Volume: 2,500" = 2, "Volume: 5,000" = 2, "Volume: 7,500" = 2, "Volume: 10,000" = 2)
+    )
+```
+
+# Sensitivity
+
+```{r echo=FALSE}
+.seq <- seq(500, 10000, 25)
+get_input_table(
+  .v = .seq, .p = .def_p, .cv = .def_cv, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) %>%
+  get_profit() %>%
+  plot_profits(v, profit, .xlab = "Volume", "Profit", "Profit (Volume)", .size = 11)
+
+.seq <- seq(500, 1000, 5)
+get_input_table(
+  .v = .def_v, .p = .seq, .cv = .def_cv, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) %>%
+  get_profit() %>%
+  plot_profits(p, profit, .xlab = "Price", "Profit", "Profit (Price)", .size = 11)
+
+.seq <- seq(250, 1000, 5)
+get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .seq, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) %>%
+  get_profit() %>%
+  plot_profits(cv, profit, .xlab = "Variable Cost", "Profit", "Profit (Variable Cost)", .size = 11)
+
+.seq <- seq(25000, 100000, 1000)
+get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .seq,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) %>%
+  get_profit() %>%
+  plot_profits(cf, profit, .xlab = "Fixed Cost", "Profit", "Profit (Fixed Cost)", .size = 11)
+
+.seq <- seq(.01, .1, .001)
+get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .def_cv,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .seq,
+  .vm = .def_vm, .ca = .def_ca
+) %>%
+  get_profit() %>%
+  plot_profits(d, profit, .xlab = "Discount", "Profit", "Profit (Discount)", .size = 11)
+```
+
+# Monte Carlo
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+set.seed(123)
+.n = 100000
+tab_mc <- get_input_table(
+  .v = rnorm(n = .n, mean = .def_v, sd = .def_vsd), 
+  .p = rnorm(n = .n, mean = .def_p, sd = .def_psd), 
+  .cv = rnorm(n = .n, mean = .def_cv, sd = .def_cvsd), 
+  .cf = rnorm(n = .n, mean = .def_cf, sd = .def_cfsd),
+  .vb = rnorm(n = .n, mean = .def_vb, sd = .def_vbsd), 
+  .vc = rnorm(n = .n, mean = .def_vc, sd = .def_vcsd), 
+  .vd = rnorm(n = .n, mean = .def_vd, sd = .def_vdsd), 
+  .d  = rnorm(n = .n, mean = .def_d, sd = .def_dsd),
+  .vm = rnorm(n = .n, mean = .def_vm, sd = .def_vmsd), 
+  .ca = rnorm(n = .n, mean = .def_ca, sd = .def_casd)
+) %>% get_profit()
+
+plot_monte_carlo(tab_mc, .size = 11)
+```
+
+```{r echo=FALSE}
+tab_mc %>%
+  summarise(
+    `Profit > 0` = percent(sum(profit > 0) / n()),
+    `Profit < 0` = percent(sum(profit < 0) / n()),
+    `Mean` = comma(mean(profit)),
+    `Median` = comma(median(profit)),
+    `Minimum` = comma(min(profit)),
+    `Maximum` = comma(max(profit)),
+  ) %>%
+  pivot_longer(everything()) %>%
+  kableExtra::kbl(align = "lc", col.names = NULL) %>%
+  kableExtra::kable_paper(html_font = "Times New Roman") %>%
+  kableExtra::kable_styling(full_width = FALSE, position = "center")
+
+```
+
+# Time Series
+
+```{r echo=FALSE}
+tab_ <- get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) 
+tab_ <- get_amortization(tab_, 15, .invest = 1000000, .discount = .08)
+
+plot_amortization(tab_, 11)
+```

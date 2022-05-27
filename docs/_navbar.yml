@@ -1,0 +1,25 @@
+name: "Accounting Class"
+title: "Accounting Class"
+type: inverse
+left:
+  - text: "Day 1 - Basics and Business Case"
+    menu:
+      - text: "Session 1 - Business Case (Excel Sheet)"
+        href: ./01_business_case_excel.html
+      - text: "Session 2 - Business Case (HTML Layout)"
+        href: ./02_business_case_html.html
+      - text: "Session 2 - Business Case (Shiny App)"
+        href: ./03_business_case_shiny.html
+  - text: "Day 2 - Analysing Data"
+    menu:
+       - text: "Session 1 - XXX"
+         href: ./04_xbrl_analyze.html
+       - text: "Session 2 - XXX"
+         href: ./05_textual_analysis.html
+       - text: "Session 3 - XXX"
+         href: ./06_excel_ratio_analysis.html
+right:
+  - text: "Contact"
+    href: ./contact.html
+  - text: "GitHub"
+    href: https://github.com/MatthiasUckert

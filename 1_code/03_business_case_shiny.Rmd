@@ -1,0 +1,17 @@
+---
+title: "Business Case"
+author: "Matthias Uckert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    self_contained: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(here::here())) 
+knitr::opts_chunk$set(root.dir = normalizePath(here::here()))
+```

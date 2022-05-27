@@ -1,0 +1,473 @@
+---
+title: "R Basics"
+author: "Matthias Uckert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_notebook:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(here::here())) 
+knitr::opts_chunk$set(root.dir = normalizePath(here::here()))
+```
+
+```{r include=FALSE}
+library(plotly)
+library(tidyverse)
+library(htmlwidgets)
+library(openxlsx)
+library(janitor)
+library(furrr)
+library(scales)
+library(ggthemes)
+library(patchwork)
+options(scipen = 999)
+source("1_code/functions/f-02_business_case.R", encoding = "UTF-8")
+```
+
+# Define Input Functions
+
+## Var. Cost Curve
+
+First we define a Function that relates our variable cost to the our
+sales volume. Specifically, we assume that for 20% additional units
+(base: 500) that we source, we get a 5% discount from our supplier, up
+to a maximum discount of 25%
+
+```{r}
+.vc <- 100
+.vol <- 6000
+.vol_base <- 1500
+.vol_cap <- 5000
+.vol_dis <- 500
+.per_dis <- .5
+.disc <- .05
+fnc_var_cost <- function(.vc, .vol, .vol_base, .vol_cap, .vol_dis = NULL, .per_dis = NULL, .disc) {
+  vol_disc_ <- ifelse(!is.null(.vol_dis), .vol_dis, .vol_base * .per_dis)
+  vol_use_ <- dplyr::case_when(
+    .vol < .vol_base ~ .vol_base,
+    .vol > .vol_cap ~ .vol_cap,
+    TRUE ~ .vol
+  )
+  disc_ <- floor((vol_use_ - .vol_base) / vol_disc_) * .disc
+  .vc * (1 - disc_) * .vol
+}
+fnc_var_cost(2250, 550)
+```
+
+We define the variable cost as 1 to show the degression effects in
+percent
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+tab_vc <- tibble(
+  vc = 1, 
+  vol = seq(1000, 10000, 5), 
+  vol_base = 1500,
+  vol_cap = 7500, 
+  vol_dis = 750, 
+  per_dis = NULL, 
+  disc = .05
+  ) %>%
+  mutate(
+    var_cost = fnc_var_cost(vc, vol, vol_base, vol_cap, vol_dis, per_dis, disc),
+    unit_vc = var_cost / vol
+    ) 
+
+gg_vc_unit <- plot_points(tab_vc, vol, unit_vc, "Volume", "Unit Variable Cost (Volume)")
+gg_vc_tot  <- plot_points(tab_vc, vol, var_cost, "Volume", "Total Variable Cost (Volume)")
+
+gg_vc_unit + gg_vc_tot
+
+
+```
+
+## Fix Cost Curve
+
+Next we define a step Function, that doubles our directly attributable
+fixed for every additional 750 units we produce
+
+```{r message=FALSE, warning=FALSE}
+.fc <- 50000
+.vol <- 6000
+.vol_mult <- 1000
+fnc_fix_cost <- function(.fc, .vol, .vol_mult) {
+  .fc * ceiling(.vol / .vol_mult)
+}
+
+fnc_fix_cost(50000, 6000, 1000)
+```
+
+We define the fix cost as 750, so the step-function will approach 1 as
+the volume goes to infinity.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+tab_fc <- tibble(
+  fc = 1, 
+  vol = seq(250, 10000, 5), 
+  vol_mult = 1000,
+  ) %>%
+  mutate(
+    fix_cost = fnc_fix_cost(fc, vol, vol_mult),
+    unit_fc = fix_cost / vol
+    ) 
+
+gg_fc_unit <- plot_points(tab_fc, vol, unit_fc, "Volume", "Unit Fix Cost (Volume)")
+gg_fc_tot  <- plot_points(tab_fc, vol, fix_cost, "Volume", "Total Fix Cost (Volume)")
+
+gg_fc_unit + gg_fc_tot
+```
+
+
+
+## Sales-Price Curve
+
+Next, we define a a sigmoid function to proxy the sales price we can
+achieve as a function of sales volume. We cap this function on a minimum
+of 25% of our initially set price.
+
+```{r message=FALSE, warning=FALSE}
+.vol <- 1
+fnc_revenue <- function(.price, .vol) {
+  sigmoid <- function(x) {
+    y = 1 - (1 / (1 + exp(-((x / 1000) - 4.25))))
+    return(y)
+  }
+  .vol * .price * (sigmoid(.vol) * .4 + .6)
+}
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+tab_rv <- tibble(vol = seq(1, 10000, 5)) %>%
+  mutate(
+    price = 1,
+    rev = fnc_revenue(price, vol),
+    unit_rev = rev / vol
+    )
+
+fnc_revenue(750, 1000) / 1000
+
+gg_rev_unit <- plot_points(tab_rv, vol, unit_rev, "Volume", "Price (Volume)")
+gg_rev_tot  <- plot_points(tab_rv, vol, rev, "Volume", "Revenue (Volume)")
+
+gg_rev_unit + gg_rev_tot
+```
+
+## CM I, CM II, and Profit
+```{r message=FALSE, warning=FALSE}
+tab_sens <- get_sensitivity(
+  .vol = 10000, .price = 750, .vc = 500, .vol_base = 2500, .vol_cap = 5000,
+  .vol_dis = 500, .per_dis = NULL, .disc = .05, .fc = 25000, .vol_mult = 1000,
+  .cost = 250000, .ret = "Profit"
+) %>%
+  dplyr::filter(input %in% c("price", "volume", "fix_cost", "var_cost", "firm_cost", "disc")) %>%
+  plot_sensitivity()
+```
+
+
+```{r}
+
+
+map_dfr(c("vol", "price", "vc", "fc"), ~ get_sensitivity(
+  .vol = 10000,
+  .price = 750,
+  .vc = 500,
+  .vol_base = 2500,
+  .vol_cap = 5000,
+  .vol_dis = 500,
+  .per_dis = NULL,
+  .disc = .05,
+  .fc = 25000,
+  .vol_mult = 1000,
+  .cost = 250000,
+  .ret = "Profit",
+  .col = .x
+))
+
+get_sensitivity(
+  .vol = 10000,
+  .price = 750,
+  .vc = 500,
+  .vol_base = 2500,
+  .vol_cap = 5000,
+  .vol_dis = 500,
+  .per_dis = NULL,
+  .disc = .05,
+  .fc = 25000,
+  .vol_mult = 1000,
+  .cost = 250000,
+  .ret = "Profit",
+  .col = disc
+) %>% plot_profits(seq, val)
+
+
+```
+
+
+```{r}
+generate_table <- function(.vol = NULL, .price = NULL, .vc = NULL, .vol_base = NULL, 
+                           .vol_cap = NULL, .vol_dis = NULL, .per_dis = NULL,
+                           .disc = NULL, .fc = NULL, .vol_mult = NULL, .cost = NULL) {
+  tibble::tibble(
+    vol = .vol,
+    price = .price,
+    vc = .vc,
+    vol_base = .vol_base,
+    vol_cap = .vol_cap,
+    vol_dis = .vol_dis,
+    per_dis = .per_dis,
+    disc = .disc,
+    fc = .fc,
+    vol_mult = .vol_mult,
+    cost = .cost
+  ) %>%
+    dplyr::mutate(
+      var_cost = fnc_var_cost(vc, vol, vol_base, vol_cap, vol_dis, per_dis, disc),
+      unit_vc = var_cost / vol,
+      fix_cost = fnc_fix_cost(fc, vol, vol_mult),
+      unit_fc = fix_cost / vol,
+      rev = fnc_revenue(price, vol),
+      unit_rev = rev / vol
+    ) %>%
+    dplyr::mutate(
+      cm1 = rev - var_cost,
+      cm2 = rev - var_cost - fix_cost,
+      profit = cm2 - cost
+    )
+}
+```
+
+
+```{r}
+tab_all <- generate_table(
+  .vol = 10000, .price = seq(500, 1250, 5), .vc = 500, .vol_base = 2500, .vol_cap = 5000, 
+  .vol_dis = 500, .per_dis = NULL, .disc = .05, .fc = 25000, .vol_mult = 1000, .cost = 250000)
+
+gg_cm1 <- plot_profits(tab_all, price, cm1, "", "", "CM I")
+gg_cm2 <- plot_profits(tab_all, price, cm2, "", "", "CM II")
+gg_prf <- plot_profits(tab_all, vc, profit, "", "", "Profit")
+
+gg_cm1
+gg_cm2
+gg_prf
+```
+
+```{r}
+tab_all <- generate_table(
+  .vol = 10000, .price = 750, .vc = 500, .vol_base = 2500, .vol_cap = 5000, 
+  .vol_dis = 500, .per_dis = NULL, .disc = .05, .fc = 25000, .vol_mult = 1000, .cost = 250000
+  ) %>%
+  expand_grid(seq = seq(0, 2, .01))
+```
+
+
+# Contribution Margin & Profit
+
+We define a Function that calculates the CM I and CM II per product
+
+```{r}
+fnc_cm <- function(.volume, .price, .var_cost, .fix_cost, .type = c("CM I", "CM II")) {
+  revenue_ <- fnc_revenue(.price, .volume)
+  
+  if (.type == "CM I") {
+    revenue_ - fnc_var_cost(.var_cost, .volume)
+  } else {
+    revenue_ - fnc_var_cost(.var_cost, .volume) - fnc_fix_cost(.fix_cost, .volume)
+  }
+}
+```
+
+## CM as a Function of Volume
+
+Since all of our Input Factors are depended on Volume, we plot a CM I
+and CM II volume-curve Let's look what happens with out base
+assumptions:
+
+-   **Price**: 899 EUR
+
+-   **Variable Cost**: 550 EUR
+
+-   **Fix Cost**: 80,000 EUR
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+tab_cm <- tibble(volume = 100:10000) %>%
+  mutate(
+    cm1 = fnc_cm(volume, 899, 575, 20000, "CM I"),
+    cm2 = fnc_cm(volume, 899, 575, 20000, "CM II"),
+    unit_cm1 = cm1 / volume,
+    unit_cm2 = cm2 / volume
+  ) %>%
+  pivot_longer(c(cm1, cm2, unit_cm1, unit_cm2)) 
+```
+
+### Unit CM I
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+gg_unit_cm1 <- tab_cm %>%
+  filter(name %in% c("unit_cm1")) %>%
+  mutate(col = if_else(value < 0, "red", "green")) %>%
+  plot_cm()
+plotly::ggplotly(gg_unit_cm1, width = 750)
+```
+
+### Unit CM I
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+gg_unit_cm2 <- tab_cm %>%
+  filter(name %in% c("unit_cm2")) %>%
+  mutate(col = if_else(value < 0, "red", "green")) %>%
+  plot_cm()
+plotly::ggplotly(gg_unit_cm2, width = 750)
+```
+### Total CM II
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+gg_total_cm2 <- tab_cm %>%
+  filter(name %in% c("cm2")) %>%
+  mutate(col = if_else(value < 0, "red", "green")) %>%
+  plot_cm()
+plotly::ggplotly(gg_total_cm2, width = 750)
+```
+
+# Sensitivity
+Next, we analyse how sensitive the contribution margin is to our 4 different input factors, 
+we use the following base case scenario. 
+
+-   **Price**: 899 EUR
+
+-   **Variable Cost**: 550 EUR
+
+-   **Fix Cost**: 80,000 EUR
+
+-   **Volume**: 1,000 Units
+
+
+```{r}
+s_ <- seq(.01, 2.99, .01)
+b_ <- fnc_cm(2250, 899, 550, 80000, "CM II")
+tab_sensitivity <- tibble(base = s_) %>% 
+  mutate(
+    volume = fnc_cm(2250 * s_, 899, 550, 80000, "CM II") / b_,
+    price = fnc_cm(2250, 899 * s_, 550, 80000, "CM II") / b_,
+    var_cost = fnc_cm(2250, 899, 550 * s_, 80000, "CM II") / b_,
+    fix_cost = fnc_cm(2250, 899, 550, 80000 * s_, "CM II") / b_
+    ) %>%
+  pivot_longer(volume:fix_cost)
+
+tab_sensitivity %>%
+  mutate(base = base - 1) %>%
+  ggplot(aes(base, value)) + 
+  geom_point(color = "blue", fill = "white", size = .75) + 
+  facet_wrap(~ name, scales = "free_y") + 
+  theme_tufte() + 
+  geom_rangeframe() + 
+  scale_x_continuous(labels = percent) + 
+  scale_y_continuous(labels = percent) + 
+  geom_hline(yintercept = 1) + 
+  geom_vline(xintercept = 0) + 
+  geom_vline(xintercept = 1)
+  
+```
+
+
+
+# Monte Carlo Analysis
+```{r message=FALSE, warning=FALSE}
+tab_montecarlo <- tibble(
+  price = runif(1000000, 600, 1250),
+  volume = runif(1000000, 2000, 10000),
+  var_cost = runif(1000000, 500, 750),
+  fix_cost = runif(1000000, 60000, 100000),
+) %>%
+  mutate(
+    revenue = fnc_revenue(price, volume),
+    cm1 = fnc_cm(volume, price, var_cost, fix_cost, "CM I"),
+    cm2 = fnc_cm(volume, price, var_cost, fix_cost, "CM II")
+  ) %>%
+  mutate(margin = cm2 / revenue)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+tab_montecarlo %>%
+  mutate(col = if_else(margin < 0, "red", "green")) %>%
+  ggplot(aes(margin, fill = col, alpha = .5)) +
+  geom_histogram(binwidth = .001) + 
+  ggplot2::scale_fill_manual(values = c("green", "red")) +
+    ggthemes::geom_rangeframe() +
+    ggthemes::theme_tufte() +
+    ggplot2::scale_x_continuous(labels = scales::percent) +
+    ggplot2::scale_y_continuous(labels = scales::comma) + 
+    ggplot2::geom_vline(xintercept = 0, linetype = "dashed") + 
+    ggplot2::theme(legend.position = "none")
+
+tab_montecarlo %>%
+  mutate(col = if_else(margin < 0, "red", "green")) %>%
+  ggplot(aes(cm2, fill = col, alpha = .5)) +
+  geom_histogram(bins = 1000) + 
+  ggplot2::scale_fill_manual(values = c("green", "red")) +
+    ggthemes::geom_rangeframe() +
+    ggthemes::theme_tufte() +
+    ggplot2::scale_x_continuous(labels = scales::comma) +
+    ggplot2::scale_y_continuous(labels = scales::comma) + 
+    ggplot2::geom_vline(xintercept = 0, linetype = "dashed") + 
+    ggplot2::theme(legend.position = "none")
+```
+
+```{r}
+tibble(
+  name = c("CM II < 0", "CM II > 0", "Mean"),
+  value = c(
+    percent(nrow(filter(tab_montecarlo, cm2 < 0)) / nrow(tab_montecarlo), .01),
+    percent(nrow(filter(tab_montecarlo, cm2 > 0)) / nrow(tab_montecarlo), .01),
+    comma(mean(tab_montecarlo$cm2))
+  )
+) %>% bind_rows(
+  enframe(comma(quantile(tab_montecarlo$cm2, probs = c(seq(.25, .75, .25)))))
+)
+
+
+
+
+```
+
+
+
+```{r}
+tab_montecarlo %>%
+  filter(between(margin, quantile(margin, probs = .50) - .0001, quantile(margin, probs = .50) + .0001)) %>%
+  DT::datatable() %>%
+  DT::formatCurrency(
+    columns = c("price", "volume", "var_cost", "fix_cost", "revenue", "cm1", "cm2"), 
+    currency = "", 
+    interval = 3, 
+    mark = ","
+    ) %>%
+  DT::formatPercentage("margin", digits = 2)
+```
+
+```{r}
+tab_montecarlo %>%
+  filter(between(margin, quantile(margin, probs = .25) - .0001, quantile(margin, probs = .25) + .0001)) %>%
+  DT::datatable() %>%
+  DT::formatCurrency(
+    columns = c("price", "volume", "var_cost", "fix_cost", "revenue", "cm1", "cm2"), 
+    currency = "", 
+    interval = 3, 
+    mark = ","
+    ) %>%
+  DT::formatPercentage("margin", digits = 2)
+```
+
+```{r}
+tab_montecarlo %>%
+  filter(between(margin, quantile(margin, probs = .75) - .0001, quantile(margin, probs = .75) + .0001)) %>%
+  DT::datatable() %>%
+  DT::formatCurrency(
+    columns = c("price", "volume", "var_cost", "fix_cost", "revenue", "cm1", "cm2"), 
+    currency = "", 
+    interval = 3, 
+    mark = ","
+    ) %>%
+  DT::formatPercentage("margin", digits = 2)
+```

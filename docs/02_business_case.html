@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthias Uckert" />
+
+
+<title>Business Case</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  { color: #cccccc; background-color: #303030; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ffcfaf; } /* Alert */
+code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #dca3a3; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #f0dfaf; } /* ControlFlow */
+code span.ch { color: #dca3a3; } /* Char */
+code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code span.co { color: #7f9f7f; } /* Comment */
+code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code span.do { color: #7f9f7f; } /* Documentation */
+code span.dt { color: #dfdfbf; } /* DataType */
+code span.dv { color: #dcdccc; } /* DecVal */
+code span.er { color: #c3bf9f; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #c0bed1; } /* Float */
+code span.fu { color: #efef8f; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+code span.kw { color: #f0dfaf; } /* Keyword */
+code span.op { color: #f0efd0; } /* Operator */
+code span.ot { color: #efef8f; } /* Other */
+code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code span.sc { color: #dca3a3; } /* SpecialChar */
+code span.ss { color: #cc9393; } /* SpecialString */
+code span.st { color: #cc9393; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #cc9393; } /* VerbatimString */
+code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Accounting Class</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Day 1 - Getting Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./01_r_basics.html">Session 1 - R Basics</a>
+    </li>
+    <li>
+      <a href="./02_business_case.html">Session 2 - Business Case</a>
+    </li>
+    <li>
+      <a href="./03_xbrl_data.html">Session 3 - XXX</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Day 2 - Analysing Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./04_xbrl_analyze.html">Session 1 - XXX</a>
+    </li>
+    <li>
+      <a href="./05_textual_analysis.html">Session 2 - XXX</a>
+    </li>
+    <li>
+      <a href="./06_excel_ratio_analysis.html">Session 3 - XXX</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="./contact.html">Contact</a>
+</li>
+<li>
+  <a href="https://github.com/MatthiasUckert">GitHub</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Business Case</h1>
+<h4 class="author">Matthias Uckert</h4>
+<h4 class="date">27 May, 2022</h4>
+
+</div>
+
+
+<div id="define-input-functions" class="section level1">
+<h1>Define Input Functions</h1>
+<p>To derive our our profitability of our product, we first must define
+some input function. Namely, we need a function that defines the
+<strong>Variable Costs</strong>, <strong>Product Fixed Costs</strong>,
+and <strong>Revenue</strong></p>
+<div id="function-variable-cost" class="section level2">
+<h2>Function: Variable Cost</h2>
+<p>We define a function for the <strong>Variable Costs</strong>:
+<em>fnc_var_cost()</em> with the following Input Parameters:</p>
+<ul>
+<li><p><strong>.cv (Variable Cost):</strong> Initial Variable</p></li>
+<li><p><strong>.v (Volume):</strong> The volume we want to derive the
+total variable cost for.</p></li>
+<li><p><strong>.vb (Base Volume):</strong> The base (minimum) volume.
+for ever additional x (.vd) volume we get an y (.d) discount on our
+variable cost.</p></li>
+<li><p><strong>.vc (Cap Volume):</strong> The cap (maximum) volume.
+After this volume no discount is granted anymore.</p></li>
+<li><p><strong>.vd (Volume Discount):</strong> For ever x (.vd)
+additional unit over the base volume (.vb) we get an y (.d) percent
+discount.</p></li>
+<li><p><strong>.d (Discount):</strong> The discount we get for ever x
+(.vd) additional unit over the base volume (.vb)</p></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>fnc_var_disc <span class="ot">&lt;-</span> <span class="cf">function</span>(.v, .vb, .vc, .vd, .d) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  vu_ <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    .v <span class="sc">&lt;</span> .vb <span class="sc">~</span> .vb,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    .v <span class="sc">&gt;</span> .vc <span class="sc">~</span> .vc,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> .v</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">floor</span>((vu_ <span class="sc">-</span> .vb) <span class="sc">/</span> .vd) <span class="sc">*</span> .d</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>fnc_var_unit <span class="ot">&lt;-</span> <span class="cf">function</span>(.cv, .v, .vb, .vc, .vd, .d) {</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  disc_ <span class="ot">&lt;-</span> <span class="fu">fnc_var_disc</span>(.v, .vb, .vc, .vd, .d)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  .cv <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> disc_)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>fnc_var_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(.cv, .v, .vb, .vc, .vd, .d) {</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  .v <span class="sc">*</span> <span class="fu">fnc_var_unit</span>(.cv, .v, .vb, .vc, .vd, .d)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>For convenience we added two helper functions <em>fnc_var_disc() and
+fnc_var_unit()</em> that calculate the discount as a function of volume
+and the unit cost of our product. Those functions will result in
+so-called <strong>Step Functions.</strong> Next we plot this functions
+with the following values:</p>
+<ul>
+<li><p><strong>.cv (Variable Cost):</strong> 1</p></li>
+<li><p><strong>.v (Volume):</strong> Range between 500 and
+10,000</p></li>
+<li><p><strong>.vb (Base Volume):</strong> 2,500</p></li>
+<li><p><strong>.vc (Cap Volume):</strong> 7,500</p></li>
+<li><p><strong>.vd (Volume Discount):</strong> 1,000</p></li>
+<li><p><strong>.d (Discount):</strong> 5.00%</p></li>
+</ul>
+<p><img src="02_business_case_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="function-fixed-cost" class="section level2">
+<h2>Function: Fixed Cost</h2>
+<p>We define a function for the <strong>Fixed Costs</strong>:
+<em>fnc_var_cost()</em> with the following Input Parameters:</p>
+<ul>
+<li><p><strong>.cf (Variable Cost):</strong> Initial Fixed
+Costs</p></li>
+<li><p><strong>.v (Volume):</strong> The volume we want to derive the
+total variable cost for.</p></li>
+<li><p><strong>.vm (Volume Multiplier):</strong> Fixed Cost double at
+this point</p></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fnc_fix_mult <span class="ot">&lt;-</span> <span class="cf">function</span>(.v, .vm) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ceiling</span>(.v <span class="sc">/</span> .vm)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fnc_fix_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(.cf, .v, .vm) {</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  .cf <span class="sc">*</span> <span class="fu">fnc_fix_mult</span>(.v, .vm)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>fnc_fix_unit <span class="ot">&lt;-</span> <span class="cf">function</span>(.cf, .v, .vm) {</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  (.cf <span class="sc">*</span> <span class="fu">fnc_fix_mult</span>(.v, .vm)) <span class="sc">/</span> .v</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>For convenience we added two helper functions <em>fnc_fix_disc() and
+fnc_fix_unit()</em> that calculate the multiplier as a function of
+volume and the directly attributable unit fix cost of our product. Next
+we plot this functions with the following values:</p>
+<ul>
+<li><p><strong>.cf (Fixed Cost):</strong> 1</p></li>
+<li><p><strong>.v (Volume):</strong> Range between 500 and
+10,000</p></li>
+<li><p><strong>.vm (Volume Multiplier):</strong> 1,000</p></li>
+</ul>
+<p><img src="02_business_case_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="function-price-revenue" class="section level2">
+<h2>Function: Price (Revenue)</h2>
+<p>We define a function for the <strong>Revenue</strong>:
+<em>fnc_rev()</em> with the following Input Parameters:</p>
+<ul>
+<li><p><strong>.v (Volume):</strong> The volume we want to derive the
+total variable cost for.</p></li>
+<li><p><strong>.p (Price):</strong> Initial Price</p></li>
+</ul>
+<p>To do so, we first model the price as a function of volume by using a
+so-called sigmoid function.</p>
+<p>We limit the resulting S-Curve between .6 to 1. The idea behind this
+is, that for every addition unit we want to sell, we have to lower the
+price by a certain amount.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fnc_rev_sigmoid <span class="ot">&lt;-</span> <span class="cf">function</span>(.v) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  (<span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>((.v <span class="sc">/</span> <span class="dv">1000</span>) <span class="sc">-</span> <span class="fl">4.25</span>))))) <span class="sc">*</span> .<span class="dv">4</span> <span class="sc">+</span> .<span class="dv">6</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>fnc_rev_unit <span class="ot">&lt;-</span> <span class="cf">function</span>(.p, .v) {</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  .p <span class="sc">*</span> <span class="fu">fnc_rev_sigmoid</span>(.v)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>fnc_rev <span class="ot">&lt;-</span> <span class="cf">function</span>(.p, .v) {</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  .v <span class="sc">*</span> <span class="fu">fnc_rev_unit</span>(.p, .v)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Next we plot this functions with the following values:</p>
+<ul>
+<li><p><strong>.p(Price):</strong> 750</p></li>
+<li><p><strong>.v (Volume):</strong> Range between 500 and
+10,000</p></li>
+</ul>
+<p><img src="02_business_case_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+</div>
+<div id="cm-i-cm-ii-and-profit" class="section level1">
+<h1>CM I, CM II, and Profit</h1>
+<table class=" lightable-paper" style="font-family: Times New Roman; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Volume: 2,500
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Volume: 5,000
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Volume: 7,500
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Volume: 10,000
+</div>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;border-right:1px solid;font-weight: bold;">
+Revenue
+</td>
+<td style="text-align:center;font-weight: bold;">
+1,763,965
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+100.0%
+</td>
+<td style="text-align:center;font-weight: bold;">
+2,731,232
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+100.00%
+</td>
+<td style="text-align:center;font-weight: bold;">
+3,458,985
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+100.00%
+</td>
+<td style="text-align:left;font-weight: bold;">
+4,509,518
+</td>
+<td style="text-align:center;font-weight: bold;">
+100.00%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;">
+Variable Cost
+</td>
+<td style="text-align:center;">
+1,250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+70.9%
+</td>
+<td style="text-align:center;">
+2,250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+82.38%
+</td>
+<td style="text-align:center;">
+2,625,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+75.89%
+</td>
+<td style="text-align:left;">
+3,500,000
+</td>
+<td style="text-align:center;">
+77.61%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;font-weight: bold;">
+Contribution Margin I
+</td>
+<td style="text-align:center;font-weight: bold;">
+513,965
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+29.1%
+</td>
+<td style="text-align:center;font-weight: bold;">
+481,232
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+17.62%
+</td>
+<td style="text-align:center;font-weight: bold;">
+833,985
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+24.11%
+</td>
+<td style="text-align:left;font-weight: bold;">
+1,009,518
+</td>
+<td style="text-align:center;font-weight: bold;">
+22.39%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;">
+Fixed Cost
+</td>
+<td style="text-align:center;">
+150,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+8.5%
+</td>
+<td style="text-align:center;">
+250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+9.15%
+</td>
+<td style="text-align:center;">
+400,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+11.56%
+</td>
+<td style="text-align:left;">
+500,000
+</td>
+<td style="text-align:center;">
+11.09%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;font-weight: bold;">
+Contribution Margin II
+</td>
+<td style="text-align:center;font-weight: bold;">
+363,965
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+20.6%
+</td>
+<td style="text-align:center;font-weight: bold;">
+231,232
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+8.47%
+</td>
+<td style="text-align:center;font-weight: bold;">
+433,985
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+12.55%
+</td>
+<td style="text-align:left;font-weight: bold;">
+509,518
+</td>
+<td style="text-align:center;font-weight: bold;">
+11.30%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;">
+Company Cost
+</td>
+<td style="text-align:center;">
+250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+14.2%
+</td>
+<td style="text-align:center;">
+250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+9.15%
+</td>
+<td style="text-align:center;">
+250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+7.23%
+</td>
+<td style="text-align:left;">
+250,000
+</td>
+<td style="text-align:center;">
+5.54%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;font-weight: bold;">
+Profit
+</td>
+<td style="text-align:center;font-weight: bold;">
+113,965
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+6.5%
+</td>
+<td style="text-align:center;font-weight: bold;">
+-18,768
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+-0.69%
+</td>
+<td style="text-align:center;font-weight: bold;">
+183,985
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+5.32%
+</td>
+<td style="text-align:left;font-weight: bold;">
+259,518
+</td>
+<td style="text-align:center;font-weight: bold;">
+5.75%
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sensitivity" class="section level1">
+<h1>Sensitivity</h1>
+<p><img src="02_business_case_files/figure-html/unnamed-chunk-9-1.png" width="672" /><img src="02_business_case_files/figure-html/unnamed-chunk-9-2.png" width="672" /><img src="02_business_case_files/figure-html/unnamed-chunk-9-3.png" width="672" /><img src="02_business_case_files/figure-html/unnamed-chunk-9-4.png" width="672" /><img src="02_business_case_files/figure-html/unnamed-chunk-9-5.png" width="672" /></p>
+</div>
+<div id="monte-carlo" class="section level1">
+<h1>Monte Carlo</h1>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>.n <span class="ot">=</span> <span class="dv">100000</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>tab_mc <span class="ot">&lt;-</span> <span class="fu">get_input_table</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">.v =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_v, <span class="at">sd =</span> .def_vsd), </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">.p =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_p, <span class="at">sd =</span> .def_psd), </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">.cv =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_cv, <span class="at">sd =</span> .def_cvsd), </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">.cf =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_cf, <span class="at">sd =</span> .def_cfsd),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">.vb =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_vb, <span class="at">sd =</span> .def_vbsd), </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">.vc =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_vc, <span class="at">sd =</span> .def_vcsd), </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">.vd =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_vd, <span class="at">sd =</span> .def_vdsd), </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">.d  =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_d, <span class="at">sd =</span> .def_dsd),</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">.vm =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_vm, <span class="at">sd =</span> .def_vmsd), </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">.ca =</span> <span class="fu">rnorm</span>(<span class="at">n =</span> .n, <span class="at">mean =</span> .def_ca, <span class="at">sd =</span> .def_casd)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">get_profit</span>()</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_monte_carlo</span>(tab_mc, <span class="at">.size =</span> <span class="dv">11</span>)</span></code></pre></div>
+<p><img src="02_business_case_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<table class=" lightable-paper table" style="font-family: Times New Roman; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<tbody>
+<tr>
+<td style="text-align:left;">
+Profit &gt; 0
+</td>
+<td style="text-align:center;">
+53%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Profit &lt; 0
+</td>
+<td style="text-align:center;">
+47%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mean
+</td>
+<td style="text-align:center;">
+118,780
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Median
+</td>
+<td style="text-align:center;">
+89,773
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Minimum
+</td>
+<td style="text-align:center;">
+-13,204,871
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Maximum
+</td>
+<td style="text-align:center;">
+8,942,726
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="time-series" class="section level1">
+<h1>Time Series</h1>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>tab_ <span class="ot">&lt;-</span> <span class="fu">get_input_table</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">.v =</span> .def_v, <span class="at">.p =</span> .def_p, <span class="at">.cv =</span> .def_cv, <span class="at">.cf =</span> .def_cf,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">.vb =</span> .def_vb, <span class="at">.vc =</span> .def_vc, <span class="at">.vd =</span> .def_vd, <span class="at">.d =</span> .def_d,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">.vm =</span> .def_vm, <span class="at">.ca =</span> .def_ca</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>) </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>tab_ <span class="ot">&lt;-</span> <span class="fu">get_amortization</span>(tab_, <span class="dv">15</span>, <span class="at">.invest =</span> <span class="dv">1000000</span>, <span class="at">.discount =</span> .<span class="dv">08</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_amortization</span>(tab_, <span class="dv">11</span>)</span></code></pre></div>
+<p><img src="02_business_case_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

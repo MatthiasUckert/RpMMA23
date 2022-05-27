@@ -1,0 +1,62 @@
+---
+title: "Mannheim Master in Management Analytics 2023"
+subtitle: Accounting Class
+output: html_document
+---
+
+------------------------------------------------------------------------
+
+# Introduction
+
+Welcome to the practical application sessions of the **Mannheim Master in Management Analytics - Accounting Class 2023.** In the next days you will see how to solve common business applications with R and Excel and to dive deeper into some research related application.
+
+The goal of those sessions is to give you a general overview of how common workflows can be automated using basic knowledge in HTML and Excel.
+
+All sessions are programmed in R and a basic understanding of programming is needed. The code itself applies relatively advanced methods, hence it is not assumed that you follow each single logical step. Rather this part of the course is designed to give you a high level understanding of what is possible using common open-source languages such as R.
+
+------------------------------------------------------------------------
+
+# Get The Code
+
+The complete code is hosted on my GitHub page: XXX
+
+Simply fork the repository into your own GitHub or download the Project.
+
+------------------------------------------------------------------------
+
+# Table of Content
+
+You can navigate to the individual sessions by either following the link in the table of contents, or by navigating through the drop-down menus at the top of the page.
+
++-------+-----------+------------------------------------------------------+
+| Day   | Session   | Description                                          |
++:======+:==========+:=====================================================+
+| Day X | Session 1 | [**R Basics**](01_r_basics.html "Day 1 - Session 1") |
+|       |           |                                                      |
+|       |           | Quick Introduction to R.                             |
++-------+-----------+------------------------------------------------------+
+|       | Session 2 | **xxx**                                              |
++-------+-----------+------------------------------------------------------+
+|       | Session 3 | **xxx**                                              |
++-------+-----------+------------------------------------------------------+
+| Day X | Session 1 | xxx                                                  |
++-------+-----------+------------------------------------------------------+
+|       | Session 2 | xxx                                                  |
++-------+-----------+------------------------------------------------------+
+|       | Session 3 | **xxx**                                              |
++-------+-----------+------------------------------------------------------+
+
+------------------------------------------------------------------------
+
+# Exercises
+
+Within each session we will solve a couple of small exercises
+
+# Exam
+
+You can earn additional points by programming a R Package and write functions.
+
+# Intersting Readings
+
+-   **Advanced R: <https://adv-r.hadley.nz/>**
+-   **R for Data Science: <https://r4ds.had.co.nz/>**

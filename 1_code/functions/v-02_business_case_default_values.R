@@ -1,0 +1,21 @@
+.def_v <- 7500
+.def_p <- 750
+.def_cv <- 500
+.def_cf <- 50000
+.def_vb <- 3000
+.def_vc <- 8000
+.def_vd <- 750
+.def_d <- .05
+.def_vm <- 1000
+.def_ca <- 250000
+
+.def_vsd <- 2500
+.def_psd <- 250
+.def_cvsd <- 100
+.def_cfsd <- 10000
+.def_vbsd <- 250
+.def_vcsd <- 250
+.def_vdsd <- 100
+.def_dsd <- .01
+.def_vmsd <- 250
+.def_casd <- 100000

@@ -1,0 +1,36 @@
+---
+title: "Business Case (Excel)"
+author: "Matthias Uckert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    self_contained: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(here::here())) 
+knitr::opts_chunk$set(root.dir = normalizePath(here::here()))
+
+```
+
+First, we will start with a simple Excel Workbook for our Business Case.
+
+The Excel can be downloaded here:
+
+![Excel Business Case (Input)](images/2022-05-27%2018_32_21-.png)
+
+![Function: Variable
+Cost](images/2022-05-27%2018_35_09-business_case.xlsx%20%20-%20%201%20-%20Excel.png)
+
+![Function: Fixed
+Cost](images/2022-05-27%2018_35_27-business_case.xlsx%20%20-%20%201%20-%20Excel-01.png)
+
+![Function:
+Price](images/2022-05-27%2018_34_53-business_case.xlsx%20%20-%20%201%20-%20Excel.png)
+
+![Contribution
+Margin](images/2022-05-27%2018_38_08-business_case.xlsx%20%20-%20%202%20-%20Excel.png)
