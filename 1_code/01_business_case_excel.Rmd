@@ -18,10 +18,17 @@ knitr::opts_chunk$set(root.dir = normalizePath(here::here()))
 ```
 
 First, we will start with a simple Excel Workbook for our Business Case.
+The Excel can be found
+[here](https://github.com/MatthiasUckert/RpMMA23/blob/master/0_data/business_case.xlsx).
 
-The Excel can be downloaded here:
+We will look at the Excel Workbook in the class. Below some screenshots
+to show the Layout of the dashboard.
+
+# Input Sheet
 
 ![Excel Business Case (Input)](images/2022-05-27%2018_32_21-.png)
+
+# Function Sheet
 
 ![Function: Variable
 Cost](images/2022-05-27%2018_35_09-business_case.xlsx%20%20-%20%201%20-%20Excel.png)
@@ -31,6 +38,8 @@ Cost](images/2022-05-27%2018_35_27-business_case.xlsx%20%20-%20%201%20-%20Excel-
 
 ![Function:
 Price](images/2022-05-27%2018_34_53-business_case.xlsx%20%20-%20%201%20-%20Excel.png)
+
+# Contribution Margin Sheet
 
 ![Contribution
 Margin](images/2022-05-27%2018_38_08-business_case.xlsx%20%20-%20%202%20-%20Excel.png)

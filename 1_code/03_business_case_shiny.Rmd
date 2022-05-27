@@ -15,3 +15,54 @@ output:
 knitr::opts_knit$set(root.dir = normalizePath(here::here())) 
 knitr::opts_chunk$set(root.dir = normalizePath(here::here()))
 ```
+
+Last, we translate our code into a reactive framework to rn a shiny
+application. If you have already cloned the repository your can run the
+app with the command:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(shiny)
+runApp("1_code/03_shiny_business_case.R")
+```
+
+We will look at the dashboard in the class. Below some screenshots to
+show the Layout of the dashboard.
+
+# Input Function
+
+![Function: Variable
+Cost](images/2022-05-27%2019_23_40-C__Users_MUcke_Pictures_Greenshot.png)
+
+![Function: Fixed Costs](images/2022-05-27%2019_38_29-.png)
+
+![Function: Price](images/2022-05-27%2019_38_51-.png)
+
+# Contribution Margin
+
+![Contribution Margin](images/2022-05-27%2019_23_52-.png)
+
+# Sensitivity Analysis
+
+![Sensitivity Analysis:
+Volume](images/2022-05-27%2019_24_03-C__Users_MUcke_Pictures_Greenshot.png)
+
+![Sensitivity Analysis:
+Price](images/2022-05-27%2019_39_05-127.0.0.1_3382.png)
+
+![Sensitivity Analysis: Variable
+Cost](images/2022-05-27%2019_39_16-127.0.0.1_3382.png)
+
+![Sensitivity Analysis: Fixed
+Cost](images/2022-05-27%2019_39_27-C__Users_MUcke_Pictures_Greenshot.png)
+
+![Sensitivity Analysis: Volume Discount
+Factor](images/2022-05-27%2019_39_37-127.0.0.1_3382.png)
+
+# Monte Carlo Simulation
+
+![Monte Carlo Simulation](images/2022-05-27%2019_24_13-.png)
+
+# Amortization
+
+![Amortization
+Graph](images/2022-05-27%2019_24_22-C__Users_MUcke_Pictures_Greenshot.png)

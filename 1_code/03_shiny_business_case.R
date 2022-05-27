@@ -4,6 +4,7 @@ library(shiny)
 library(shinyWidgets)
 options(shiny.autoreload = TRUE)
 source("../1_code/functions/f-02_business_case.R", encoding = "UTF-8")
+source("../1_code/functions/v-02_business_case_default_values.R")
 source("../1_code/functions/f-02_shiny_business_case.R", encoding = "UTF-8")
 
 ui <- fluidPage(
@@ -45,18 +46,18 @@ ui <- fluidPage(
         tabPanel(
           title = "Monte Carlo",
           splitLayout(
-            numericInput(inputId = "vsd", label = "SD (Volume)", value = 2500),
-            numericInput(inputId = "psd", label = "SD (Price)", value = 250),
-            numericInput(inputId = "cvsd", label = "SD (Variable Cost)", value = 100),
-            numericInput(inputId = "cfsd", label = "SD (Fixed Cost)", value = 10000),
-            numericInput(inputId = "casd", label = "SD (Company Cost)", value = 100000),
+            numericInput(inputId = "vsd", label = "SD (Volume)", value = .def_vsd),
+            numericInput(inputId = "psd", label = "SD (Price)", value = .def_psd),
+            numericInput(inputId = "cvsd", label = "SD (Variable Cost)", value = .def_cvsd),
+            numericInput(inputId = "cfsd", label = "SD (Fixed Cost)", value = .def_cfsd),
+            numericInput(inputId = "casd", label = "SD (Company Cost)", value = .def_casd),
           ),
           splitLayout(
-            numericInput(inputId = "vbsd", label = "SD (Base Volume)", value = 250),
-            numericInput(inputId = "vcsd", label = "SD (Cap Volume)", value = 250),
-            numericInput(inputId = "vdsd", label = "SD (Volume Discount)", value = 100),
-            numericInput(inputId = "dsd", label = "SD (Discount)", value = .01),
-            numericInput(inputId = "vmsd", label = "SD (Multiplier)", value = 250)
+            numericInput(inputId = "vbsd", label = "SD (Base Volume)", value = .def_vbsd),
+            numericInput(inputId = "vcsd", label = "SD (Cap Volume)", value = .def_vcsd),
+            numericInput(inputId = "vdsd", label = "SD (Volume Discount)", value = .def_vdsd),
+            numericInput(inputId = "dsd", label = "SD (Discount)", value = .def_dsd),
+            numericInput(inputId = "vmsd", label = "SD (Multiplier)", value = .def_vmsd)
           ),
           plotOutput(outputId = "pO_monte"),
           htmlOutput(outputId = "hO_monte")
