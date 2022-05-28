@@ -313,7 +313,7 @@ div.tocify {
       <ul class="nav navbar-nav">
         <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Day 1 - Basics and Business Case
+    Day 1 - Business Case
      
     <span class="caret"></span>
   </a>
@@ -331,26 +331,35 @@ div.tocify {
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Day 2 - Analysing Data
+    Day 2 - Getting and Analyizing Financial Data
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="./04_xbrl_analyze.html">Session 1 - XXX</a>
+      <a href="./00_get_edgar_data.html">Session 1 - Getting XBRL Files</a>
     </li>
     <li>
-      <a href="./05_textual_analysis.html">Session 2 - XXX</a>
+      <a href="./00_get_arcom_data.html">Session 2 - Annual Reports</a>
     </li>
     <li>
-      <a href="./06_excel_ratio_analysis.html">Session 3 - XXX</a>
+      <a href="./00_xbrl_data.html">Session 3 - Parsing XBRL Files</a>
+    </li>
+    <li>
+      <a href="./04_xbrl_analyze.html">Session 4 - Analyzing XBRL Files</a>
+    </li>
+    <li>
+      <a href="./05_textual_analysis.html">Session 5 - Textual Analysis (US/Europe)</a>
     </li>
   </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="./contact.html">Contact</a>
+  <a href="https://www.linkedin.com/in/matthias-uckert-579644a9/">LinkedIn</a>
+</li>
+<li>
+  <a href="https://www.bwl.uni-mannheim.de/en/daske/team/research-assistants/matthias-uckert-msc/">University</a>
 </li>
 <li>
   <a href="https://github.com/MatthiasUckert">GitHub</a>
@@ -379,8 +388,7 @@ Master in Management Analytics - Accounting Class 2023.</strong> In the
 next days you will see how to solve common business applications with R
 and Excel and to dive deeper into some research related application.</p>
 <p>The goal of those sessions is to give you a general overview of how
-common workflows can be automated using basic knowledge in HTML and
-Excel.</p>
+common workflows can be automated/streamlined.</p>
 <p>All sessions are programmed in R and a basic understanding of
 programming is needed. The code itself applies relatively advanced
 methods, hence it is not assumed that you follow each single logical
@@ -391,7 +399,9 @@ languages such as R.</p>
 </div>
 <div id="get-the-code" class="section level1">
 <h1>Get The Code</h1>
-<p>The complete code is hosted on my GitHub page: XXX</p>
+<p>The complete code is hosted on my GitHub page: <a
+href="https://github.com/MatthiasUckert/RpMMA23"
+class="uri">https://github.com/MatthiasUckert/RpMMA23</a></p>
 <p>Simply fork the repository into your own GitHub or download the
 Project.</p>
 <hr />
@@ -401,11 +411,11 @@ Project.</p>
 <p>You can navigate to the individual sessions by either following the
 link in the table of contents, or by navigating through the drop-down
 menus at the top of the page.</p>
-<table>
+<table style="width:94%;">
 <colgroup>
-<col width="10%" />
-<col width="16%" />
-<col width="73%" />
+<col width="18%" />
+<col width="18%" />
+<col width="58%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -416,52 +426,93 @@ menus at the top of the page.</p>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Day X</td>
+<td align="left">Day 1</td>
 <td align="left">Session 1</td>
-<td align="left"><p><a href="01_r_basics.html"
-title="Day 1 - Session 1"><strong>R Basics</strong></a></p>
-<p>Quick Introduction to R.</p></td>
+<td align="left"><p><a href="01_busine%20ss_case_excel.html"
+title="Day 1 - Session 1"><strong>Building an Excel Business
+Case</strong></a></p>
+<p>In this session we will start by building a simple business case in
+Excel. Specifically, we will evaluate a small business decision with
+common metrics such as Contribution Margins and Amortization
+Period.</p></td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="left">Session 2</td>
-<td align="left"><strong>xxx</strong></td>
+<td align="left"><p><a href="02_%20business_case_html"
+title="Day 1 - Session 2"><strong>Translating Excel into
+R</strong></a></p>
+<p>In this session we will take the logic of the business case of
+Session 1 and translate it into R code. This session will help you to do
+the transition from Excel to R. The outcome of this session will be a
+static Report.</p></td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="left">Session 3</td>
-<td align="left"><strong>xxx</strong></td>
+<td align="left"><p><a href="03_busine%20ss_case_shiny.html"
+title="Day 1 - Session 3"><strong>Building an interactive Business Case
+in R</strong></a></p>
+<p>In the last session of the day, we will … the full power of R and
+build an interactive shiny application. This application will enable us
+to have a far deeper understanding of the business case than we could
+have with only the Excel Workbook or the static Report of Session 1 and
+Session 2.</p></td>
 </tr>
 <tr class="even">
-<td align="left">Day X</td>
+<td align="left">Day 2</td>
 <td align="left">Session 1</td>
-<td align="left">xxx</td>
+<td align="left"><p><a href="00_g%20et_edgar_data.html"
+title="Day 2 - Session 1"><strong>Getting Data from the Web: SEC’s
+EDGAR</strong></a></p>
+<p>In this session we will learn how the use the Electronic Data
+Gathering, Analysis, and Retrieval system (EDGAR) API to download US
+Financial Reports.</p></td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="left">Session 2</td>
-<td align="left">xxx</td>
+<td align="left"><p><a href="00_g%20et_arcom_data.html"
+title="Day 2 - Session 2"><strong>Getting Data from the Web:
+www.AnnualReport.com</strong></a></p>
+<p>In this session we will learn how to scrape websites if no API is
+provided. Specifically we will download PDF Annual Reports from
+www.AnnualReport.com.</p></td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="left">Session 3</td>
-<td align="left"><strong>xxx</strong></td>
+<td align="left"><p>[<strong>Getting Data from the Web: XBRL</strong>]
+(00_xbrl_data.html “Day 2 - Session 3”)</p>
+<p>In this session we will extract structured information from files
+that are tagged using eXtensible Business Reporting Language (XBRL)
+framework.</p></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">Session 4</td>
+<td align="left"><p><a href="04%20_xbrl_analyze.html"
+title="Day 2 - Session 4"><strong>Analyzing Data: XBRL
+Tags</strong></a></p>
+<p>This session gives a small use case of the data encoded in XBRL
+files.</p></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">Session 5</td>
+<td align="left"><p><a href="05_tex%20tual_analysis.html"
+title="Day 2 - Session 5"><strong>Analyzing Data: Textual
+Analysis</strong></a></p>
+<p>In the last session of the day, we will do some simple analysis of
+words and phrases occurring in US and European financial
+statements.</p></td>
 </tr>
 </tbody>
 </table>
 <hr />
 </div>
-<div id="exercises" class="section level1">
-<h1>Exercises</h1>
-<p>Within each session we will solve a couple of small exercises</p>
-</div>
-<div id="exam" class="section level1">
-<h1>Exam</h1>
-<p>You can earn additional points by programming a R Package and write
-functions.</p>
-</div>
-<div id="intersting-readings" class="section level1">
-<h1>Intersting Readings</h1>
+<div id="interesting-readings" class="section level1">
+<h1>Interesting Readings</h1>
 <ul>
 <li><strong>Advanced R: <a href="https://adv-r.hadley.nz/"
 class="uri">https://adv-r.hadley.nz/</a></strong></li>

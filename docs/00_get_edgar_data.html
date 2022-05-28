@@ -1,0 +1,2589 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthias Uckert" />
+
+
+<title>Getting Data from the Web: SEC’s EDGAR</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  { color: #cccccc; background-color: #303030; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ffcfaf; } /* Alert */
+code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #dca3a3; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #f0dfaf; } /* ControlFlow */
+code span.ch { color: #dca3a3; } /* Char */
+code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code span.co { color: #7f9f7f; } /* Comment */
+code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code span.do { color: #7f9f7f; } /* Documentation */
+code span.dt { color: #dfdfbf; } /* DataType */
+code span.dv { color: #dcdccc; } /* DecVal */
+code span.er { color: #c3bf9f; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #c0bed1; } /* Float */
+code span.fu { color: #efef8f; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+code span.kw { color: #f0dfaf; } /* Keyword */
+code span.op { color: #f0efd0; } /* Operator */
+code span.ot { color: #efef8f; } /* Other */
+code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code span.sc { color: #dca3a3; } /* SpecialChar */
+code span.ss { color: #cc9393; } /* SpecialString */
+code span.st { color: #cc9393; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #cc9393; } /* VerbatimString */
+code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Accounting Class</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Day 1 - Business Case
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./01_business_case_excel.html">Session 1 - Business Case (Excel Sheet)</a>
+    </li>
+    <li>
+      <a href="./02_business_case_html.html">Session 2 - Business Case (HTML Layout)</a>
+    </li>
+    <li>
+      <a href="./03_business_case_shiny.html">Session 2 - Business Case (Shiny App)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Day 2 - Getting and Analyizing Financial Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./00_get_edgar_data.html">Session 1 - Getting XBRL Files</a>
+    </li>
+    <li>
+      <a href="./00_get_arcom_data.html">Session 2 - Annual Reports</a>
+    </li>
+    <li>
+      <a href="./00_xbrl_data.html">Session 3 - Parsing XBRL Files</a>
+    </li>
+    <li>
+      <a href="./04_xbrl_analyze.html">Session 4 - Analyzing XBRL Files</a>
+    </li>
+    <li>
+      <a href="./05_textual_analysis.html">Session 5 - Textual Analysis (US/Europe)</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://www.linkedin.com/in/matthias-uckert-579644a9/">LinkedIn</a>
+</li>
+<li>
+  <a href="https://www.bwl.uni-mannheim.de/en/daske/team/research-assistants/matthias-uckert-msc/">University</a>
+</li>
+<li>
+  <a href="https://github.com/MatthiasUckert">GitHub</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Getting Data from the Web: SEC’s EDGAR</h1>
+<h4 class="author">Matthias Uckert</h4>
+<h4 class="date">28 May, 2022</h4>
+
+</div>
+
+
+<hr />
+<div id="description" class="section level1">
+<h1>Description</h1>
+<p>In this session we will retrieve information from the SEC EDGAR
+database. Getting data from EDGAR is exemplary for getting information
+from the web, where we have API (Application Programming Interface)
+access.</p>
+<p>Throughout this script we will use custom functions. All the script
+specific functions are stored in this folder:
+<strong>1_code/00_functions/f-get_edgar_data.R</strong> (As a reference
+I also put the important functions in the script)</p>
+<p>EDGAR is an established source of financial information. But normally
+companies and researchers start gathering financial information from
+commercial databases such as <strong>Bureau Van Dijk - Orbis</strong>,
+<strong>Refinitiv - Datastream</strong> or
+<strong>Compustat</strong></p>
+<ul>
+<li><p>Compustat: <a href="https://wrds-www.wharton.upenn.edu/"
+class="uri">https://wrds-www.wharton.upenn.edu/</a></p></li>
+<li><p>Orbis: <a href="https://orbis4.bvdinfo.com/ip"
+class="uri">https://orbis4.bvdinfo.com/ip</a></p></li>
+</ul>
+<hr />
+</div>
+<div id="script-setup" class="section level1">
+<h1>Script Setup</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse); <span class="fu">library</span>(edgarWebR); <span class="fu">library</span>(lubridate); <span class="fu">library</span>(here)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(furrr); <span class="fu">library</span>(stringi); <span class="fu">library</span>(textstem); <span class="fu">library</span>(tidytext)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor); <span class="fu">library</span>(tools); <span class="fu">library</span>(patchwork); <span class="fu">library</span>(scales)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra); <span class="fu">library</span>(openxlsx)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;1_code/functions/f-all.R&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;1_code/00_download_data.R&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;1_code/functions/f-get_edgar_data.R&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="code" class="section level1">
+<h1>Code</h1>
+<hr />
+<div id="paths" class="section level2">
+<h2>Paths</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>lst_paths <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_main    =</span> <span class="st">&quot;2_output/00_get_edgar_data/&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_filing =</span> <span class="st">&quot;2_output/00_get_edgar_data/edgar_filings.rds&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_detail =</span> <span class="st">&quot;2_output/00_get_edgar_data/edgar_details.rds&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_f500   =</span> <span class="st">&quot;2_output/00_get_edgar_data/f500.xlsx&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">create_dirs</span>()</span></code></pre></div>
+<hr />
+</div>
+<div id="get-fortune-500-companies" class="section level2">
+<h2>Get Fortune 500 Companies</h2>
+<p>To get our initial sample, we use an open source data repository
+‘datahub.io’ to retrieve the <u><strong>fortune 500
+companies</strong></u> with some financial information. We won’t use the
+complete data set, but filter for the <u><strong>top 100</strong></u>
+companies (using less companies will let the code run faster) with the
+highest market capitalization. You can change the number of companies by
+changing the integer vector: <strong>.n_companies</strong> in the chunk
+below.</p>
+<details>
+<summary>
+<p>We use a custom function: <strong>get_f500()</strong> to download the
+Fortune 500 dataset <strong><em>(click on arrow to
+show)</em></strong>.</p>
+</summary>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>get_f500 <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Source: https://datahub.io/core/s-and-p-500-companies-financials#r</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  json_file <span class="ot">&lt;-</span> <span class="st">&#39;https://datahub.io/core/s-and-p-500-companies-financials/datapackage.json&#39;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  json_data <span class="ot">&lt;-</span> jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(<span class="fu">paste</span>(<span class="fu">readLines</span>(json_file), <span class="at">collapse=</span><span class="st">&quot;&quot;</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(json_data<span class="sc">$</span>resources<span class="sc">$</span>datahub<span class="sc">$</span>type)){</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(json_data<span class="sc">$</span>resources<span class="sc">$</span>datahub<span class="sc">$</span>type[i]<span class="sc">==</span><span class="st">&#39;derived/csv&#39;</span>){</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      path_to_file <span class="ot">=</span> json_data<span class="sc">$</span>resources<span class="sc">$</span>path[i]</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">url</span>(path_to_file))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(data)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<hr />
+<div id="download-dataset" class="section level3">
+<h3>Download Dataset</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>.n_companies <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># browseURL(&quot;https://datahub.io/core/s-and-p-500-companies-financials#r&quot;)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>tab_f500_all <span class="ot">&lt;-</span> <span class="fu">get_f500</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Function from the janitor package, makes nice column names</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Arrange, so that the highest market cap appears first in the dataframe</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(market_cap)) </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="fu">write.xlsx</span>(tab_f500_all, lst_paths<span class="sc">$</span>path_f500, <span class="cn">TRUE</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Select only the firms with the highest market cap</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>tab_f500_t10 <span class="ot">&lt;-</span> <span class="fu">slice</span>(tab_f500_all, <span class="dv">1</span><span class="sc">:</span>.n_companies)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick look at the companies we use</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(tab_f500_t10, symbol, name, sector)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ] <span class="sc">%&gt;%</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_table</span>()</span></code></pre></div>
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+symbol
+</th>
+<th style="text-align:left;">
+name
+</th>
+<th style="text-align:left;">
+sector
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+AAPL
+</td>
+<td style="text-align:left;">
+Apple Inc. 
+</td>
+<td style="text-align:left;">
+Information Technology
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GOOGL
+</td>
+<td style="text-align:left;">
+Alphabet Inc Class A
+</td>
+<td style="text-align:left;">
+Information Technology
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GOOG
+</td>
+<td style="text-align:left;">
+Alphabet Inc Class C
+</td>
+<td style="text-align:left;">
+Information Technology
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MSFT
+</td>
+<td style="text-align:left;">
+Microsoft Corp. 
+</td>
+<td style="text-align:left;">
+Information Technology
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AMZN
+</td>
+<td style="text-align:left;">
+Amazon.com Inc
+</td>
+<td style="text-align:left;">
+Consumer Discretionary
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FB
+</td>
+<td style="text-align:left;">
+Facebook, Inc. 
+</td>
+<td style="text-align:left;">
+Information Technology
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+JPM
+</td>
+<td style="text-align:left;">
+JPMorgan Chase &amp; Co. 
+</td>
+<td style="text-align:left;">
+Financials
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+JNJ
+</td>
+<td style="text-align:left;">
+Johnson &amp; Johnson
+</td>
+<td style="text-align:left;">
+Health Care
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+XOM
+</td>
+<td style="text-align:left;">
+Exxon Mobil Corp. 
+</td>
+<td style="text-align:left;">
+Energy
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BAC
+</td>
+<td style="text-align:left;">
+Bank of America Corp
+</td>
+<td style="text-align:left;">
+Financials
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+</div>
+</div>
+<div id="get-company-index-links" class="section level2">
+<h2>Get Company Index-Links</h2>
+<p>Before we download data in bulk, let us first explore the SEC’s EDGAR
+website:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># browseURL(tab_f500_all$sec_filings[1])</span></span></code></pre></div>
+<p>The first step is to retrieve the index-links for the fortune 500
+companies we selected in the first step. Downloading data from the web
+is always tricky. We can run into request limits, client or server side
+issues. So thinking about how to set up a download is crucial in order
+to make the analysis</p>
+<details>
+<summary>
+<p>We use a custom function: <strong>map_company_filings()</strong> to
+retrieve the Index Links from EDGAR <strong><em>(click on arrow to
+show)</em></strong>.</p>
+</summary>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>map_company_filings <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  .tickers, <span class="at">.ownership =</span> <span class="cn">FALSE</span>, <span class="at">.type =</span> <span class="st">&quot;&quot;</span>, <span class="at">.before =</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">.count =</span> <span class="dv">100</span>, <span class="at">.page =</span> <span class="dv">1</span>, <span class="at">.progress =</span> <span class="cn">TRUE</span>, <span class="at">.sleep =</span> <span class="dv">0</span>, <span class="at">.retry =</span> <span class="dv">5</span>) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  sf <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">safely</span>(edgarWebR<span class="sc">::</span>company_filings)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(.tickers) <span class="ot">&lt;-</span> .tickers</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  pb <span class="ot">&lt;-</span> progress<span class="sc">::</span>progress_bar<span class="sc">$</span><span class="fu">new</span>(<span class="at">total =</span> <span class="fu">length</span>(.tickers))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  lst <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">.x =</span> .tickers,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">.f =</span> <span class="sc">~</span> {</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (.progress) pb<span class="sc">$</span><span class="fu">tick</span>() <span class="co"># Progress bar</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">Sys.sleep</span>(.sleep) <span class="co"># Optionally, a sleep parameter</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>      check <span class="ot">&lt;-</span> <span class="fu">sf</span>(.x, .ownership, .type, .before, .count, .page) <span class="co"># store results</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>      <span class="co"># check if we run into an error, and repeat as long until it works</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(check<span class="sc">$</span>error)) {</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(.retry)) {</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>          check <span class="ot">&lt;-</span> <span class="fu">sf</span>(.x, .ownership, .type, .before, .count, .page)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> (<span class="fu">is.null</span>(check<span class="sc">$</span>error)) {</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>          }</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(check)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">transpose</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    purrr<span class="sc">::</span><span class="fu">map</span>(., purrr<span class="sc">::</span>compact)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">&quot;Results: &quot;</span>, scales<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">length</span>(lst<span class="sc">$</span>result))))</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">&quot;Errors:  &quot;</span>, scales<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">length</span>(lst<span class="sc">$</span>error))))</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(lst)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<hr />
+<div id="download-index-links" class="section level3">
+<h3>Download Index-Links</h3>
+<p>In addition to our custom function, we use a really simple caching
+procedure so that we don’t have to re-run the whole expression if we
+already extracted index-links (throughout the session you will see such
+easy caching, if you use code in production you can also switch to
+already published libraries auch as R.cache).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(lst_paths<span class="sc">$</span>path_filing)) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  .prc <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">symbol =</span> <span class="fu">character</span>(), <span class="at">.rows =</span> <span class="dv">0</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  .prc <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_filing)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>tab_f500_use <span class="ot">&lt;-</span> <span class="fu">filter</span>(tab_f500_t10, <span class="sc">!</span>symbol <span class="sc">%in%</span> .prc<span class="sc">$</span>symbol)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(tab_f500_use) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  lst_filings <span class="ot">&lt;-</span> <span class="fu">map_company_filings</span>(</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">.tickers =</span> tab_f500_use<span class="sc">$</span>symbol, <span class="at">.type =</span> <span class="st">&quot;10-K&quot;</span>, <span class="at">.count =</span> <span class="dv">100</span>, </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">.sleep =</span> .<span class="dv">2</span>, <span class="at">.progress =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  tab_filings <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(.prc, <span class="fu">bind_rows</span>(lst_filings<span class="sc">$</span>result, <span class="at">.id =</span> <span class="st">&quot;symbol&quot;</span>))</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(tab_filings, lst_paths<span class="sc">$</span>path_filing)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  tab_filings <span class="ot">&lt;-</span> .prc</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## [1] &quot;Results: 0&quot;
+## [1] &quot;Errors:  8&quot;</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tab_filings <span class="ot">&lt;-</span> tab_filings <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">stri_replace_all_fixed</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">basename</span>(href), <span class="fu">paste0</span>(<span class="st">&quot;.&quot;</span>, <span class="fu">file_ext</span>(href)), <span class="st">&quot;&quot;</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(id, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>In total we got 8 errors. Let us look at an example error case.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>tab_f500_t10 <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>symbol <span class="sc">%in%</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_filing)<span class="sc">$</span>symbol) <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_table</span>(<span class="at">.n =</span> <span class="dv">5</span>)</span></code></pre></div>
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+symbol
+</th>
+<th style="text-align:left;">
+name
+</th>
+<th style="text-align:left;">
+sector
+</th>
+<th style="text-align:right;">
+price
+</th>
+<th style="text-align:right;">
+price_earnings
+</th>
+<th style="text-align:right;">
+dividend_yield
+</th>
+<th style="text-align:right;">
+earnings_share
+</th>
+<th style="text-align:right;">
+x52_week_low
+</th>
+<th style="text-align:right;">
+x52_week_high
+</th>
+<th style="text-align:right;">
+market_cap
+</th>
+<th style="text-align:right;">
+ebitda
+</th>
+<th style="text-align:right;">
+price_sales
+</th>
+<th style="text-align:right;">
+price_book
+</th>
+<th style="text-align:left;">
+sec_filings
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+BRK.B
+</td>
+<td style="text-align:left;">
+Berkshire Hathaway
+</td>
+<td style="text-align:left;">
+Financials
+</td>
+<td style="text-align:right;">
+191.42
+</td>
+<td style="text-align:right;">
+30.43
+</td>
+<td style="text-align:right;">
+0.000000
+</td>
+<td style="text-align:right;">
+9.76
+</td>
+<td style="text-align:right;">
+217.62
+</td>
+<td style="text-align:right;">
+160.93
+</td>
+<td style="text-align:right;">
+261401203633
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.432823
+</td>
+<td style="text-align:right;">
+1.58
+</td>
+<td style="text-align:left;">
+<a
+href="http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=BRK.B"
+class="uri">http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=BRK.B</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DWDP
+</td>
+<td style="text-align:left;">
+DowDuPont
+</td>
+<td style="text-align:left;">
+Materials
+</td>
+<td style="text-align:right;">
+68.21
+</td>
+<td style="text-align:right;">
+49.43
+</td>
+<td style="text-align:right;">
+2.152975
+</td>
+<td style="text-align:right;">
+1.59
+</td>
+<td style="text-align:right;">
+77.08
+</td>
+<td style="text-align:right;">
+64.01
+</td>
+<td style="text-align:right;">
+165203312427
+</td>
+<td style="text-align:right;">
+5250000000
+</td>
+<td style="text-align:right;">
+2.692239
+</td>
+<td style="text-align:right;">
+1.54
+</td>
+<td style="text-align:left;">
+<a
+href="http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=DWDP"
+class="uri">http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=DWDP</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UTX
+</td>
+<td style="text-align:left;">
+United Technologies
+</td>
+<td style="text-align:left;">
+Industrials
+</td>
+<td style="text-align:right;">
+127.48
+</td>
+<td style="text-align:right;">
+19.26
+</td>
+<td style="text-align:right;">
+2.121694
+</td>
+<td style="text-align:right;">
+5.70
+</td>
+<td style="text-align:right;">
+139.24
+</td>
+<td style="text-align:right;">
+107.05
+</td>
+<td style="text-align:right;">
+105387272474
+</td>
+<td style="text-align:right;">
+10584000000
+</td>
+<td style="text-align:right;">
+1.732412
+</td>
+<td style="text-align:right;">
+3.40
+</td>
+<td style="text-align:left;">
+<a
+href="http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=UTX"
+class="uri">http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=UTX</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PCLN
+</td>
+<td style="text-align:left;">
+Priceline.com Inc
+</td>
+<td style="text-align:left;">
+Consumer Discretionary
+</td>
+<td style="text-align:right;">
+1806.06
+</td>
+<td style="text-align:right;">
+24.26
+</td>
+<td style="text-align:right;">
+0.000000
+</td>
+<td style="text-align:right;">
+42.66
+</td>
+<td style="text-align:right;">
+2067.99
+</td>
+<td style="text-align:right;">
+1589.00
+</td>
+<td style="text-align:right;">
+91817448863
+</td>
+<td style="text-align:right;">
+4803487000
+</td>
+<td style="text-align:right;">
+9.176564
+</td>
+<td style="text-align:right;">
+6.92
+</td>
+<td style="text-align:left;">
+<a
+href="http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=PCLN"
+class="uri">http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=PCLN</a>
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+CELG
+</td>
+<td style="text-align:left;">
+Celgene Corp. 
+</td>
+<td style="text-align:left;">
+Health Care
+</td>
+<td style="text-align:right;">
+91.02
+</td>
+<td style="text-align:right;">
+13.27
+</td>
+<td style="text-align:right;">
+0.000000
+</td>
+<td style="text-align:right;">
+3.58
+</td>
+<td style="text-align:right;">
+147.17
+</td>
+<td style="text-align:right;">
+92.85
+</td>
+<td style="text-align:right;">
+74921079154
+</td>
+<td style="text-align:right;">
+5233000000
+</td>
+<td style="text-align:right;">
+5.830071
+</td>
+<td style="text-align:right;">
+7.49
+</td>
+<td style="text-align:left;">
+<a
+href="http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=CELG"
+class="uri">http://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&amp;CIK=CELG</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># browseURL(&quot;https://www.sec.gov/cgi-bin/browse-edgar?company=BRK.B&amp;match=&amp;filenum=&amp;State=&amp;Country=&amp;SIC=&amp;myowner=exclude&amp;action=getcompany&quot;)</span></span></code></pre></div>
+<p>Let’s quickly look at the result. (There are several ways to do this.
+For small Dataframes we can simply use the RStudio build-in viewer.
+Here, we wrote a simple function show_table() that formats the output
+nicely in HTML format)</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_table</span>(tab_filings, <span class="at">.n =</span> <span class="dv">5</span>)</span></code></pre></div>
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+symbol
+</th>
+<th style="text-align:left;">
+accession_number
+</th>
+<th style="text-align:left;">
+act
+</th>
+<th style="text-align:left;">
+file_number
+</th>
+<th style="text-align:left;">
+filing_date
+</th>
+<th style="text-align:left;">
+accepted_date
+</th>
+<th style="text-align:left;">
+href
+</th>
+<th style="text-align:left;">
+type
+</th>
+<th style="text-align:left;">
+film_number
+</th>
+<th style="text-align:left;">
+form_name
+</th>
+<th style="text-align:left;">
+description
+</th>
+<th style="text-align:left;">
+size
+</th>
+<th style="text-align:left;">
+id
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+AAPL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+34
+</td>
+<td style="text-align:left;">
+001-36743
+</td>
+<td style="text-align:left;">
+2020-10-30
+</td>
+<td style="text-align:left;">
+2020-10-29
+</td>
+<td style="text-align:left;">
+<a
+href="https://www.sec.gov/Archives/edgar/data/320193/000032019320000096/0000320193-20-000096-index.htm"
+class="uri">https://www.sec.gov/Archives/edgar/data/320193/000032019320000096/0000320193-20-000096-index.htm</a>
+</td>
+<td style="text-align:left;">
+10-K
+</td>
+<td style="text-align:left;">
+201273977
+</td>
+<td style="text-align:left;">
+Annual report [Section 13 and 15(d), not S-K Item 405]
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+12 MB
+</td>
+<td style="text-align:left;">
+0000320193-20-000096-index
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AAPL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+34
+</td>
+<td style="text-align:left;">
+001-36743
+</td>
+<td style="text-align:left;">
+2019-10-31
+</td>
+<td style="text-align:left;">
+2019-10-30
+</td>
+<td style="text-align:left;">
+<a
+href="https://www.sec.gov/Archives/edgar/data/320193/000032019319000119/0000320193-19-000119-index.htm"
+class="uri">https://www.sec.gov/Archives/edgar/data/320193/000032019319000119/0000320193-19-000119-index.htm</a>
+</td>
+<td style="text-align:left;">
+10-K
+</td>
+<td style="text-align:left;">
+191181423
+</td>
+<td style="text-align:left;">
+Annual report [Section 13 and 15(d), not S-K Item 405]
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+12 MB
+</td>
+<td style="text-align:left;">
+0000320193-19-000119-index
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AAPL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+34
+</td>
+<td style="text-align:left;">
+001-36743
+</td>
+<td style="text-align:left;">
+2018-11-05
+</td>
+<td style="text-align:left;">
+2018-11-05
+</td>
+<td style="text-align:left;">
+<a
+href="https://www.sec.gov/Archives/edgar/data/320193/000032019318000145/0000320193-18-000145-index.htm"
+class="uri">https://www.sec.gov/Archives/edgar/data/320193/000032019318000145/0000320193-18-000145-index.htm</a>
+</td>
+<td style="text-align:left;">
+10-K
+</td>
+<td style="text-align:left;">
+181158788
+</td>
+<td style="text-align:left;">
+Annual report [Section 13 and 15(d), not S-K Item 405]
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+12 MB
+</td>
+<td style="text-align:left;">
+0000320193-18-000145-index
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AAPL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+34
+</td>
+<td style="text-align:left;">
+001-36743
+</td>
+<td style="text-align:left;">
+2017-11-03
+</td>
+<td style="text-align:left;">
+2017-11-03
+</td>
+<td style="text-align:left;">
+<a
+href="https://www.sec.gov/Archives/edgar/data/320193/000032019317000070/0000320193-17-000070-index.htm"
+class="uri">https://www.sec.gov/Archives/edgar/data/320193/000032019317000070/0000320193-17-000070-index.htm</a>
+</td>
+<td style="text-align:left;">
+10-K
+</td>
+<td style="text-align:left;">
+171174673
+</td>
+<td style="text-align:left;">
+Annual report [Section 13 and 15(d), not S-K Item 405]
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+14 MB
+</td>
+<td style="text-align:left;">
+0000320193-17-000070-index
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AAPL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+34
+</td>
+<td style="text-align:left;">
+001-36743
+</td>
+<td style="text-align:left;">
+2016-10-26
+</td>
+<td style="text-align:left;">
+2016-10-26
+</td>
+<td style="text-align:left;">
+<a
+href="https://www.sec.gov/Archives/edgar/data/320193/000162828016020309/0001628280-16-020309-index.htm"
+class="uri">https://www.sec.gov/Archives/edgar/data/320193/000162828016020309/0001628280-16-020309-index.htm</a>
+</td>
+<td style="text-align:left;">
+10-K
+</td>
+<td style="text-align:left;">
+161953070
+</td>
+<td style="text-align:left;">
+Annual report [Section 13 and 15(d), not S-K Item 405]
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:left;">
+13 MB
+</td>
+<td style="text-align:left;">
+0001628280-16-020309-index
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+</div>
+</div>
+<div id="get-company-details" class="section level2">
+<h2>Get Company Details</h2>
+<p>After we got the index links from EDGAR, we proceed by scraping
+filing details.</p>
+<details>
+<summary>
+<p>We use a custom function: <strong>map_filing_details()</strong> to
+retrieve the firm details from EDGAR <strong><em>(click on arrow to
+show)</em></strong>.</p>
+</summary>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>download_edgar_files <span class="ot">&lt;-</span> <span class="cf">function</span>(.tab, .dir, <span class="at">.retry =</span> <span class="dv">5</span>, <span class="at">.sleep =</span> <span class="dv">1</span>) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(.dir)) <span class="fu">dir.create</span>(.dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  files_zip <span class="ot">&lt;-</span> <span class="fu">list.files</span>(.dir, <span class="at">pattern =</span> <span class="st">&quot;zip$&quot;</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  tab_ <span class="ot">&lt;-</span> .tab <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(year, symbol, document, href, file_ext) <span class="sc">%&gt;%</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">file_ext =</span> <span class="fu">case_when</span>(</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>        file_ext <span class="sc">==</span> <span class="st">&quot;txt&quot;</span> <span class="sc">~</span> <span class="st">&quot;txt&quot;</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">startsWith</span>(file_ext, <span class="st">&quot;htm&quot;</span>) <span class="sc">~</span> <span class="st">&quot;htm&quot;</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;xxx&quot;</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">path_downlod =</span> <span class="fu">file.path</span>(.dir, document),</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">path_zip =</span> <span class="fu">file.path</span>(.dir, <span class="fu">paste0</span>(file_ext, <span class="st">&quot;_&quot;</span>, symbol, <span class="st">&quot;-&quot;</span>, year, <span class="st">&quot;.zip&quot;</span>))</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(symbol, year, path_zip) <span class="sc">%&gt;%</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">c</span>(document, href, path_downlod), list), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">basename</span>(path_zip) <span class="sc">%in%</span> files_zip)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(tab_) <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  lst_ <span class="ot">&lt;-</span> <span class="fu">group_split</span>(tab_, symbol, year)</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  f_try <span class="ot">&lt;-</span> <span class="cf">function</span>(.url, .path) {</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">try</span>(<span class="fu">download.file</span>(.url, .path, <span class="at">quiet =</span> <span class="cn">TRUE</span>, <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>), <span class="at">silent =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  f_download <span class="ot">&lt;-</span> <span class="cf">function</span>(.row, .retry) {</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    urls_ <span class="ot">&lt;-</span> <span class="fu">unlist</span>(.row<span class="sc">$</span>href)</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    paths_ <span class="ot">&lt;-</span> <span class="fu">unlist</span>(.row<span class="sc">$</span>path_downlod)</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>    lgl_sucess_ <span class="ot">&lt;-</span> <span class="fu">logical</span>(<span class="fu">length</span>(urls_))</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">length</span>(urls_))) {</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>      check_ <span class="ot">&lt;-</span> <span class="fu">f_try</span>(urls_[i], paths_[i])</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">inherits</span>(check_, <span class="st">&quot;try-error&quot;</span>)) {</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>.retry) {</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>          check_ <span class="ot">&lt;-</span> <span class="fu">f_try</span>(urls_[i], paths_[i])</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(check_, <span class="st">&quot;try-error&quot;</span>)) <span class="cf">break</span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>          <span class="fu">Sys.sleep</span>(.sleep)</span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>      lgl_sucess_[i] <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">inherits</span>(check_, <span class="st">&quot;try-error&quot;</span>), <span class="cn">FALSE</span>, <span class="cn">TRUE</span>)</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>      <span class="fu">Sys.sleep</span>(.sleep)</span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>    .row[[<span class="st">&quot;success&quot;</span>]] <span class="ot">&lt;-</span> <span class="fu">list</span>(lgl_sucess_)</span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(.row)</span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>  f_zip <span class="ot">&lt;-</span> <span class="cf">function</span>(.row, .dir) {</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>    paths_ <span class="ot">&lt;-</span> <span class="fu">unlist</span>(.row<span class="sc">$</span>path_downlod)</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>    zip_ <span class="ot">&lt;-</span> .row<span class="sc">$</span>path_zip</span>
+<span id="cb13-63"><a href="#cb13-63" aria-hidden="true" tabindex="-1"></a>    files_ <span class="ot">&lt;-</span> <span class="fu">list.files</span>(.dir)</span>
+<span id="cb13-64"><a href="#cb13-64" aria-hidden="true" tabindex="-1"></a>    paths_ <span class="ot">&lt;-</span> paths_[<span class="fu">basename</span>(paths_) <span class="sc">%in%</span> files_]</span>
+<span id="cb13-65"><a href="#cb13-65" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-66"><a href="#cb13-66" aria-hidden="true" tabindex="-1"></a>    zip<span class="sc">::</span><span class="fu">zipr</span>(zip_, paths_, <span class="at">compression_level =</span> <span class="dv">9</span>)</span>
+<span id="cb13-67"><a href="#cb13-67" aria-hidden="true" tabindex="-1"></a>    <span class="fu">invisible</span>(<span class="fu">file.remove</span>(paths_))</span>
+<span id="cb13-68"><a href="#cb13-68" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb13-69"><a href="#cb13-69" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-70"><a href="#cb13-70" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-71"><a href="#cb13-71" aria-hidden="true" tabindex="-1"></a>  f_all <span class="ot">&lt;-</span> <span class="cf">function</span>(.row, .dir, .retry) {</span>
+<span id="cb13-72"><a href="#cb13-72" aria-hidden="true" tabindex="-1"></a>    tab_ <span class="ot">&lt;-</span> <span class="fu">suppressMessages</span>(<span class="fu">suppressWarnings</span>(<span class="fu">invisible</span>(<span class="fu">f_download</span>(.row, .retry))))</span>
+<span id="cb13-73"><a href="#cb13-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressMessages</span>(<span class="fu">suppressWarnings</span>(<span class="fu">invisible</span>(<span class="fu">f_zip</span>(.row, .dir))))</span>
+<span id="cb13-74"><a href="#cb13-74" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(tab_)</span>
+<span id="cb13-75"><a href="#cb13-75" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-76"><a href="#cb13-76" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-77"><a href="#cb13-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f_all</span>(<span class="at">.row =</span> lst_[[<span class="dv">1</span>]], <span class="at">.dir =</span> .dir, .retry)</span>
+<span id="cb13-78"><a href="#cb13-78" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-79"><a href="#cb13-79" aria-hidden="true" tabindex="-1"></a>  pb <span class="ot">&lt;-</span> progress<span class="sc">::</span>progress_bar<span class="sc">$</span><span class="fu">new</span>(<span class="at">total =</span> <span class="fu">length</span>(lst_))</span>
+<span id="cb13-80"><a href="#cb13-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(lst_, <span class="sc">~</span> {pb<span class="sc">$</span><span class="fu">tick</span>(); <span class="fu">f_all</span>(.x, .dir, .retry)})</span>
+<span id="cb13-81"><a href="#cb13-81" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-82"><a href="#cb13-82" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-83"><a href="#cb13-83" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<hr />
+<div id="download-details" class="section level3">
+<h3>Download Details</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(lst_paths<span class="sc">$</span>path_detail)) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  .prc <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">id =</span> <span class="fu">character</span>(), <span class="at">.rows =</span> <span class="dv">0</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  .prc <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_detail)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>tab_filings_use <span class="ot">&lt;-</span> <span class="fu">filter</span>(tab_filings, <span class="sc">!</span>id <span class="sc">%in%</span> .prc<span class="sc">$</span>id)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(tab_filings_use) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  lst_details <span class="ot">&lt;-</span> <span class="fu">map_filing_details</span>(</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">.id =</span> tab_filings_use<span class="sc">$</span>id, <span class="at">.hrefs =</span> tab_filings_use<span class="sc">$</span>href, <span class="at">.sleep =</span> <span class="dv">1</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  lst_details <span class="ot">&lt;-</span> <span class="fu">transpose</span>(lst_details<span class="sc">$</span>result)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  lst_details <span class="ot">&lt;-</span> <span class="fu">map</span>(lst_details, <span class="sc">~</span> <span class="fu">bind_rows</span>(.x, <span class="at">.id =</span> <span class="st">&quot;id&quot;</span>))</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  tab_details <span class="ot">&lt;-</span> <span class="fu">reduce</span>(lst_details, left_join, <span class="at">by =</span> <span class="st">&quot;id&quot;</span>)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  tab_details <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(.prc, .tab_details)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(.tab_details, lst_paths<span class="sc">$</span>path_detail)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  tab_details <span class="ot">&lt;-</span> .prc</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(tab_filings_use)</span></code></pre></div>
+<p>From the <strong>2,364</strong> index links we retrieved in the last
+step, we got <strong>89,302</strong> different document links.</p>
+<p>It’s important to notice, that such data retrieval tasks often result
+in very large datasets.</p>
+<hr />
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+type
+</th>
+<th style="text-align:right;">
+1993
+</th>
+<th style="text-align:right;">
+1994
+</th>
+<th style="text-align:right;">
+1995
+</th>
+<th style="text-align:right;">
+1996
+</th>
+<th style="text-align:right;">
+1997
+</th>
+<th style="text-align:right;">
+1998
+</th>
+<th style="text-align:right;">
+1999
+</th>
+<th style="text-align:right;">
+2000
+</th>
+<th style="text-align:right;">
+2001
+</th>
+<th style="text-align:right;">
+2002
+</th>
+<th style="text-align:right;">
+2003
+</th>
+<th style="text-align:right;">
+2004
+</th>
+<th style="text-align:right;">
+2005
+</th>
+<th style="text-align:right;">
+2006
+</th>
+<th style="text-align:right;">
+2007
+</th>
+<th style="text-align:right;">
+2008
+</th>
+<th style="text-align:right;">
+2009
+</th>
+<th style="text-align:right;">
+2010
+</th>
+<th style="text-align:right;">
+2011
+</th>
+<th style="text-align:right;">
+2012
+</th>
+<th style="text-align:right;">
+2013
+</th>
+<th style="text-align:right;">
+2014
+</th>
+<th style="text-align:right;">
+2015
+</th>
+<th style="text-align:right;">
+2016
+</th>
+<th style="text-align:right;">
+2017
+</th>
+<th style="text-align:right;">
+2018
+</th>
+<th style="text-align:right;">
+2019
+</th>
+<th style="text-align:right;">
+2020
+</th>
+<th style="text-align:right;">
+2021
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+10-K
+</td>
+<td style="text-align:right;">
+780
+</td>
+<td style="text-align:right;">
+855
+</td>
+<td style="text-align:right;">
+900
+</td>
+<td style="text-align:right;">
+938
+</td>
+<td style="text-align:right;">
+929
+</td>
+<td style="text-align:right;">
+1020
+</td>
+<td style="text-align:right;">
+1056
+</td>
+<td style="text-align:right;">
+1058
+</td>
+<td style="text-align:right;">
+875
+</td>
+<td style="text-align:right;">
+2258
+</td>
+<td style="text-align:right;">
+2629
+</td>
+<td style="text-align:right;">
+2666
+</td>
+<td style="text-align:right;">
+2843
+</td>
+<td style="text-align:right;">
+3037
+</td>
+<td style="text-align:right;">
+2932
+</td>
+<td style="text-align:right;">
+3400
+</td>
+<td style="text-align:right;">
+3855
+</td>
+<td style="text-align:right;">
+3965
+</td>
+<td style="text-align:right;">
+4116
+</td>
+<td style="text-align:right;">
+4117
+</td>
+<td style="text-align:right;">
+4124
+</td>
+<td style="text-align:right;">
+4008
+</td>
+<td style="text-align:right;">
+4863
+</td>
+<td style="text-align:right;">
+4744
+</td>
+<td style="text-align:right;">
+4626
+</td>
+<td style="text-align:right;">
+4586
+</td>
+<td style="text-align:right;">
+4830
+</td>
+<td style="text-align:right;">
+4868
+</td>
+<td style="text-align:right;">
+280
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10-K/A
+</td>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:right;">
+185
+</td>
+<td style="text-align:right;">
+142
+</td>
+<td style="text-align:right;">
+106
+</td>
+<td style="text-align:right;">
+74
+</td>
+<td style="text-align:right;">
+111
+</td>
+<td style="text-align:right;">
+92
+</td>
+<td style="text-align:right;">
+80
+</td>
+<td style="text-align:right;">
+147
+</td>
+<td style="text-align:right;">
+232
+</td>
+<td style="text-align:right;">
+170
+</td>
+<td style="text-align:right;">
+150
+</td>
+<td style="text-align:right;">
+140
+</td>
+<td style="text-align:right;">
+126
+</td>
+<td style="text-align:right;">
+248
+</td>
+<td style="text-align:right;">
+174
+</td>
+<td style="text-align:right;">
+75
+</td>
+<td style="text-align:right;">
+141
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+148
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+76
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+116
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10-K405
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+347
+</td>
+<td style="text-align:right;">
+469
+</td>
+<td style="text-align:right;">
+491
+</td>
+<td style="text-align:right;">
+696
+</td>
+<td style="text-align:right;">
+464
+</td>
+<td style="text-align:right;">
+572
+</td>
+<td style="text-align:right;">
+611
+</td>
+<td style="text-align:right;">
+812
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10-K405/A
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+109
+</td>
+<td style="text-align:right;">
+149
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+97
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+</div>
+</div>
+<div id="select-documents-for-download" class="section level2">
+<h2>Select Documents for Download</h2>
+<p>In order to reduce the amount of documents we download, we pre-select
+specific documents.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tab_download <span class="ot">&lt;-</span> tab_details <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">select</span>(tab_filings, symbol, id), <span class="at">by =</span> <span class="st">&quot;id&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">file_ext =</span> tools<span class="sc">::</span><span class="fu">file_ext</span>(href),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">year</span>(period_date),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> size <span class="sc">/</span> <span class="fl">1e6</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">where</span>(is.character), <span class="sc">~</span> <span class="fu">stri_replace_all_regex</span>(., <span class="st">&quot;[[:blank:]]+&quot;</span>, <span class="st">&quot; &quot;</span>)),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">c</span>(type.y, description.y), <span class="sc">~</span> <span class="fu">if_else</span>(. <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;&quot;</span>, <span class="st">&quot; &quot;</span>), <span class="cn">NA_character_</span>, .))</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, document, <span class="at">state =</span> company_incorporation_state, </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>         <span class="at">sic =</span> sic_code, year, symbol, company_name, company_cik, </span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>         <span class="at">type1 =</span> type.x, <span class="at">type2 =</span> type.y, <span class="at">desc =</span> description.y, </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>         period_date, href, size, file_ext) <span class="sc">%&gt;%</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">between</span>(year, <span class="dv">2005</span>, <span class="dv">2020</span>))</span></code></pre></div>
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+type
+</th>
+<th style="text-align:right;">
+2005
+</th>
+<th style="text-align:right;">
+2006
+</th>
+<th style="text-align:right;">
+2007
+</th>
+<th style="text-align:right;">
+2008
+</th>
+<th style="text-align:right;">
+2009
+</th>
+<th style="text-align:right;">
+2010
+</th>
+<th style="text-align:right;">
+2011
+</th>
+<th style="text-align:right;">
+2012
+</th>
+<th style="text-align:right;">
+2013
+</th>
+<th style="text-align:right;">
+2014
+</th>
+<th style="text-align:right;">
+2015
+</th>
+<th style="text-align:right;">
+2016
+</th>
+<th style="text-align:right;">
+2017
+</th>
+<th style="text-align:right;">
+2018
+</th>
+<th style="text-align:right;">
+2019
+</th>
+<th style="text-align:right;">
+2020
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+10-K
+</td>
+<td style="text-align:right;">
+1357
+</td>
+<td style="text-align:right;">
+1455
+</td>
+<td style="text-align:right;">
+1401
+</td>
+<td style="text-align:right;">
+1629
+</td>
+<td style="text-align:right;">
+1844
+</td>
+<td style="text-align:right;">
+1896
+</td>
+<td style="text-align:right;">
+1969
+</td>
+<td style="text-align:right;">
+1950
+</td>
+<td style="text-align:right;">
+1970
+</td>
+<td style="text-align:right;">
+1907
+</td>
+<td style="text-align:right;">
+2326
+</td>
+<td style="text-align:right;">
+2268
+</td>
+<td style="text-align:right;">
+2200
+</td>
+<td style="text-align:right;">
+2193
+</td>
+<td style="text-align:right;">
+2308
+</td>
+<td style="text-align:right;">
+2337
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10-K/A
+</td>
+<td style="text-align:right;">
+62
+</td>
+<td style="text-align:right;">
+63
+</td>
+<td style="text-align:right;">
+124
+</td>
+<td style="text-align:right;">
+87
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+74
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+18
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr />
+</div>
+<div id="overview-number-and-size-of-documents" class="section level2">
+<h2>Overview: Number and Size of Documents</h2>
+<p>As you can see in the plot and the prints below, getting data from
+the web can result in really big data sets. (Keep in mind that we only
+downloaded data for 100 companies). The
+<strong>download_edgar_files()</strong> function will alleviate this
+problem by zipping data before writing to disk.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>.tmp <span class="ot">&lt;-</span> tab_download <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">size =</span> <span class="fu">sum</span>(size), <span class="at">n =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>.geom_size <span class="ot">&lt;-</span> .tmp <span class="sc">%&gt;%</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> size)) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span> </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>comma) <span class="sc">+</span> </span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Size per Year (in MB)&quot;</span>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>.geom_n <span class="ot">&lt;-</span> .tmp <span class="sc">%&gt;%</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span> </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>comma) <span class="sc">+</span> </span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Number of Documents per year&quot;</span>)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>.geom_size <span class="sc">/</span> .geom_n</span></code></pre></div>
+<p><img src="00_get_edgar_data_files/figure-html/plot-size-and-num-1.png" width="672" /></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tab_download_txt <span class="ot">&lt;-</span> tab_download <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(file_ext <span class="sc">==</span> <span class="st">&quot;txt&quot;</span>, desc <span class="sc">==</span> <span class="st">&quot;Complete submission text file&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(symbol, <span class="fu">desc</span>(year), <span class="fu">desc</span>(period_date)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(symbol, year, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(document, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">paste0</span>(</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Docs: &quot;</span>, <span class="fu">comma</span>(<span class="fu">nrow</span>(tab_download_txt)), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Size: &quot;</span>, <span class="fu">comma</span>(<span class="fu">sum</span>(tab_download_txt<span class="sc">$</span>size)), <span class="st">&quot; MB&quot;</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<pre><code>## Docs: 1,327
+## Size: 28,347 MB</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tab_download_htm <span class="ot">&lt;-</span> tab_download <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">startsWith</span>(file_ext, <span class="st">&quot;htm&quot;</span>), <span class="fu">grepl</span>(<span class="st">&quot;10-K&quot;</span>, desc)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(symbol, <span class="fu">desc</span>(year), <span class="fu">desc</span>(period_date)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(symbol, year, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(document, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">paste0</span>(</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Docs: &quot;</span>, <span class="fu">comma</span>(<span class="fu">nrow</span>(tab_download_htm)), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Size: &quot;</span>, <span class="fu">comma</span>(<span class="fu">sum</span>(tab_download_htm<span class="sc">$</span>size)), <span class="st">&quot; MB&quot;</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<pre><code>## Docs: 967
+## Size: 3,728 MB</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>tab_download_xxx <span class="ot">&lt;-</span> tab_download <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">startsWith</span>(file_ext, <span class="st">&quot;x&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(symbol, <span class="fu">desc</span>(year), <span class="fu">desc</span>(period_date)) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(document, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">paste0</span>(</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Docs: &quot;</span>, <span class="fu">comma</span>(<span class="fu">nrow</span>(tab_download_xxx)), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Size: &quot;</span>, <span class="fu">comma</span>(<span class="fu">sum</span>(tab_download_xxx<span class="sc">$</span>size)), <span class="st">&quot; MB&quot;</span>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<pre><code>## Docs: 6,049
+## Size: 9,511 MB</code></pre>
+<hr />
+</div>
+<div id="download-documents" class="section level2">
+<h2>Download Documents</h2>
+<details>
+<summary>
+<p>We use a custom function: <strong>download_edgar_files()</strong> to
+download documents from EDGAR <strong><em>(click on arrow to
+show)</em></strong>.</p>
+</summary>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>download_edgar_files <span class="ot">&lt;-</span> <span class="cf">function</span>(.tab, .dir, <span class="at">.retry =</span> <span class="dv">5</span>, <span class="at">.sleep =</span> <span class="dv">1</span>) {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(.dir)) <span class="fu">dir.create</span>(.dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  files_zip <span class="ot">&lt;-</span> <span class="fu">list.files</span>(.dir, <span class="at">pattern =</span> <span class="st">&quot;zip$&quot;</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  tab_ <span class="ot">&lt;-</span> .tab <span class="sc">%&gt;%</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(year, symbol, document, href, file_ext) <span class="sc">%&gt;%</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">file_ext =</span> <span class="fu">case_when</span>(</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>        file_ext <span class="sc">==</span> <span class="st">&quot;txt&quot;</span> <span class="sc">~</span> <span class="st">&quot;txt&quot;</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">startsWith</span>(file_ext, <span class="st">&quot;htm&quot;</span>) <span class="sc">~</span> <span class="st">&quot;htm&quot;</span>,</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;xxx&quot;</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">path_downlod =</span> <span class="fu">file.path</span>(.dir, document),</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">path_zip =</span> <span class="fu">file.path</span>(.dir, <span class="fu">paste0</span>(file_ext, <span class="st">&quot;_&quot;</span>, symbol, <span class="st">&quot;-&quot;</span>, year, <span class="st">&quot;.zip&quot;</span>))</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(symbol, year, path_zip) <span class="sc">%&gt;%</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">c</span>(document, href, path_downlod), list), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">basename</span>(path_zip) <span class="sc">%in%</span> files_zip)</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(tab_) <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>  lst_ <span class="ot">&lt;-</span> <span class="fu">group_split</span>(tab_, symbol, year)</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>  f_try <span class="ot">&lt;-</span> <span class="cf">function</span>(.url, .path) {</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">try</span>(<span class="fu">download.file</span>(.url, .path, <span class="at">quiet =</span> <span class="cn">TRUE</span>, <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>), <span class="at">silent =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>  f_download <span class="ot">&lt;-</span> <span class="cf">function</span>(.row, .retry) {</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>    urls_ <span class="ot">&lt;-</span> <span class="fu">unlist</span>(.row<span class="sc">$</span>href)</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>    paths_ <span class="ot">&lt;-</span> <span class="fu">unlist</span>(.row<span class="sc">$</span>path_downlod)</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    lgl_sucess_ <span class="ot">&lt;-</span> <span class="fu">logical</span>(<span class="fu">length</span>(urls_))</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">length</span>(urls_))) {</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>      check_ <span class="ot">&lt;-</span> <span class="fu">f_try</span>(urls_[i], paths_[i])</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">inherits</span>(check_, <span class="st">&quot;try-error&quot;</span>)) {</span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>.retry) {</span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>          check_ <span class="ot">&lt;-</span> <span class="fu">f_try</span>(urls_[i], paths_[i])</span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(check_, <span class="st">&quot;try-error&quot;</span>)) <span class="cf">break</span></span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>          <span class="fu">Sys.sleep</span>(.sleep)</span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>      lgl_sucess_[i] <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">inherits</span>(check_, <span class="st">&quot;try-error&quot;</span>), <span class="cn">FALSE</span>, <span class="cn">TRUE</span>)</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>      <span class="fu">Sys.sleep</span>(.sleep)</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>    .row[[<span class="st">&quot;success&quot;</span>]] <span class="ot">&lt;-</span> <span class="fu">list</span>(lgl_sucess_)</span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(.row)</span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a>  f_zip <span class="ot">&lt;-</span> <span class="cf">function</span>(.row, .dir) {</span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a>    paths_ <span class="ot">&lt;-</span> <span class="fu">unlist</span>(.row<span class="sc">$</span>path_downlod)</span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>    zip_ <span class="ot">&lt;-</span> .row<span class="sc">$</span>path_zip</span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>    files_ <span class="ot">&lt;-</span> <span class="fu">list.files</span>(.dir)</span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>    paths_ <span class="ot">&lt;-</span> paths_[<span class="fu">basename</span>(paths_) <span class="sc">%in%</span> files_]</span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a>    zip<span class="sc">::</span><span class="fu">zipr</span>(zip_, paths_, <span class="at">compression_level =</span> <span class="dv">9</span>)</span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">invisible</span>(<span class="fu">file.remove</span>(paths_))</span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a>  f_all <span class="ot">&lt;-</span> <span class="cf">function</span>(.row, .dir, .retry) {</span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a>    tab_ <span class="ot">&lt;-</span> <span class="fu">suppressMessages</span>(<span class="fu">suppressWarnings</span>(<span class="fu">invisible</span>(<span class="fu">f_download</span>(.row, .retry))))</span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressMessages</span>(<span class="fu">suppressWarnings</span>(<span class="fu">invisible</span>(<span class="fu">f_zip</span>(.row, .dir))))</span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(tab_)</span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f_all</span>(<span class="at">.row =</span> lst_[[<span class="dv">1</span>]], <span class="at">.dir =</span> .dir, .retry)</span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a>  pb <span class="ot">&lt;-</span> progress<span class="sc">::</span>progress_bar<span class="sc">$</span><span class="fu">new</span>(<span class="at">total =</span> <span class="fu">length</span>(lst_))</span>
+<span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(lst_, <span class="sc">~</span> {pb<span class="sc">$</span><span class="fu">tick</span>(); <span class="fu">f_all</span>(.x, .dir, .retry)})</span>
+<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<hr />
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>.dir_docs <span class="ot">&lt;-</span> <span class="st">&quot;2_output/00_get_edgar_data/documents/&quot;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>tab_xxx <span class="ot">&lt;-</span> <span class="fu">download_edgar_files</span>(tab_download_xxx, .dir_docs, <span class="dv">10</span>, <span class="dv">2</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>tab_htm <span class="ot">&lt;-</span> <span class="fu">download_edgar_files</span>(tab_download_htm, .dir_docs, <span class="dv">10</span>, <span class="dv">2</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>tab_txt <span class="ot">&lt;-</span> <span class="fu">download_edgar_files</span>(tab_download_txt, .dir_docs, <span class="dv">10</span>, <span class="dv">2</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>tab_zip_files <span class="ot">&lt;-</span> <span class="fu">list_files_tab</span>(.dir_docs, <span class="at">info =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, file_ext, path, size) <span class="sc">%&gt;%</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">size =</span> size <span class="sc">/</span> <span class="fl">1e6</span>)</span></code></pre></div>
+<p>Below you can see that we were able to reduce the dataset from more
+than 40 GB to just 3.7 GB by simply zipping the output.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">paste0</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Docs: &quot;</span>, <span class="fu">comma</span>(<span class="fu">nrow</span>(tab_zip_files)), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Size: &quot;</span>, <span class="fu">comma</span>(<span class="fu">sum</span>(tab_zip_files<span class="sc">$</span>size)), <span class="st">&quot; MB&quot;</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<pre><code>## Docs: 3,298
+## Size: 3,768 MB</code></pre>
+<hr />
+</div>
+<div id="save-files" class="section level2">
+<h2>Save Files</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(tab_download_htm, <span class="st">&quot;2_output/00_get_edgar_data/htm_download.rds&quot;</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(tab_download_txt, <span class="st">&quot;2_output/00_get_edgar_data/txt_download.rds&quot;</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(tab_download_xxx, <span class="st">&quot;2_output/00_get_edgar_data/xxx_download.rds&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="own-function-calls" class="section level1">
+<h1>Own Function Calls</h1>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lsf.str</span>()</span></code></pre></div>
+<pre><code>## create_dirs : function (.dirs)  
+## downlad_ar : function (.url, .dir)  
+## download_edgar_files : function (.tab, .dir, .retry = 5, .sleep = 1)  
+## download_google_drive : function (.id, .dir = NULL, .read_fun = NULL, .overwrite = FALSE)  
+## fnc_fix_cost : function (.cf, .v, .vm)  
+## fnc_fix_mult : function (.v, .vm)  
+## fnc_fix_unit : function (.cf, .v, .vm)  
+## fnc_rev : function (.p, .v)  
+## fnc_rev_sigmoid : function (.v)  
+## fnc_rev_unit : function (.p, .v)  
+## fnc_var_cost : function (.cv, .v, .vb, .vc, .vd, .d)  
+## fnc_var_disc : function (.v, .vb, .vc, .vd, .d)  
+## fnc_var_unit : function (.cv, .v, .vb, .vc, .vd, .d)  
+## get_amortization : function (.tab, .years, .invest, .discount)  
+## get_cm_table : function (.tab)  
+## get_company_table : function (.url)  
+## get_f500 : function ()  
+## get_infos : function (.path)  
+## get_input_table : function (.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, 
+##     .vc = 0, .vd = 0, .d = 0, .vm = 0, .ca = 0)  
+## get_profit : function (.tab)  
+## list_files_tab : function (dirs, reg = &quot;*&quot;, id = &quot;doc_id&quot;, rec = FALSE, 
+##     info = FALSE)  
+## map_company_filings : function (.tickers, .ownership = FALSE, .type = &quot;&quot;, 
+##     .before = &quot;&quot;, .count = 100, .page = 1, .progress = TRUE, 
+##     .sleep = 0, .retry = 5)  
+## map_filing_details : function (.id, .hrefs, .progress = TRUE, .sleep = 0, 
+##     .retry = 5)  
+## plot_amortization : function (.tab, .size)  
+## plot_monte_carlo : function (.tab, .size)  
+## plot_points : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, 
+##     .title = &quot;&quot;, .size)  
+## plot_profits : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, 
+##     .title = &quot;&quot;, .size = 16)  
+## remove_html_tags : function (.string, rm_linebreaks = TRUE)  
+## safe_get_company_table : function (...)  
+## show_table : function (.tab, .n = Inf)  
+## standardize_name : function (.name)</code></pre>
+<hr />
+</div>
+<div id="session-info" class="section level1">
+<h1>Session Info</h1>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code></pre></div>
+<pre><code>## - Session info ----------------------------------------
+##  setting  value
+##  version  R version 4.1.2 (2021-11-01)
+##  os       Windows 10 x64 (build 22000)
+##  system   x86_64, mingw32
+##  ui       RStudio
+##  language (EN)
+##  collate  English_Germany.1252
+##  ctype    English_Germany.1252
+##  tz       Europe/Berlin
+##  date     2022-05-28
+##  rstudio  2022.02.2+485 Prairie Trillium (desktop)
+##  pandoc   2.17.1.1 @ C:/Program Files/RStudio/bin/quarto/bin/ (via rmarkdown)
+## 
+## - Packages --------------------------------------------
+##  package        * version    date (UTC) lib source
+##  assertthat       0.2.1      2019-03-21 [1] CRAN (R 4.1.0)
+##  backports        1.4.1      2021-12-13 [1] CRAN (R 4.1.2)
+##  broom            0.7.12     2022-01-28 [1] CRAN (R 4.1.2)
+##  bslib            0.3.1      2021-10-06 [1] CRAN (R 4.1.1)
+##  cellranger       1.1.0      2016-07-27 [1] CRAN (R 4.1.0)
+##  cli              3.2.0      2022-02-14 [1] CRAN (R 4.1.2)
+##  codetools        0.2-18     2020-11-04 [2] CRAN (R 4.1.2)
+##  colorspace       2.0-2      2021-06-24 [1] CRAN (R 4.1.1)
+##  crayon           1.5.0      2022-02-14 [1] CRAN (R 4.1.2)
+##  curl             4.3.2      2021-06-23 [1] CRAN (R 4.1.0)
+##  data.table       1.14.2     2021-09-27 [1] CRAN (R 4.1.1)
+##  DBI              1.1.2      2021-12-20 [1] CRAN (R 4.1.2)
+##  dbplyr           2.1.1      2021-04-06 [1] CRAN (R 4.1.0)
+##  digest           0.6.29     2021-12-01 [1] CRAN (R 4.1.2)
+##  dplyr          * 1.0.8      2022-02-08 [1] CRAN (R 4.1.2)
+##  edgarWebR      * 1.1.0      2021-04-24 [1] CRAN (R 4.1.0)
+##  ellipsis         0.3.2      2021-04-29 [1] CRAN (R 4.1.0)
+##  evaluate         0.14       2019-05-28 [1] CRAN (R 4.1.0)
+##  fansi            1.0.2      2022-01-14 [1] CRAN (R 4.1.2)
+##  farver           2.1.0      2021-02-28 [1] CRAN (R 4.1.0)
+##  fastmap          1.1.0      2021-01-25 [1] CRAN (R 4.1.0)
+##  forcats        * 0.5.1      2021-01-27 [1] CRAN (R 4.1.0)
+##  fs               1.5.2      2021-12-08 [1] CRAN (R 4.1.2)
+##  fst            * 0.9.8      2022-02-08 [1] CRAN (R 4.1.2)
+##  fstcore        * 0.9.8      2022-02-04 [1] CRAN (R 4.1.2)
+##  furrr          * 0.2.3      2021-06-25 [1] CRAN (R 4.1.0)
+##  future         * 1.23.0     2021-10-31 [1] CRAN (R 4.1.1)
+##  fuzzyjoin      * 0.1.6      2020-05-15 [1] CRAN (R 4.1.0)
+##  generics         0.1.2      2022-01-31 [1] CRAN (R 4.1.2)
+##  ggplot2        * 3.3.5      2021-06-25 [1] CRAN (R 4.1.0)
+##  ggthemes       * 4.2.4      2021-01-20 [1] CRAN (R 4.1.2)
+##  globals          0.14.0     2020-11-22 [1] CRAN (R 4.1.0)
+##  glue             1.6.2      2022-02-24 [1] CRAN (R 4.1.2)
+##  gtable           0.3.0      2019-03-25 [1] CRAN (R 4.1.0)
+##  haven            2.4.3      2021-08-04 [1] CRAN (R 4.1.1)
+##  here           * 1.0.1      2020-12-13 [1] CRAN (R 4.1.0)
+##  highr            0.9        2021-04-16 [1] CRAN (R 4.1.0)
+##  hms              1.1.1      2021-09-26 [1] CRAN (R 4.1.1)
+##  htmltools        0.5.2      2021-08-25 [1] CRAN (R 4.1.1)
+##  htmlwidgets    * 1.5.4      2021-09-08 [1] CRAN (R 4.1.3)
+##  httr             1.4.2      2020-07-20 [1] CRAN (R 4.1.0)
+##  ISOcodes       * 2022.01.10 2022-01-10 [1] CRAN (R 4.1.2)
+##  janeaustenr      0.1.5      2017-06-10 [1] CRAN (R 4.1.0)
+##  janitor        * 2.1.0      2021-01-05 [1] CRAN (R 4.1.0)
+##  jquerylib        0.1.4      2021-04-26 [1] CRAN (R 4.1.0)
+##  jsonlite         1.7.3      2022-01-17 [1] CRAN (R 4.1.2)
+##  kableExtra     * 1.3.4      2021-02-20 [1] CRAN (R 4.1.0)
+##  knitr            1.37       2021-12-16 [1] CRAN (R 4.1.2)
+##  koRpus         * 0.13-8     2021-05-17 [1] CRAN (R 4.1.3)
+##  koRpus.lang.en * 0.1-4      2020-10-24 [1] CRAN (R 4.1.3)
+##  labeling         0.4.2      2020-10-20 [1] CRAN (R 4.1.0)
+##  lattice          0.20-45    2021-09-22 [2] CRAN (R 4.1.2)
+##  lazyeval         0.2.2      2019-03-15 [1] CRAN (R 4.1.0)
+##  lifecycle        1.0.1      2021-09-24 [1] CRAN (R 4.1.1)
+##  listenv          0.8.0      2019-12-05 [1] CRAN (R 4.1.0)
+##  lubridate      * 1.8.0      2021-10-07 [1] CRAN (R 4.1.1)
+##  magrittr         2.0.2      2022-01-26 [1] CRAN (R 4.1.2)
+##  Matrix           1.4-0      2021-12-08 [1] CRAN (R 4.1.2)
+##  modelr           0.1.8      2020-05-19 [1] CRAN (R 4.1.0)
+##  modeltools       0.2-23     2020-03-05 [1] CRAN (R 4.1.1)
+##  munsell          0.5.0      2018-06-12 [1] CRAN (R 4.1.0)
+##  NLP              0.2-1      2020-10-14 [1] CRAN (R 4.1.0)
+##  openxlsx       * 4.2.5      2021-12-14 [1] CRAN (R 4.1.2)
+##  parallelly       1.30.0     2021-12-17 [1] CRAN (R 4.1.2)
+##  patchwork      * 1.1.1      2020-12-17 [1] CRAN (R 4.1.0)
+##  pillar           1.7.0      2022-02-01 [1] CRAN (R 4.1.2)
+##  pkgconfig        2.0.3      2019-09-22 [1] CRAN (R 4.1.0)
+##  plotly         * 4.10.0     2021-10-09 [1] CRAN (R 4.1.3)
+##  plyr             1.8.6      2020-03-03 [1] CRAN (R 4.1.0)
+##  prettyunits      1.1.1      2020-01-24 [1] CRAN (R 4.1.0)
+##  progress         1.2.2      2019-05-16 [1] CRAN (R 4.1.0)
+##  purrr          * 0.3.4      2020-04-17 [1] CRAN (R 4.1.0)
+##  R6               2.5.1      2021-08-19 [1] CRAN (R 4.1.1)
+##  Rcpp             1.0.8      2022-01-13 [1] CRAN (R 4.1.2)
+##  readr          * 2.1.2      2022-01-30 [1] CRAN (R 4.1.2)
+##  readtext       * 0.81       2021-07-14 [1] CRAN (R 4.1.0)
+##  readxl           1.3.1      2019-03-13 [1] CRAN (R 4.1.0)
+##  reprex           2.0.1      2021-08-05 [1] CRAN (R 4.1.1)
+##  reshape2         1.4.4      2020-04-09 [1] CRAN (R 4.1.0)
+##  rlang            1.0.1      2022-02-03 [1] CRAN (R 4.1.2)
+##  rmarkdown        2.11       2021-09-14 [1] CRAN (R 4.1.1)
+##  rprojroot        2.0.2      2020-11-15 [1] CRAN (R 4.1.0)
+##  rstudioapi       0.13       2020-11-12 [1] CRAN (R 4.1.0)
+##  rvest          * 1.0.2      2021-10-16 [1] CRAN (R 4.1.1)
+##  sass             0.4.0      2021-05-12 [1] CRAN (R 4.1.0)
+##  scales         * 1.1.1      2020-05-11 [1] CRAN (R 4.1.0)
+##  sessioninfo      1.2.2      2021-12-06 [1] CRAN (R 4.1.2)
+##  slam             0.1-50     2022-01-08 [1] CRAN (R 4.1.2)
+##  snakecase        0.11.0     2019-05-25 [1] CRAN (R 4.1.0)
+##  SnowballC        0.7.0      2020-04-01 [1] CRAN (R 4.1.0)
+##  stringdist     * 0.9.8      2021-09-09 [1] CRAN (R 4.1.1)
+##  stringi        * 1.7.6      2021-11-29 [1] CRAN (R 4.1.2)
+##  stringr        * 1.4.0      2019-02-10 [1] CRAN (R 4.1.0)
+##  svglite          2.1.0      2022-02-03 [1] CRAN (R 4.1.2)
+##  sylly          * 0.1-6      2020-09-20 [1] CRAN (R 4.1.3)
+##  sylly.en         0.1-3      2018-03-19 [1] CRAN (R 4.1.3)
+##  systemfonts      1.0.4      2022-02-11 [1] CRAN (R 4.1.2)
+##  textstem       * 0.1.4      2018-04-09 [1] CRAN (R 4.1.3)
+##  tibble         * 3.1.6      2021-11-07 [1] CRAN (R 4.1.2)
+##  tidyr          * 1.2.0      2022-02-01 [1] CRAN (R 4.1.2)
+##  tidyselect       1.1.1      2021-04-30 [1] CRAN (R 4.1.0)
+##  tidytext       * 0.3.2      2021-09-30 [1] CRAN (R 4.1.1)
+##  tidyverse      * 1.3.1      2021-04-15 [1] CRAN (R 4.1.0)
+##  tm               0.7-8      2020-11-18 [1] CRAN (R 4.1.0)
+##  tokenizers       0.2.1      2018-03-29 [1] CRAN (R 4.1.0)
+##  topicmodels    * 0.2-12     2021-01-29 [1] CRAN (R 4.1.3)
+##  tzdb             0.2.0      2021-10-27 [1] CRAN (R 4.1.1)
+##  utf8             1.2.2      2021-07-24 [1] CRAN (R 4.1.1)
+##  vctrs            0.3.8      2021-04-29 [1] CRAN (R 4.1.0)
+##  viridisLite      0.4.0      2021-04-13 [1] CRAN (R 4.1.0)
+##  webshot          0.5.2      2019-11-22 [1] CRAN (R 4.1.0)
+##  withr            2.4.3      2021-11-30 [1] CRAN (R 4.1.2)
+##  XBRL             0.99.19    2021-10-18 [1] CRAN (R 4.1.1)
+##  xfun             0.29       2021-12-14 [1] CRAN (R 4.1.2)
+##  xml2           * 1.3.3      2021-11-30 [1] CRAN (R 4.1.2)
+##  yaml             2.2.2      2022-01-25 [1] CRAN (R 4.1.2)
+##  zip            * 2.2.0      2021-05-31 [1] CRAN (R 4.1.0)
+## 
+##  [1] E:/R/R_library
+##  [2] C:/Program Files/R/R-4.1.2/library
+## 
+## -------------------------------------------------------</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

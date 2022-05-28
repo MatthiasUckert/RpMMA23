@@ -408,7 +408,7 @@ div.tocify {
       <ul class="nav navbar-nav">
         <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Day 1 - Basics and Business Case
+    Day 1 - Business Case
      
     <span class="caret"></span>
   </a>
@@ -426,26 +426,35 @@ div.tocify {
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Day 2 - Analysing Data
+    Day 2 - Getting and Analyizing Financial Data
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="./04_xbrl_analyze.html">Session 1 - XXX</a>
+      <a href="./00_get_edgar_data.html">Session 1 - Getting XBRL Files</a>
     </li>
     <li>
-      <a href="./05_textual_analysis.html">Session 2 - XXX</a>
+      <a href="./00_get_arcom_data.html">Session 2 - Annual Reports</a>
     </li>
     <li>
-      <a href="./06_excel_ratio_analysis.html">Session 3 - XXX</a>
+      <a href="./00_xbrl_data.html">Session 3 - Parsing XBRL Files</a>
+    </li>
+    <li>
+      <a href="./04_xbrl_analyze.html">Session 4 - Analyzing XBRL Files</a>
+    </li>
+    <li>
+      <a href="./05_textual_analysis.html">Session 5 - Textual Analysis (US/Europe)</a>
     </li>
   </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="./contact.html">Contact</a>
+  <a href="https://www.linkedin.com/in/matthias-uckert-579644a9/">LinkedIn</a>
+</li>
+<li>
+  <a href="https://www.bwl.uni-mannheim.de/en/daske/team/research-assistants/matthias-uckert-msc/">University</a>
 </li>
 <li>
   <a href="https://github.com/MatthiasUckert">GitHub</a>
@@ -461,7 +470,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Business Case</h1>
 <h4 class="author">Matthias Uckert</h4>
-<h4 class="date">27 May, 2022</h4>
+<h4 class="date">28 May, 2022</h4>
 
 </div>
 
@@ -471,71 +480,75 @@ application. If you have already cloned the repository your can run the
 app with the command:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">runApp</span>(<span class="st">&quot;1_code/03_shiny_business_case.R&quot;</span>)</span></code></pre></div>
+<p>We will look at the dashboard in the class. Below some screenshots to
+show the Layout of the dashboard.</p>
 <div id="input-function" class="section level1">
 <h1>Input Function</h1>
 <div class="figure">
-<img
-src="images/2022-05-27%2019_23_40-C__Users_MUcke_Pictures_Greenshot.png"
+<img src="images/Shiny%20-%20Input%20Functions%20(Variable%20Costs).png"
 alt="" />
-<p class="caption">Function: Variable Cost</p>
+<p class="caption">Shiny - Input Functions (Variable Costs)</p>
 </div>
 <div class="figure">
-<img src="images/2022-05-27%2019_38_29-.png" alt="" />
-<p class="caption">Function: Fixed Costs</p>
+<img src="images/Shiny%20-%20Input%20Functions%20(Fixed%20Costs).png"
+alt="" />
+<p class="caption">Shiny - Input Functions (Fixed Costs)</p>
 </div>
 <div class="figure">
-<img src="images/2022-05-27%2019_38_51-.png" alt="" />
-<p class="caption">Function: Price</p>
+<img src="images/Shiny%20-%20Input%20Functions%20(Price).png" alt="" />
+<p class="caption">Shiny - Input Functions (Price)</p>
 </div>
 </div>
 <div id="contribution-margin" class="section level1">
 <h1>Contribution Margin</h1>
 <div class="figure">
-<img src="images/2022-05-27%2019_23_52-.png" alt="" />
-<p class="caption">Contribution Margin</p>
+<img src="images/Shiny%20-%20Contribution%20Margin.png" alt="" />
+<p class="caption">Shiny - Contribution Margin</p>
 </div>
 </div>
 <div id="sensitivity-analysis" class="section level1">
 <h1>Sensitivity Analysis</h1>
 <div class="figure">
-<img
-src="images/2022-05-27%2019_24_03-C__Users_MUcke_Pictures_Greenshot.png"
+<img src="images/Shiny%20-%20Sensitivity%20Analysis%20(Volume).png"
 alt="" />
-<p class="caption">Sensitivity Analysis: Volume</p>
+<p class="caption">Shiny - Sensitivity Analysis (Volume)</p>
 </div>
 <div class="figure">
-<img src="images/2022-05-27%2019_39_05-127.0.0.1_3382.png" alt="" />
-<p class="caption">Sensitivity Analysis: Price</p>
-</div>
-<div class="figure">
-<img src="images/2022-05-27%2019_39_16-127.0.0.1_3382.png" alt="" />
-<p class="caption">Sensitivity Analysis: Variable Cost</p>
+<img src="images/Shiny%20-%20Sensitivity%20Analysis%20(Price).png"
+alt="" />
+<p class="caption">Shiny - Sensitivity Analysis (Price)</p>
 </div>
 <div class="figure">
 <img
-src="images/2022-05-27%2019_39_27-C__Users_MUcke_Pictures_Greenshot.png"
+src="images/Shiny%20-%20Sensitivity%20Analysis%20(Variable%20Cost).png"
 alt="" />
-<p class="caption">Sensitivity Analysis: Fixed Cost</p>
+<p class="caption">Shiny - Sensitivity Analysis (Variable Cost)</p>
 </div>
 <div class="figure">
-<img src="images/2022-05-27%2019_39_37-127.0.0.1_3382.png" alt="" />
-<p class="caption">Sensitivity Analysis: Volume Discount Factor</p>
+<img
+src="images/Shiny%20-%20Sensitivity%20Analysis%20(Fixed%20Cost).png"
+alt="" />
+<p class="caption">Shiny - Sensitivity Analysis (Fixed Cost)</p>
+</div>
+<div class="figure">
+<img
+src="images/Shiny%20-%20Sensitivity%20Analysis%20(Volume%20Discount).png"
+alt="" />
+<p class="caption">Shiny - Sensitivity Analysis (Volume Discount)</p>
 </div>
 </div>
 <div id="monte-carlo-simulation" class="section level1">
 <h1>Monte Carlo Simulation</h1>
 <div class="figure">
-<img src="images/2022-05-27%2019_24_13-.png" alt="" />
-<p class="caption">Monte Carlo Simulation</p>
+<img src="images/Shiny%20-%20Monte%20Carlo%20Analysis.png" alt="" />
+<p class="caption">Shiny - Monte Carlo Analysis</p>
 </div>
 </div>
 <div id="amortization" class="section level1">
 <h1>Amortization</h1>
 <div class="figure">
-<img
-src="images/2022-05-27%2019_24_22-C__Users_MUcke_Pictures_Greenshot.png"
-alt="" />
-<p class="caption">Amortization Graph</p>
+<img src="images/Shiny%20-%20Amortization%20Analysis.png" alt="" />
+<p class="caption">Shiny - Amortization Analysis</p>
 </div>
 </div>
 

@@ -1,0 +1,606 @@
+---
+title: "Textual Analysis"
+author: "Matthias Uckert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    self_contained: no
+---
+
+------------------------------------------------------------------------
+
+# Description
+
+In this session will we use the SEC EDGAR 10-K text files and the annual
+reports from www.AnnualReport.com we downloaded in on day 1 in session 1
+and session 2. The purpose of this session is to show the procedure how
+to extract information from unstructured text.
+
+Throughout this script we will use custom functions to download and
+transform data. All the script specific functions are stored in this
+folder: **1_code/00_functions/f-f-textual_analysis.R** (As a reference I
+also put the important functions in the script)
+
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(here::here())) 
+knitr::opts_chunk$set(root.dir = normalizePath(here::here())) 
+```
+
+------------------------------------------------------------------------
+
+# Script Setup
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse); library(tidytext); library(readtext); library(furrr)
+library(fst); library(stringi); library(ISOcodes); library(scales); library(topicmodels)
+
+source("1_code/functions/f-all.R")
+source("1_code/functions/f-textual_analysis.R")
+
+.workers <- min(availableCores() / 2, 16)
+```
+
+------------------------------------------------------------------------
+
+# Code
+
+------------------------------------------------------------------------
+
+## Paths & Files
+
+```{r paths}
+lst_paths <- list(
+  dir_main = "2_output/05_textual_analysis",
+  dir_pdf = "2_output/00_get_arcom_data/documents/",
+  dir_sec = "2_output/00_get_edgar_data/documents/",
+  path_pdf_data = "2_output/00_get_arcom_data/arcom_firm_data.rds",
+  path_sec_data = "2_output/00_get_edgar_data/txt_download.rds",
+  dir_token = "2_output/05_textual_analysis/token",
+  path_stop = "2_output/05_textual_analysis/lm_stop.rds",
+  path_1gram = "2_output/05_textual_analysis/1gram.rds",
+  path_2gram = "2_output/05_textual_analysis/2gram.rds",
+  path_frq_1gram = "2_output/05_textual_analysis/frq_1gram.rds",
+  path_frq_2gram = "2_output/05_textual_analysis/frq_2gram.rds",
+  path_com_1gram = "2_output/05_textual_analysis/com_1gram.rds",
+  path_com_2gram = "2_output/05_textual_analysis/com_2gram.rds",
+  path_lda = "2_output/05_textual_analysis/lda.rds",
+  path_not_2gram = "2_output/05_textual_analysis/not_2gram.rds",
+  dir_cache = "2_output/04_xbrl_analyze/cache/cache_"
+) %>% create_dirs()
+```
+
+------------------------------------------------------------------------
+
+First we read in all the raw files stored in the session specific
+folders for EDGAR and www.AnnualReport.com
+
+```{r read-files}
+tab_files_pdf <- list_files_tab(lst_paths$dir_pdf, reg = "pdf$")
+tab_files_sec <- list_files_tab(lst_paths$dir_sec, reg = "zip$") %>%
+  filter(startsWith(doc_id, "txt"))
+
+```
+
+------------------------------------------------------------------------
+
+## Read Tables
+
+Additionally, we read in company information to conduct analyses between
+Europe aand the United States. We do so by recoding all non-US countries
+to 'Europe'
+
+```{r read-add-data}
+tab_pdf_data <- read_rds(lst_paths$path_pdf_data) %>%
+  select(-isin)
+
+tab_sec_data <- read_rds(lst_paths$path_sec_data) %>%
+  mutate(doc_id = paste0(file_ext, "_", symbol, "-", year)) %>%
+  select(doc_id, year, company = company_name) %>%
+  mutate(country_code = "USA") %>%
+  left_join(select(ISO_3166_1, country_code = Alpha_3, country = Name), by = "country_code")
+
+tab_data <- bind_rows(tab_pdf_data, tab_sec_data) %>%
+  mutate(country = if_else(!country == "United States", "Europe", country))
+rm(tab_pdf_data, tab_sec_data)
+
+```
+
+------------------------------------------------------------------------
+
+## Select Files
+
+To limit the dataset we read into memory, we restrict our analysis to
+the time frame between 2006-2015 (10 years) and only use companies for
+which we have a balanced panel
+
+```{r select-files1}
+tab_files <- bind_rows(tab_files_pdf, tab_files_sec) %>%
+  left_join(select(tab_data, doc_id, country, year, company), by = "doc_id") %>%
+  filter(!is.na(country)) %>%
+  filter(between(year, 2006, 2015)) %>%
+  group_by(company) %>%
+  filter(all(2006:2015 %in% year))
+```
+
+The resulting sample looks the follows:
+
+```{r show-files1, echo=FALSE}
+tab_files %>%
+  group_by(country) %>%
+  summarise(n_firm = n_distinct(company), n_doc = n(), .groups = "drop") %>%
+  show_table()
+```
+
+To have equal amount of United States and European files we sample our
+set to 25 companies per jurisdiction. In total we will have 50
+comapanies over 10 years which amounts to 500 files that we analyze
+
+```{r select-files2}
+set.seed(123)
+tmp <- distinct(tab_files, country, company) %>%
+  group_by(country) %>%
+  slice_sample(n = 25) %>%
+  ungroup()
+
+tab_files <- inner_join(tab_files, tmp, by = c("country", "company"))
+```
+
+The resulting sample looks the follows:
+
+```{r show-files2}
+tab_files %>%
+  group_by(country) %>%
+  summarise(n_firm = n_distinct(company), n_doc = n(), .groups = "drop") %>%
+  show_table()
+```
+
+```{r separate--files}
+tab_files_pdf <- filter(tab_files, country == "Europe")
+tab_files_sec <- filter(tab_files, country == "United States")
+```
+
+------------------------------------------------------------------------
+
+## Process European Files
+
+```{r process-eu-files, message=FALSE, warning=FALSE}
+.prc <- list_files_tab(lst_paths$dir_token)
+tab_files_pdf_use <- filter(tab_files_pdf, !doc_id %in% .prc$doc_id)
+
+if (nrow(tab_files_pdf_use) > 0) {
+  plan("multisession", workers = .workers)
+  future_walk(
+    .x = tab_files_pdf_use$path,
+    .f = ~ pdf_read_and_tokenize(.x, lst_paths$dir_token),
+    .options = furrr_options(seed = TRUE)
+  )
+  plan("default")
+}
+
+rm(tab_files_pdf_use)
+
+```
+
+------------------------------------------------------------------------
+
+## Process United States Files
+
+<details>
+
+<summary>
+
+We use a custom function: **sec_read_and_tokenize()** to extract the
+test from the sec files ***(click on arrow to show)***.
+
+</summary>
+
+```{r function: sec_read_and_tokenize()}
+sec_read_and_tokenize <- function(.path, .dir = NULL) {
+  tab_  <- try(readtext::readtext(.path))
+  
+  if (inherits(tab_, "try-error")) {
+    return(NULL)
+  } else {
+    text_ <- stringi::stri_replace_all_regex(tab_$text, "([[:blank:]]|[[:space:]])+", " ")
+    text_ <- unlist(stri_extract_all_regex(text_, "<DOCUMENT>.+?</DOCUMENT>"))
+    text_ <- text_[grepl("<TYPE>10-K|<TYPE>EX-", text_)]
+    text_ <- paste(text_, collapse = " ")
+    
+    tab_ <- tab_ %>%
+      dplyr::select(-doc_id) %>%
+      dplyr::mutate(text = remove_html_tags(text_)) %>%
+      tidytext::unnest_tokens(word, text) %>%
+      dplyr::filter(!grepl("\\d", word)) %>%
+      dplyr::filter(nchar(word) > 3)
+  }
+  
+  if (!is.null(.dir)) {
+    fst::write_fst(tab_, file.path(.dir, gsub("\\.zip$", ".fst", basename(.path))))
+    return(NULL)
+  } else {
+    return(tab_)
+  }
+}
+
+remove_html_tags <- function(.string, rm_linebreaks = TRUE) {
+  string_ <- .string
+  
+  if (rm_linebreaks) {
+    string_ <- stringi::stri_replace_all_regex(string_, "([[:blank:]]|[[:space:]])+", " ")  
+  }
+  
+  string_ <- string_ %>%
+    stringi::stri_replace_all_regex(., "(?i)<script.*?>.*?</script.*?>", "") %>%
+    stringi::stri_replace_all_regex(., "(?i)<xbrl.*?>.*?</xbrl.*?>", "") %>%
+    stringi::stri_replace_all_regex(., "(?i)<xml.*?>.*?</xml.*?>", "") %>%
+    stringi::stri_replace_all_regex(., "(?i)<link:.*?/>", "") %>%
+    stringi::stri_replace_all_regex(., "(?i)<table.*?>.*?</table.*?>", "") %>%
+    # stringi::stri_replace_all_regex(., "(?i)<ix.*?>.*?</ix.*?>", "") %>%
+    stringi::stri_replace_all_regex(., "(?i)<.*?>|&#.+?;|&lt;.*?&gt;", "") %>%
+    stringi::stri_replace_all_regex(., "(?i)&nbsp;", " ") %>%
+    stringi::stri_replace_all_regex(., "(?i)&amp;", "&") 
+  
+  if (rm_linebreaks) {
+    string_ <- stringi::stri_replace_all_regex(string_, "([[:blank:]]|[[:space:]])+", " ")  
+  }
+
+  return(trimws(string_))
+}
+```
+
+</details>
+
+```{r process-us-files, message=FALSE, warning=FALSE}
+.prc <- list_files_tab(lst_paths$dir_token)
+tab_files_sec_use <- filter(tab_files_sec, !doc_id %in% .prc$doc_id)
+
+# if (nrow(tab_files_sec_use) > 0) {
+#   plan("multisession", workers = .workers)
+#   future_walk(
+#     .x = tab_files_sec_use$path,
+#     .f = ~ sec_read_and_tokenize(.x, lst_paths$dir_token),
+#     .options = furrr_options(seed = TRUE)
+#   )
+#   plan("default")
+# }
+# rm(tab_files_sec_use)
+
+```
+
+```{r list-processed-files}
+files_token <- list_files_tab(lst_paths$dir_token) %>%
+  filter(doc_id %in% tab_files$doc_id)
+```
+
+------------------------------------------------------------------------
+
+## Get Ngrams
+
+Our next step is to use the tokenized dataset and count the number of
+occurrences per word. Eventually, we want to have meaningful words for
+our purpose of analyzing financial disclosures. Let's look at an example
+term count for one document.
+
+```{r show-word-table1, echo=FALSE}
+read_fst(files_token$path[1]) %>%
+  count(word, sort = TRUE) %>%
+  show_table(.n = 10)
+```
+
+As we can see, a lot of the words are generic words (so called
+stopwords). Those words are a necessity for each language but don't add
+much information, hence reducing the overall information-to-noice ratio.
+One way to remove such words from our analysis is to compare them
+against common stop-word list. For our purpose we will use the Loughran
+& McDonald stop-word list
+
+------------------------------------------------------------------------
+
+### Download Stopword list
+
+```{r download-stop}
+.path_lm_stop <- "2_output/05_textual_analysis/lm_stop.rds"
+if (!file.exists(lst_paths$path_stop)) {
+  tab_lm_stop <- get_lm_stop()
+  write_rds(tab_lm_stop, lst_paths$path_stop)
+} else {
+  tab_lm_stop <- read_rds(lst_paths$path_stop)
+}
+```
+
+```{r show-word2}
+read_fst(files_token$path[1]) %>%
+  count(word, sort = TRUE) %>%
+  inner_join(tab_lm_stop, by = "word") %>%
+  show_table(.n = 10)
+```
+
+This process of removing stopwords is not perfect. In general stopword
+lists are highly domain dependend. In our example removing the word
+**cash** might be not ideal, since it can form the collocation **cash
+and cash equivalents** which is clearly a relevant accounting term.
+Nonetheless, terms like **with**, **from**, **which**, **other** and
+**this** are to frequent in its usage, as they can add any information
+to the subsequent analyses.
+
+------------------------------------------------------------------------
+
+### Count Ngrams
+
+```{r count-ngrams}
+if (!file.exists(lst_paths$path_1gram)) {
+  plan("multisession", workers = .workers)
+  tab_1gram <- future_map_dfr(
+    .x = set_names(files_token$path, files_token$doc_id),
+    .f = ~ get_ngrams(.x, 1, tab_lm_stop, TRUE),
+    .options = furrr_options(seed = TRUE),
+    .id = "doc_id"
+  )
+  plan("default")
+  write_rds(tab_1gram, lst_paths$path_1gram, compress = "gz")
+} else {
+  tab_1gram <- read_rds(lst_paths$path_1gram)
+}
+
+if (!file.exists(lst_paths$path_2gram)) {
+  plan("multisession", workers = .workers)
+  tab_2gram <- future_map_dfr(
+    .x = set_names(files_token$path, files_token$doc_id),
+    .f = ~ get_ngrams(.x, 2, tab_lm_stop, TRUE),
+    .options = furrr_options(seed = TRUE),
+    .id = "doc_id"
+  )
+  plan("default")
+  write_rds(tab_2gram, lst_paths$path_2gram, compress = "gz")
+} else {
+  tab_2gram <- read_rds(lst_paths$path_2gram)
+}
+
+```
+
+------------------------------------------------------------------------
+
+## Analysis by Country
+
+First, we have a quick look at the top 20 unigrams and bigrams for
+European and US companies
+
+```{r show-frq-1gram, cache=TRUE, cache.path=lst_paths$dir_cache}
+frq_1gram <- prep_top_n_by(tab_1gram, tab_data, country, 10) %>%
+  display_top_n_by(country)
+```
+
+```{r show-frq-2gram, cache=TRUE, cache.path = lst_paths$dir_cache}
+frq_2gram <- prep_top_n_by(tab_2gram, tab_data, country, 10) %>%
+  display_top_n_by(country)
+```
+
+The analysis doesn't reveal a lot of useful information, but shows that
+our cleaning procedure was successful.
+
+------------------------------------------------------------------------
+
+## Sentiment
+
+Next, we have a simple comparison of European and US firms in terms of
+their word sentiments. We will use the custom function
+**show_sentiment()** which has the sentiment list of Loughram & McDonald
+(see: Tim Loughran and Bill McDonald, 2011, When is a Liability not a
+Liability?) already implemented.
+
+<details>
+
+<summary>
+
+Show function: **show_sentiment()** ***(click on arrow to show)***.
+
+</summary>
+
+```{r function: show_sentiment()}
+show_sentiment <- function(.tab, .type = c("pos/neg", "uncertainty", "litigious", "constraining", "superfluous")) {
+  tab_ <- .tab %>%
+    left_join(get_sentiments("loughran"), by = "word") %>%
+    left_join(select(tab_data, doc_id, country, year), by = "doc_id") %>%
+    group_by(country, year, sentiment) %>%
+    summarise(n = sum(n), .groups = "drop_last") %>%
+    mutate(p = n / sum(n)) %>%
+    ungroup() %>%
+    mutate(year = as.integer(year))
+  
+  
+  if (.type == "pos/neg") {
+    tab_ <- tab_ %>%
+      filter(sentiment %in% c("positive", "negative")) %>%
+      mutate(p = if_else(sentiment == "negative", -p, p))
+  } else {
+    tab_ <- tab_ %>%
+      filter(sentiment %in% c(.type))
+  }
+  
+  tab_ %>%
+    ggplot(aes(x = year, y = p, color = sentiment, fill = sentiment)) +
+    geom_area(stat = "identity", alpha = 0.4) +
+    geom_point(size = 1) +
+    facet_wrap(~country, nrow = 1) +
+    theme_bw() + 
+    scale_x_continuous(breaks= pretty_breaks()) +
+    scale_y_continuous(labels = scales::percent) +
+    labs(x = NULL, y = NULL) +
+    geom_vline(xintercept = c(2009)) +
+    theme(legend.position = "none") + 
+    ggtitle(toupper(.type))
+}
+```
+
+</details>
+
+We will use the categories: **Positive/Negative**, **Uncertainty**,
+**Litigious**, **Constraining**, and **Superfluous** for our analysis.
+
+### Word Lists
+
+```{r show-sentiment-tables, cache=TRUE, cache.path = lst_paths$dir_cache}
+get_sentiments("loughran") %>%
+  group_by(sentiment) %>%
+  mutate(id = row_number()) %>%
+  ungroup() %>%
+  pivot_wider(names_from = sentiment, values_from = word) %>%
+  show_table(.n = 10)
+```
+
+### Sentiment Analysis
+
+```{r show-sentiment-graphs, cache=TRUE, cache.path=lst_paths$dir_cache}
+show_sentiment(tab_1gram, "pos/neg")
+show_sentiment(tab_1gram, "uncertainty")
+show_sentiment(tab_1gram, "litigious")
+show_sentiment(tab_1gram, "constraining")
+show_sentiment(tab_1gram, "superfluous")
+```
+
+## Compare Word Frequecies
+
+In the next step we move to a more insightful analysis and compare the
+word frequencies for unigrams and bygrams between the two jurisdictions.
+
+<details>
+
+<summary>
+
+Show function: **compare_word_frequqncies()** ***(click on arrow to
+show)***.
+
+</summary>
+
+```{r function: compare_word_frequqncies()}
+compare_word_frequqncies <- function(.tab, .tab_data) {
+  .tab %>%
+    left_join(select(.tab_data, doc_id, country), by = "doc_id") %>%
+    group_by(country, word) %>%
+    summarise(n = sum(n), .groups = "drop_last") %>%
+    mutate(p = n / sum(n, na.rm = TRUE)) %>%
+    ungroup() %>%
+    select(-n) %>%
+    pivot_wider(names_from = country, values_from = p) %>%
+    filter(!is.na(Europe) & !is.na(`United States`)) %>%
+    ggplot(aes(x = `United States`, y = Europe)) +
+    geom_abline(color = "gray40", lty = 2) +
+    geom_jitter(alpha = 0.1, size = 2.5, width = 0.3, height = 0.3, color = "blue") +
+    geom_text(aes(label = word), check_overlap = TRUE, vjust = 1.5) +
+    scale_x_log10(labels = percent_format()) +
+    scale_y_log10(labels = percent_format()) +
+    scale_color_gradient(limits = c(0, 0.001), low = "lightblue", high = "blue") +
+    theme(legend.position="none") +
+    theme_bw()
+}
+```
+
+</details>
+
+```{r word-com-1gram, cache = TRUE, cache.path = lst_paths$dir_cache}
+if (!file.exists(lst_paths$path_com_1gram)) {
+  com_1gram <- compare_word_frequqncies(tab_1gram, tab_data)
+  write_rds(com_1gram, lst_paths$path_com_1gram, compress = "gz")
+} else {
+  com_1gram <- read_rds(lst_paths$path_com_1gram)
+}
+com_1gram
+```
+
+```{r word-com-2gram, cache = TRUE, cache.path = lst_paths$dir_cache}
+if (!file.exists(lst_paths$path_com_2gram)) {
+  com_2gram <- compare_word_frequqncies(tab_2gram, tab_data)
+  write_rds(com_2gram, lst_paths$path_com_2gram, compress = "gz")
+} else {
+  com_2gram <- read_rds(lst_paths$path_com_2gram)
+}
+com_2gram
+```
+
+We can see that in in our setting US and European firms have relatively
+comparable frequencies for most words and bigrams. This is to be
+expected since we downloaded only high-market cap firms across all
+industries, hence might not have sufficient variation in underlying
+business models. We will try to gain some more insight in the textual
+differences between US and European firms by applying topic modeling
+algorithms
+
+## Topic Modelling
+
+The math behind topic modeling is rather complex, so we won't go into
+details here. The basic idea is that we want to find common topics among
+a number of documents and subsequently classify the documents under
+those topics. In our example we chose to model eight topics (this is a
+rather abitrary choice)
+
+```{r topic-modelling-lda}
+if (!file.exists(lst_paths$path_lda)) {
+  dtm <- cast_dtm(tab_1gram, doc_id, word, n)
+  lda <- LDA(dtm, k = 8, control = list(seed = 1234))
+  write_rds(lda, lst_paths$path_lda)
+} else {
+  lda <- read_rds(lst_paths$path_lda)
+}
+```
+
+### Show Topics
+
+```{r show-topics, echo=FALSE}
+tab_lda_beta <- tidy(lda, matrix = "beta")
+tab_lda_beta %>%
+  group_by(topic) %>%
+  slice_max(beta, n = 5) %>% 
+  ungroup() %>%
+  arrange(topic, -beta) %>%
+  mutate(term = reorder_within(term, beta, topic)) %>%
+  ggplot(aes(beta, term, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  labs(x = NULL, y = NULL) + 
+  facet_wrap(~ topic, scales = "free") +
+  scale_y_reordered()
+```
+
+### Evaluate Fit per country
+
+Last we want to evaluate which topics are represenative for a specific
+collection of annual reports within a jurisdiction. For that purpose we
+use the gamma-matrix, which gives us the following conditional
+probability:
+
+$P(topic|token) = P(token|topic)P(topic) / P(token)$
+
+```{r}
+tab_lda_beta <- tidy(lda, matrix = "gamma")
+```
+
+We can see that our crude approach is still not enough to find specific
+topics that are unique for a collection of jurisdiction-specific topics.
+
+```{r show-fit, echo=FALSE}
+tab_lda_beta %>%
+  left_join(tab_data, by = c("document" = "doc_id")) %>%
+  mutate(country = reorder(country, gamma * topic)) %>%
+  ggplot(aes(factor(topic), gamma)) +
+  geom_boxplot() +
+  facet_wrap(~ country) +
+  labs(x = "topic", y = expression(gamma)) + 
+  theme_bw()
+```
+
+# Own Function Calls
+
+```{r function-calls}
+lsf.str()
+```
+
+------------------------------------------------------------------------
+
+# Session Info
+
+```{r session-info}
+sessioninfo::session_info()
+```

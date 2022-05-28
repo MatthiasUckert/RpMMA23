@@ -31,6 +31,15 @@ source("1_code/functions/f-02_business_case.R", encoding = "UTF-8")
 source("1_code/functions/v-02_business_case_default_values.R")
 ```
 
+In this session we will translate the logic of our business case into R.
+The output will be a static HTML report. R will give us more flexibility
+and performance advantages in comparison to Excel. The transition might
+be challenging at first, but if done accurately, functions in R can be
+re-used in many other cases.
+
+In the following we will mimic the functionalities of the Excel Business
+case.
+
 # Define Input Functions
 
 To derive our our profitability of our product, we first must define
@@ -221,9 +230,100 @@ gg_rv_tot  <- plot_points(tab_rv, v, revenue, NULL, NULL, "Revenue", .size = 11)
 gg_rv_unit + gg_rv_tot
 ```
 
+# Define Other Functions
+
+After we defined the input functions for variable cost, fixed cost and
+price, we will program functions that give us the the contribution
+margins and the profit of our business case. We will use a dataframe
+logic which is very similar to Excel, but with significant more
+flexibility.
+
+## Function: Input Table
+
+First we define a function with all the input variables, specifically:
+[**.v (Volume)**]{.underline}, .[**p (Price)**]{.underline}, [**.cv
+(Variable Cost)**]{.underline}, [**.cf (Fixed Cost)**]{.underline},
+[**.vb (Base Volume - for Variable Cost)**]{.underline}, [**.cv (Cap
+Volume - for Variable Cost)**]{.underline}, [**.vd (Volume Discount -
+for Variable Cost)**]{.underline}, [**.d (Discount - for Variable
+Cost)**]{.underline}, [**.vm (Volume Multiplier - for Fixed
+Cost)**]{.underline}, .[**ca (Company Cost)**.]{.underline}
+
+```{r}
+get_input_table <- function(.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, .vc = 0, 
+                            .vd = 0, .d = 0, .vm = 0, .ca = 0) {
+  tibble::tibble(
+    v = .v, p = .p, cv = .cv, cf = .cf, ca = .ca, vb = .vb, vc = .vc,
+    vd = .vd, d = .d, vm = .vm,
+  )
+}
+get_input_table(.v = 7500, .p = 750, .cv = 500, .cf = 50000, .vb = 3000, .vc = 8000, 
+                .vd = 750, .d = .05, .vm = 1000, .ca = 250000)
+```
+
+## Function: Profit
+
+Next we define a function that calculates the Contribution Margins and
+the Profit for our input factor. This function takes a dataframe as only
+argument which is the dataframe we produce with the function
+**get_input_table()**
+
+```{r}
+get_input_table(.v = 7500, .p = 750, .cv = 500, .cf = 50000, .vb = 3000, .vc = 8000, 
+                .vd = 750, .d = .05, .vm = 1000, .ca = 250000) %>%
+  get_profit()
+```
+
+## Functions: Other
+
+We also make some functions that will help us to reshape the data.
+
+```{r}
+get_cm_table <- function(.tab) {
+  .tab %>%
+    get_profit() %>%
+    dplyr::select(
+      Revenue = revenue,
+      `Variable Cost` = var_cost,
+      `Contribution Margin I` = cm1,
+      `Fixed Cost` = fix_cost,
+      `Contribution Margin II` = cm2,
+      `Company Cost` = ca,
+      `Profit` = profit
+    ) %>%
+    tidyr::pivot_longer(cols = dplyr::everything()) %>%
+    dplyr::mutate(
+      perc = value / first(value),
+      value = scales::comma(value),
+      perc = scales::percent(perc)
+    )
+}
+
+get_amortization <- function(.tab, .years, .invest, .discount) {
+  .tab %>%
+    tidyr::expand_grid(year = seq_len(.years)) %>%
+    dplyr::select(year, dplyr::everything()) %>%
+    get_profit() %>%
+    dplyr::mutate(dcf = profit / ((1 + .discount)^year)) %>%
+    dplyr::select(year, dcf) %>%
+    tibble::add_row(year = 0, dcf = -.invest) %>%
+    dplyr::arrange(year) %>%
+    dplyr::mutate(csum = cumsum(dcf)) %>%
+    dplyr::mutate(
+      col1 = dplyr::if_else(csum < 0, "red", "green"),
+      col2 = dplyr::if_else(dcf < 0, "red", "green")
+    ) %>%
+    dplyr::select(year, dcf, csum, col1, col2)
+}
+```
+
 # CM I, CM II, and Profit
 
-```{r echo=FALSE}
+Using the Functions **get_input_table()**, **get_profit()**, and
+**get_cm_table()**, we can show a scenario analysis for the Contribution
+Margin and Profit.
+
+```{r}
 tab_ <- get_input_table(
   .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .def_cf,
   .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
@@ -265,7 +365,14 @@ s1 %>%
 
 # Sensitivity
 
-```{r echo=FALSE}
+Next we look at the sensitivity of the profit to the input factors:
+**Volume, Price, Variable Cost, Fixed Cost, and Volume Discount.** We
+don't need to program an new function for this. The vectorized functions
+we defined up until now are sufficient, the only thing we need to do is
+adding a range for the input variable we want to observe to the
+**get_input_table()** function.
+
+```{r}
 .seq <- seq(500, 10000, 25)
 get_input_table(
   .v = .seq, .p = .def_p, .cv = .def_cv, .cf = .def_cf,
@@ -312,7 +419,38 @@ get_input_table(
   plot_profits(d, profit, .xlab = "Discount", "Profit", "Profit (Discount)", .size = 11)
 ```
 
+# Amortization
+
+With the function get_amortization(), we can easily plot the
+amortization time of our business case. Again this function takes the
+dataframe of get_input_table() as input. Additionally, it has other 3
+Arguments: **.years (NUmber of Years to plot), .invest (Initial
+Investment), .discount (Required Rate of Return)**
+
+```{r echo=FALSE}
+tab_ <- get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) 
+tab_ <- get_amortization(tab_, 15, .invest = 1000000, .discount = .08)
+
+plot_amortization(tab_, 11)
+```
+
 # Monte Carlo
+
+Up until here, everything we did you could also have done in Excel (and
+most of it we have in our Excel Business Case). One aspect we cannot do
+in Excel (At least not without VBA, or Add-Ins) is to perform a Monte
+Carlo Analysis. Given that we have many input factors, and some of our
+inputs are related non-linearly to other inputs, it is a priori not
+clear how profitable out business case is under specific assumption. A
+Monte Carlo Analysis will help us to evaluate this, by simulating random
+inputs (with defined probability distributions) and calculates the
+profit. With this we can observe the profit distribution and get a
+feeling how robust our business model is to changing input factors
+(uncertainty).
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 set.seed(123)
@@ -350,15 +488,4 @@ tab_mc %>%
 
 ```
 
-# Time Series
-
-```{r echo=FALSE}
-tab_ <- get_input_table(
-  .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .def_cf,
-  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
-  .vm = .def_vm, .ca = .def_ca
-) 
-tab_ <- get_amortization(tab_, 15, .invest = 1000000, .discount = .08)
-
-plot_amortization(tab_, 11)
-```
+# 

@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthias Uckert" />
+
+
+<title>Excel Ratio Analysis</title>
+
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  { color: #cccccc; background-color: #303030; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ffcfaf; } /* Alert */
+code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #dca3a3; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #f0dfaf; } /* ControlFlow */
+code span.ch { color: #dca3a3; } /* Char */
+code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code span.co { color: #7f9f7f; } /* Comment */
+code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code span.do { color: #7f9f7f; } /* Documentation */
+code span.dt { color: #dfdfbf; } /* DataType */
+code span.dv { color: #dcdccc; } /* DecVal */
+code span.er { color: #c3bf9f; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #c0bed1; } /* Float */
+code span.fu { color: #efef8f; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+code span.kw { color: #f0dfaf; } /* Keyword */
+code span.op { color: #f0efd0; } /* Operator */
+code span.ot { color: #efef8f; } /* Other */
+code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code span.sc { color: #dca3a3; } /* SpecialChar */
+code span.ss { color: #cc9393; } /* SpecialString */
+code span.st { color: #cc9393; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #cc9393; } /* VerbatimString */
+code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-sm-12 col-md-4 col-lg-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-sm-12 col-md-8 col-lg-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Accounting Class</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Day 1 - Getting Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./01_get_edgar_data.html">Session 1 - Getting Data from the Web: SEC's EDGAR</a>
+    </li>
+    <li>
+      <a href="./02_get_arcom_data.html">Session 2 - Getting Data from the Web: www.AnnualReport.com</a>
+    </li>
+    <li>
+      <a href="./03_xbrl_data.html">Session 3 - Getting Data from the Web: XBRL</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Day 2 - Analysing Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./04_xbrl_analyze.html">Session 1 - Analysing Data: XBRL Tags</a>
+    </li>
+    <li>
+      <a href="./05_textual_analysis.html">Session 2 - Analysing Data: Textual Analysis</a>
+    </li>
+    <li>
+      <a href="./06_excel_ratio_analysis.html">Session 3 - Analysing Data: Excel and R</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="./contact.html">Contact</a>
+</li>
+<li>
+  <a href="https://github.com/MatthiasUckert">GitHub</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Excel Ratio Analysis</h1>
+<h4 class="author">Matthias Uckert</h4>
+<h4 class="date">21 April, 2021</h4>
+
+</div>
+
+
+<div id="description" class="section level1">
+<h1>Description</h1>
+<p>In this session you will learn how you can combine R programming with analyses that you would normally do in Excel. We will use financial statement here, specifically the <strong>Income Statement</strong>, <strong>Balance Sheet</strong>, and <strong>Cash Flow Statement</strong>. The process described in this session will transform a large number of yearly excel workbooks into single standardized panel data financial statements. In the following we will outsource some more complex transformation to excel and read the results back in. Lastly, we will display results in a simple shiny-app.</p>
+<p>Throughout this script we will use custom functions. All the script specific functions are stored in this folder: <strong>1_code/00_functions/f-excel_ratio_analysis.R</strong> (As a reference I also put the important functions in the script)</p>
+</div>
+<div id="script-setup" class="section level1">
+<h1>Script Setup</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse); <span class="fu">library</span>(tidytext); <span class="fu">library</span>(readtext); <span class="fu">library</span>(furrr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fst); <span class="fu">library</span>(stringi); <span class="fu">library</span>(ISOcodes); <span class="fu">library</span>(scales); <span class="fu">library</span>(openxlsx);</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor); <span class="fu">library</span>(scales); <span class="fu">library</span>(shiny)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;1_code/00_functions/f-all.R&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;1_code/00_functions/f-excel_ratio_analysis.R&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>.workers <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="fu">availableCores</span>() <span class="sc">/</span> <span class="dv">2</span>, <span class="dv">16</span>)</span></code></pre></div>
+<div id="paths" class="section level2">
+<h2>Paths</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>lst_paths <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_main =</span> <span class="st">&quot;2_output/06_excel_ratio_analysis&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_fs =</span> <span class="st">&quot;E:/R/R_projects/MMA22_ACC/0_data/financial_statements&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_map_to_stand =</span> <span class="st">&quot;E:/R/R_projects/MMA22_ACC/0_data/map_name_to_name_stand.xlsx&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_map_to_id =</span> <span class="st">&quot;E:/R/R_projects/MMA22_ACC/0_data/map_name_stand_to_id.xlsx&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_excel =</span> <span class="st">&quot;2_output/06_excel_ratio_analysis/excel_sheets&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_template =</span> <span class="st">&quot;0_data/ratio_template.xlsx&quot;</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_info =</span> <span class="st">&quot;0_data/orbis_firm_infos.xlsx&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_ratios =</span> <span class="st">&quot;2_output/06_excel_ratio_analysis/firm_ratios.rds&quot;</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_shiny_data =</span> <span class="st">&quot;1_code/shiny/data/firm_ratios.rds&quot;</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_fs_tables =</span> <span class="st">&quot;2_output/06_excel_ratio_analysis/fs_tables.rds&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_cache =</span> <span class="st">&quot;2_output/06_excel_ratio_analysis/cache/cache_&quot;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">create_dirs</span>()</span></code></pre></div>
+</div>
+<div id="files" class="section level2">
+<h2>Files</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tab_orbis <span class="ot">&lt;-</span> <span class="fu">read.xlsx</span>(lst_paths<span class="sc">$</span>path_info, <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">clean_names</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">doc_id =</span> company_name_latin_alphabet, <span class="at">industry =</span> us_sic_core_code_description)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>tab_files <span class="ot">&lt;-</span> <span class="fu">list_files_tab</span>(lst_paths<span class="sc">$</span>dir_fs, <span class="st">&quot;xlsx&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">stri_extract_last_regex</span>(doc_id, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">d{4}&quot;</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">firm =</span> <span class="fu">stri_replace_last_fixed</span>(doc_id, <span class="fu">paste0</span>(<span class="st">&quot;.&quot;</span>, year), <span class="st">&quot;&quot;</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>lst_files <span class="ot">&lt;-</span> <span class="fu">split</span>(tab_files<span class="sc">$</span>path, tab_files<span class="sc">$</span>firm)</span></code></pre></div>
+<p>We start by reading the paths to our excel files. In total we have 2,528 files, which each four relevant sheets, hence we get a total of 10,112 excel sheets to process.</p>
+<p>Let’s have a quick look at one example file.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># browseURL(tab_files$path[1])</span></span></code></pre></div>
+</div>
+<div id="extract-and-combine-financial-statements" class="section level2">
+<h2>Extract and Combine Financial Statements</h2>
+<p>Next we use a couple of custom functions: <strong>get_stand_statement()</strong> and <strong>calculate_formula()</strong> to do the heavy lifting and extract structured financial statements from.</p>
+<details>
+<summary>
+<p>Show functions <strong><em>(click on arrow to show)</em></strong>.</p>
+</summary>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>get_stand_statement <span class="ot">&lt;-</span> <span class="cf">function</span>(.paths, .path_map1, .path_map2) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  lst1 <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  lst2 <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (.type <span class="cf">in</span> <span class="fu">c</span>(<span class="st">&quot;is&quot;</span>, <span class="st">&quot;bsa&quot;</span>, <span class="st">&quot;bsl&quot;</span>, <span class="st">&quot;cf&quot;</span>)) {</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    sheet_ <span class="ot">&lt;-</span> <span class="cf">switch</span> (.type, <span class="st">&quot;is&quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;bsa&quot;</span> <span class="ot">=</span> <span class="dv">2</span>, <span class="st">&quot;bsl&quot;</span> <span class="ot">=</span> <span class="dv">3</span>, <span class="st">&quot;cf&quot;</span> <span class="ot">=</span> <span class="dv">4</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    map_1 <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(.path_map1, sheet_) <span class="sc">%&gt;%</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(id, <span class="at">name =</span> name_disp, name_stand) <span class="sc">%&gt;%</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">trimws</span>(name))</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    map_2 <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(.path_map2, sheet_) <span class="sc">%&gt;%</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">trimws</span>(name)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rename</span>(<span class="at">name_stand =</span> name)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    tab0_ <span class="ot">&lt;-</span> <span class="fu">map</span>(.paths, <span class="sc">~</span> openxlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(.x, (sheet_ <span class="sc">+</span> <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      purrr<span class="sc">::</span><span class="fu">reduce</span>(., full_join, <span class="at">by =</span> <span class="st">&quot;name&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">&quot;y&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">`</span><span class="at">colnames&lt;-</span><span class="st">`</span>(<span class="fu">gsub</span>(<span class="st">&quot;.x&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="fu">colnames</span>(.), <span class="at">fixed =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;name&quot;</span>, <span class="fu">sort</span>(<span class="fu">colnames</span>(tab0_)[<span class="sc">-</span><span class="dv">1</span>], <span class="at">decreasing =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    tab0_ <span class="ot">&lt;-</span> tab0_[, cols]</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    tab0_[<span class="fu">is.na</span>(tab0_)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    tab1 <span class="ot">&lt;-</span> tab0_ <span class="sc">%&gt;%</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">trimws</span>(name)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">left_join</span>(map_1, <span class="at">by =</span> <span class="st">&quot;name&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrange</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>id)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    tab2 <span class="ot">&lt;-</span> tab1 <span class="sc">%&gt;%</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(name_stand)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>name) <span class="sc">%&gt;%</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(name_stand) <span class="sc">%&gt;%</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">sum</span>(., <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">full_join</span>(map_2, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;name_stand&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">arrange</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(<span class="sc">!</span>id <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (.type <span class="sc">==</span> <span class="st">&quot;cf&quot;</span>) {</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>      is <span class="ot">&lt;-</span> lst2<span class="sc">$</span>is</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>      tab2[<span class="dv">1</span>, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>, <span class="dv">12</span>)] <span class="ot">&lt;-</span> is[<span class="dv">10</span>, <span class="sc">-</span><span class="dv">1</span>] <span class="sc">-</span> is[<span class="dv">6</span>, <span class="sc">-</span><span class="dv">1</span>] <span class="sc">-</span> is[<span class="dv">7</span>, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>      tab2[<span class="dv">2</span>, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>, <span class="dv">12</span>)] <span class="ot">&lt;-</span> is[<span class="dv">11</span>, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>      tab2[<span class="dv">8</span>, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>, <span class="dv">12</span>)] <span class="ot">&lt;-</span> is[<span class="dv">7</span>, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>      tab2[<span class="dv">12</span>, <span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">11</span>, <span class="dv">12</span>)] <span class="ot">&lt;-</span> is[<span class="dv">6</span>, <span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    } </span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    tab2 <span class="ot">&lt;-</span> <span class="fu">calculate_formula</span>(tab2)</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    tab2[<span class="fu">is.na</span>(tab2)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    lst2[[.type]] <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(tab2)</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    lst1[[.type]] <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(<span class="fu">select</span>(tab1, <span class="sc">-</span>name_stand))</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">enframe</span>(lst1) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">&quot;Original&quot;</span>),</span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">enframe</span>(lst2) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">type =</span> <span class="st">&quot;Standardized&quot;</span>)</span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>calculate_formula <span class="ot">&lt;-</span> <span class="cf">function</span>(.tab) {</span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a>  f <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">unique</span>(.tab<span class="sc">$</span>Calculation))</span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">length</span>(f))) {</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>    int <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">trimws</span>(<span class="fu">unlist</span>(<span class="fu">stri_split_regex</span>(f[i], <span class="st">&quot;</span><span class="sc">\\</span><span class="st">=|</span><span class="sc">\\</span><span class="st">+&quot;</span>))))</span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>    name <span class="ot">&lt;-</span> .tab <span class="sc">%&gt;%</span></span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(id <span class="sc">%in%</span> int[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pull</span>(name_stand)</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>    tab_ <span class="ot">&lt;-</span> .tab <span class="sc">%&gt;%</span></span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(id <span class="sc">%in%</span> int[<span class="sc">-</span><span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">-</span>Calculation) <span class="sc">%&gt;%</span></span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">name_stand =</span> name, <span class="at">id =</span> int[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(id, name_stand) <span class="sc">%&gt;%</span></span>
+<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">sum</span>(., <span class="at">na.rm =</span> <span class="cn">TRUE</span>)), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>)</span>
+<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>    .tab <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(tab_, .tab) <span class="sc">%&gt;%</span></span>
+<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>      <span class="fu">distinct</span>(id, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>  .tab <span class="sc">%&gt;%</span></span>
+<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(id) <span class="sc">%&gt;%</span></span>
+<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>Calculation, <span class="sc">-</span>id)</span>
+<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<p><br><br> Additionally we have two mapping tables that we use:</p>
+<p>Mapping Table 1: Map Line Items to Standardized Line Items The table below shows the mapping table for the income statement.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.xlsx</span>(lst_paths<span class="sc">$</span>path_map_to_stand, <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), <span class="sc">~</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(.), <span class="st">&quot;&quot;</span>, .))) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_table</span>()</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+id
+</th>
+<th style="text-align:right;">
+level
+</th>
+<th style="text-align:left;">
+name_disp
+</th>
+<th style="text-align:left;">
+name_stand
+</th>
+<th style="text-align:left;">
+formula
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Total Revenues
+</td>
+<td style="text-align:left;">
+Revenue
+</td>
+<td style="text-align:left;">
+1 = 4 + 5
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Gross Sales
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Excise Tax
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Net Sales
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+4 = 2 + 3
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Other Revenue
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Cost of Sales
+</td>
+<td style="text-align:left;">
+Cost of Sales (by function)
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+R&amp;D Expenses
+</td>
+<td style="text-align:left;">
+Other Income net of Other Expenses
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Other Operating Items
+</td>
+<td style="text-align:left;">
+SG&amp;A (by function)
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+EBITDA
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+9 = 1 + 6 + 7 + 8
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Depreciation &amp; Amortization
+</td>
+<td style="text-align:left;">
+SG&amp;A (by function)
+</td>
+<td style="text-align:left;">
+10 = 11 + 12
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Depreciation
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Amortization
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Operating Income after Depreciation &amp; Amortization
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+13 = 9 + 10
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+EBIT
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Financial Income
+</td>
+<td style="text-align:left;">
+Interest Income
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Financial Expenses
+</td>
+<td style="text-align:left;">
+Interest Expense
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Financial Income/Loss
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+17 = 15 + 16
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Other Non-Operating Financial Income/Expense
+</td>
+<td style="text-align:left;">
+Investment Income
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Unusual/Exceptional Items
+</td>
+<td style="text-align:left;">
+Net Non-Recurring Income or Expense
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Earnings before Taxes
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+20 = 13 + 17 + 18 + 19
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Income Taxes
+</td>
+<td style="text-align:left;">
+Tax Expense
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Earnings after Taxes
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+22 = 20 + 21
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Minority Interest
+</td>
+<td style="text-align:left;">
+Profit/Loss to Non-Controlling Interest
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Extraordinary Items after Tax
+</td>
+<td style="text-align:left;">
+Net Non-Recurring Income or Expense
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Preferred Dividends
+</td>
+<td style="text-align:left;">
+Interest Expense
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Other Income/Loss
+</td>
+<td style="text-align:left;">
+Other Income net of Other Expenses
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Net Profit
+</td>
+<td style="text-align:left;">
+Profit/Loss to Ordinary Shareholders
+</td>
+<td style="text-align:left;">
+27 = 22 + 23 + 24 + 25 + 26
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+Ordinary Dividens
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># browseURL(lst_paths$path_map_to_stand)</span></span></code></pre></div>
+<p>Mapping Table 2: Map Standardize Line Items to ID The table below shows the mapping table for the income statement.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read.xlsx</span>(lst_paths<span class="sc">$</span>path_map_to_id, <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character), <span class="sc">~</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(.), <span class="st">&quot;&quot;</span>, .))) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_table</span>()</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+id
+</th>
+<th style="text-align:left;">
+name
+</th>
+<th style="text-align:left;">
+Calculation
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Revenue
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Cost of Sales (by function)
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+SG&amp;A (by function)
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Other Income net of Other Expenses
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+Operating Profit
+</td>
+<td style="text-align:left;">
+5 = 1 + 2 + 3 + 4
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+Interest Expense
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+Interest Income
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+Investment Income
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+Net Non-Recurring Income or Expense
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+Profit Before Taxes
+</td>
+<td style="text-align:left;">
+10 = 5 + 6 + 7 + 8 + 9
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:left;">
+Tax Expense
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:left;">
+Profit/Loss to Non-Controlling Interest
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:left;">
+Profit/Loss of Discontinued Operations
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:left;">
+Profit/Loss to Ordinary Shareholders
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># browseURL(lst_paths$path_map_to_id)</span></span></code></pre></div>
+<p>With those mapping tables and custom functions we are able to generate nice looking standardized financial statements on a company level.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(lst_paths<span class="sc">$</span>path_fs_tables)) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;multisession&quot;</span>, <span class="at">workers =</span> .workers)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  lst_fs <span class="ot">&lt;-</span> <span class="fu">future_map</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.x =</span> lst_files,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.f =</span> <span class="sc">~</span> <span class="fu">get_stand_statement</span>(.x, lst_paths<span class="sc">$</span>path_map_to_stand, lst_paths<span class="sc">$</span>path_map_to_id),</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.options =</span> <span class="fu">furrr_options</span>(<span class="at">seed =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.progress =</span> <span class="cn">TRUE</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;default&quot;</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(lst_fs, lst_paths<span class="sc">$</span>path_fs_tables)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  lst_fs <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_fs_tables)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_table</span>(lst_fs[[<span class="dv">1</span>]]<span class="sc">$</span>value[<span class="dv">5</span>])</span></code></pre></div>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="kable_wrapper lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<tbody>
+<tr>
+<td>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+name_stand
+</th>
+<th style="text-align:right;">
+2019
+</th>
+<th style="text-align:right;">
+2018
+</th>
+<th style="text-align:right;">
+2017
+</th>
+<th style="text-align:right;">
+2016
+</th>
+<th style="text-align:right;">
+2015
+</th>
+<th style="text-align:right;">
+2014
+</th>
+<th style="text-align:right;">
+2013
+</th>
+<th style="text-align:right;">
+2012
+</th>
+<th style="text-align:right;">
+2011
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Revenue
+</td>
+<td style="text-align:right;">
+3708.057
+</td>
+<td style="text-align:right;">
+3711.685
+</td>
+<td style="text-align:right;">
+3235.660
+</td>
+<td style="text-align:right;">
+2972.669
+</td>
+<td style="text-align:right;">
+649.025
+</td>
+<td style="text-align:right;">
+290.763
+</td>
+<td style="text-align:right;">
+293.184
+</td>
+<td style="text-align:right;">
+331.399
+</td>
+<td style="text-align:right;">
+350.119
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cost of Sales (by function)
+</td>
+<td style="text-align:right;">
+-2527.285
+</td>
+<td style="text-align:right;">
+-2505.753
+</td>
+<td style="text-align:right;">
+-1983.476
+</td>
+<td style="text-align:right;">
+-1981.141
+</td>
+<td style="text-align:right;">
+-375.101
+</td>
+<td style="text-align:right;">
+-147.007
+</td>
+<td style="text-align:right;">
+-171.433
+</td>
+<td style="text-align:right;">
+-214.839
+</td>
+<td style="text-align:right;">
+-246.314
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SG&amp;A (by function)
+</td>
+<td style="text-align:right;">
+-569.369
+</td>
+<td style="text-align:right;">
+-555.690
+</td>
+<td style="text-align:right;">
+-618.564
+</td>
+<td style="text-align:right;">
+-611.912
+</td>
+<td style="text-align:right;">
+-204.741
+</td>
+<td style="text-align:right;">
+-68.474
+</td>
+<td style="text-align:right;">
+-60.585
+</td>
+<td style="text-align:right;">
+-61.107
+</td>
+<td style="text-align:right;">
+-55.723
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other Income net of Other Expenses
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.310
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Operating Profit
+</td>
+<td style="text-align:right;">
+611.403
+</td>
+<td style="text-align:right;">
+650.242
+</td>
+<td style="text-align:right;">
+633.620
+</td>
+<td style="text-align:right;">
+379.616
+</td>
+<td style="text-align:right;">
+69.493
+</td>
+<td style="text-align:right;">
+75.282
+</td>
+<td style="text-align:right;">
+61.166
+</td>
+<td style="text-align:right;">
+55.453
+</td>
+<td style="text-align:right;">
+48.082
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Interest Expense
+</td>
+<td style="text-align:right;">
+-7.262
+</td>
+<td style="text-align:right;">
+-5.277
+</td>
+<td style="text-align:right;">
+-10.705
+</td>
+<td style="text-align:right;">
+-28.995
+</td>
+<td style="text-align:right;">
+-4.029
+</td>
+<td style="text-align:right;">
+-3.587
+</td>
+<td style="text-align:right;">
+-61.966
+</td>
+<td style="text-align:right;">
+-89.881
+</td>
+<td style="text-align:right;">
+-24.574
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Interest Income
+</td>
+<td style="text-align:right;">
+1.070
+</td>
+<td style="text-align:right;">
+0.404
+</td>
+<td style="text-align:right;">
+1.383
+</td>
+<td style="text-align:right;">
+1.080
+</td>
+<td style="text-align:right;">
+0.643
+</td>
+<td style="text-align:right;">
+0.911
+</td>
+<td style="text-align:right;">
+1.290
+</td>
+<td style="text-align:right;">
+0.953
+</td>
+<td style="text-align:right;">
+0.526
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Investment Income
+</td>
+<td style="text-align:right;">
+-82.784
+</td>
+<td style="text-align:right;">
+-84.780
+</td>
+<td style="text-align:right;">
+0.311
+</td>
+<td style="text-align:right;">
+0.163
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+177.461
+</td>
+<td style="text-align:right;">
+54.251
+</td>
+<td style="text-align:right;">
+28.280
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Net Non-Recurring Income or Expense
+</td>
+<td style="text-align:right;">
+0.009
+</td>
+<td style="text-align:right;">
+1.986
+</td>
+<td style="text-align:right;">
+0.027
+</td>
+<td style="text-align:right;">
+0.016
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Profit Before Taxes
+</td>
+<td style="text-align:right;">
+522.436
+</td>
+<td style="text-align:right;">
+562.575
+</td>
+<td style="text-align:right;">
+624.636
+</td>
+<td style="text-align:right;">
+351.880
+</td>
+<td style="text-align:right;">
+66.107
+</td>
+<td style="text-align:right;">
+72.606
+</td>
+<td style="text-align:right;">
+177.951
+</td>
+<td style="text-align:right;">
+20.776
+</td>
+<td style="text-align:right;">
+52.314
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tax Expense
+</td>
+<td style="text-align:right;">
+-148.816
+</td>
+<td style="text-align:right;">
+-156.543
+</td>
+<td style="text-align:right;">
+-143.334
+</td>
+<td style="text-align:right;">
+-108.523
+</td>
+<td style="text-align:right;">
+-19.998
+</td>
+<td style="text-align:right;">
+-22.531
+</td>
+<td style="text-align:right;">
+-22.177
+</td>
+<td style="text-align:right;">
+2.677
+</td>
+<td style="text-align:right;">
+-11.272
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Profit/Loss to Non-Controlling Interest
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+-16.623
+</td>
+<td style="text-align:right;">
+-39.285
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+-0.028
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Profit/Loss of Discontinued Operations
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Profit/Loss to Ordinary Shareholders
+</td>
+<td style="text-align:right;">
+373.620
+</td>
+<td style="text-align:right;">
+406.032
+</td>
+<td style="text-align:right;">
+464.679
+</td>
+<td style="text-align:right;">
+204.072
+</td>
+<td style="text-align:right;">
+46.109
+</td>
+<td style="text-align:right;">
+50.075
+</td>
+<td style="text-align:right;">
+155.774
+</td>
+<td style="text-align:right;">
+23.453
+</td>
+<td style="text-align:right;">
+41.014
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="write-financial-statements-to-excel" class="section level2">
+<h2>Write Financial Statements to Excel</h2>
+<p>In the next step we lever the full power of the intersection between excel and R. Having the financial statements in a list is only the first step, because in most use cases we want to have nicely formatted Excel files, that we can share with our collegues or with which we can do further ad-hoc analyses. To do this we again use a set of custom functions to write our financial statements in a pre-formatted Excel template.</p>
+<details>
+<summary>
+<p>Show functions <strong><em>(click on arrow to show)</em></strong>.</p>
+</summary>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>write_to_excel <span class="ot">&lt;-</span> <span class="cf">function</span>(.tab, .name, .dir, .template) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  wb <span class="ot">&lt;-</span> openxlsx<span class="sc">::</span><span class="fu">loadWorkbook</span>(.template)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  .row <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">writeData</span>(wb, <span class="st">&quot;Original Statements&quot;</span>, .tab<span class="sc">$</span>value[[<span class="dv">1</span>]], <span class="at">startRow =</span> .row)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  .row <span class="ot">&lt;-</span> .row <span class="sc">+</span> <span class="fu">nrow</span>(.tab<span class="sc">$</span>value[[<span class="dv">1</span>]]) <span class="sc">+</span> <span class="dv">3</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">writeData</span>(wb, <span class="st">&quot;Original Statements&quot;</span>, .tab<span class="sc">$</span>value[[<span class="dv">2</span>]], <span class="at">startRow =</span> .row, <span class="at">colNames =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  .row <span class="ot">&lt;-</span> .row <span class="sc">+</span> <span class="fu">nrow</span>(.tab<span class="sc">$</span>value[[<span class="dv">2</span>]]) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">writeData</span>(wb, <span class="st">&quot;Original Statements&quot;</span>, .tab<span class="sc">$</span>value[[<span class="dv">3</span>]], <span class="at">startRow =</span> .row, <span class="at">colNames =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  .row <span class="ot">&lt;-</span> .row <span class="sc">+</span> <span class="fu">nrow</span>(.tab<span class="sc">$</span>value[[<span class="dv">3</span>]]) <span class="sc">+</span> <span class="dv">3</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">writeData</span>(wb, <span class="st">&quot;Original Statements&quot;</span>, .tab<span class="sc">$</span>value[[<span class="dv">4</span>]], <span class="at">startRow =</span> .row, <span class="at">colNames =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">setColWidths</span>(wb, <span class="st">&quot;Original Statements&quot;</span>, <span class="at">cols =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(.tab<span class="sc">$</span>value[[<span class="dv">1</span>]]), <span class="at">widths =</span> <span class="st">&quot;auto&quot;</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">writeData</span>(wb, <span class="st">&quot;Standardized Statements&quot;</span>, .tab<span class="sc">$</span>value[[<span class="dv">5</span>]], <span class="at">startRow =</span> <span class="dv">2</span>)</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">writeData</span>(wb, <span class="st">&quot;Standardized Statements&quot;</span>, .tab<span class="sc">$</span>value[[<span class="dv">6</span>]], <span class="at">startRow =</span> <span class="dv">20</span>, <span class="at">colNames =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">writeData</span>(wb, <span class="st">&quot;Standardized Statements&quot;</span>, .tab<span class="sc">$</span>value[[<span class="dv">7</span>]], <span class="at">startRow =</span> <span class="dv">36</span>, <span class="at">colNames =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">writeData</span>(wb, <span class="st">&quot;Standardized Statements&quot;</span>, .tab<span class="sc">$</span>value[[<span class="dv">8</span>]], <span class="at">startRow =</span> <span class="dv">53</span>, <span class="at">colNames =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  path_ <span class="ot">&lt;-</span> <span class="fu">file.path</span>(.dir, <span class="fu">paste0</span>(.name, <span class="st">&quot;.xlsx&quot;</span>))</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  openxlsx<span class="sc">::</span><span class="fu">saveWorkbook</span>(wb, path_, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># .dir  = dirname(path_)</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># .name = basename(path_)</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">calculate_wb_fn</span>(<span class="fu">dirname</span>(path_), <span class="fu">basename</span>(path_))</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>calculate_wb_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(.dir, .name) {</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  dir_ <span class="ot">&lt;-</span> <span class="fu">normalizePath</span>(.dir)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>  hash_ <span class="ot">&lt;-</span> digest<span class="sc">::</span><span class="fu">digest</span>(.name, <span class="at">algo =</span> <span class="st">&quot;xxhash32&quot;</span>)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>  path_vbs_ <span class="ot">&lt;-</span> <span class="fu">normalizePath</span>(<span class="fu">file.path</span>(dir_,  <span class="fu">paste0</span>(hash_, <span class="st">&quot;.vbs&quot;</span>)), <span class="at">mustWork =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>  path_xlsx_ <span class="ot">&lt;-</span> <span class="fu">normalizePath</span>(<span class="fu">file.path</span>(dir_,  .name), <span class="at">mustWork =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>  macro_calculate_wb <span class="ot">&lt;-</span> <span class="fu">file</span>(path_vbs_)</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>(<span class="fu">c</span>(<span class="st">&quot;Const xlVisible = -1&quot;</span>,</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;Dim objExcel&quot;</span>,</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;Dim objWb&quot;</span>,</span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;Dim objws&quot;</span>,</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;Dim strFileName&quot;</span>,</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>               <span class="fu">paste0</span>(<span class="st">&quot;strFileName = </span><span class="sc">\&quot;</span><span class="st">&quot;</span>, path_xlsx_,<span class="st">&quot;</span><span class="sc">\&quot;</span><span class="st">&quot;</span>),</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;On Error Resume Next&quot;</span>,</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;Set objExcel = CreateObject(</span><span class="sc">\&quot;</span><span class="st">excel.application</span><span class="sc">\&quot;</span><span class="st">)&quot;</span>,</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;Set objWb = objExcel.Workbooks.Open(strFileName)&quot;</span>,</span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;objExcel.DisplayAlerts = False&quot;</span>,</span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;objWb.Save&quot;</span>,</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;objWb.Close SaveChanges=True&quot;</span>,</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;objExcel.Close&quot;</span>,</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;objExcel.Quit&quot;</span>,</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;set objWb = Nothing&quot;</span>,</span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;set objExcel = Nothing&quot;</span>,</span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;On Error GoTo 0&quot;</span>)</span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>             , macro_calculate_wb)</span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">close</span>(macro_calculate_wb)</span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">shell</span>(<span class="fu">shQuote</span>(<span class="at">string =</span> path_vbs_), <span class="at">wait =</span> T, <span class="at">mustWork =</span> <span class="cn">TRUE</span>, <span class="at">intern =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.remove</span>(path_vbs_)</span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<p><br><br> Applying this approach gives us another advantage, namely that we can use our known procedure in Excel to calculate relevant ratios, and do not have to re-program everything in R (which can be cumbersome in comparison to Excel)</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>.prc <span class="ot">&lt;-</span> <span class="fu">list_files_tab</span>(lst_paths<span class="sc">$</span>dir_excel)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>lst_fs_use <span class="ot">&lt;-</span> lst_fs[<span class="sc">!</span><span class="fu">names</span>(lst_fs) <span class="sc">%in%</span> .prc<span class="sc">$</span>doc_id]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(lst_fs_use) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;multisession&quot;</span>, <span class="at">workers =</span> .workers)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">future_iwalk</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">.x =</span> lst_fs_use, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">.f =</span> <span class="sc">~</span> <span class="fu">write_to_excel</span>(.x, .y,  lst_paths<span class="sc">$</span>dir_excel, lst_paths<span class="sc">$</span>path_template),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">.options =</span> <span class="fu">furrr_options</span>(<span class="at">seed =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">.progress =</span> <span class="cn">TRUE</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;default&quot;</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>tab_files_std <span class="ot">&lt;-</span> <span class="fu">list_files_tab</span>(lst_paths<span class="sc">$</span>dir_excel)</span></code></pre></div>
+<p>Let’s look at an example output</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># browseURL(tab_files_std$path[2])</span></span></code></pre></div>
+<p><img src="images/fs-example.png" title="Standardized Financial Statement Example" /></p>
+<p><img src="images/ratio-example.png" title="Ration Example" /></p>
+</div>
+<div id="read-results" class="section level2">
+<h2>Read Results</h2>
+<p>Last we read in the results we obtained by executing the excel formulae. We won’t show any results here, but switch to another approach, namely using reactive programming to build a so-called shiny app.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tab <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">.x =</span> <span class="fu">set_names</span>(tab_files_std<span class="sc">$</span>path, tab_files_std<span class="sc">$</span>doc_id),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">.f =</span> <span class="sc">~</span> openxlsx<span class="sc">::</span><span class="fu">read.xlsx</span>(.x, <span class="at">colNames =</span> <span class="cn">FALSE</span>, <span class="at">sheet =</span> <span class="dv">3</span>),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">.id =</span> <span class="st">&quot;doc_id&quot;</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">colnames&lt;-</span><span class="st">`</span>(<span class="fu">c</span>(<span class="st">&quot;doc_id&quot;</span>, <span class="st">&quot;Ratio&quot;</span>, <span class="dv">2019</span><span class="sc">:</span><span class="dv">2011</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Ratio), <span class="sc">!</span><span class="fu">startsWith</span>(Ratio, <span class="st">&quot;Ratio&quot;</span>), <span class="sc">!</span><span class="fu">is.na</span>(<span class="st">`</span><span class="at">2019</span><span class="st">`</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">matches</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">d{4}&quot;</span>), <span class="at">names_to =</span> <span class="st">&quot;year&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(tab_orbis, <span class="at">by =</span> <span class="st">&quot;doc_id&quot;</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(tab, lst_paths<span class="sc">$</span>path_ratios)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="fu">write_rds</span>(tab, lst_paths<span class="sc">$</span>path_shiny_data, <span class="at">compress =</span> <span class="st">&quot;gz&quot;</span>)</span></code></pre></div>
+</div>
+<div id="load-shiny" class="section level2">
+<h2>Load shiny</h2>
+<p>Unfortunately, you can’t see the results on the website, since it requires a server to do the calculation.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># shiny::runApp(&quot;1_code/shiny/app.R&quot;)</span></span></code></pre></div>
+<p><img src="images/2021-04-21%2014_19_25-Ratio%20Analysis.png" title="Shiny Example" /></p>
+</div>
+</div>
+<div id="own-function-calls" class="section level1">
+<h1>Own Function Calls</h1>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lsf.str</span>()</span></code></pre></div>
+<pre><code>## calculate_formula : function (.tab)  
+## calculate_wb_fn : function (.dir, .name)  
+## compare_word_frequqncies : function (.tab, .tab_data)  
+## create_dirs : function (.dirs)  
+## display_top_n_by : function (.tab, .col)  
+## downlad_ar : function (.url, .dir)  
+## download_edgar_files : function (.tab, .dir, .retry = 5, .sleep = 1)  
+## download_google_drive : function (.id, .dir = NULL, .read_fun = NULL, .overwrite = FALSE)  
+## get_company_table : function (.url)  
+## get_f500 : function ()  
+## get_infos : function (.path)  
+## get_lm_stop : function ()  
+## get_ngrams : function (.path, .ngram, .stop = tibble(word = &quot;&quot;, .rows = 0), .rm_num = TRUE)  
+## get_stand_statement : function (.paths, .path_map1, .path_map2)  
+## list_files_tab : function (dirs, reg = &quot;*&quot;, id = &quot;doc_id&quot;, rec = FALSE, info = FALSE)  
+## map_company_filings : function (.tickers, .ownership = FALSE, .type = &quot;&quot;, .before = &quot;&quot;, .count = 100, .page = 1, 
+##     .progress = TRUE, .sleep = 0, .retry = 5)  
+## map_filing_details : function (.id, .hrefs, .progress = TRUE, .sleep = 0, .retry = 5)  
+## own_get_fs : function (.path, .dir_cache)  
+## own_XBRL : function ()  
+## own_xbrlDoAll : function (file.inst, cache.dir = &quot;xbrl.Cache&quot;, prefix.out = NULL, verbose = FALSE, delete.cached.inst = TRUE)  
+## pdf_read_and_tokenize : function (.path, .dir)  
+## prep_top_n_by : function (.tab_word, .tab_data, .col, .n = 10)  
+## remove_html_tags : function (.string, rm_linebreaks = TRUE)  
+## safe_get_company_table : function (...)  
+## sec_read_and_tokenize : function (.path, .dir = NULL)  
+## show_sentiment : function (.tab, .type = c(&quot;pos/neg&quot;, &quot;uncertainty&quot;, &quot;litigious&quot;, &quot;constraining&quot;, &quot;superfluous&quot;))  
+## show_table : function (.tab, .n = Inf)  
+## standardize_name : function (.name)  
+## write_to_excel : function (.tab, .name, .dir, .template)  
+## xbrl_extract_elements : function (.zip, .dir_tmp, .dir_out)  
+## xbrl_extract_line_items : function (.tab, .tags)  
+## xbrl_process_elements : function (.inst)</code></pre>
+<hr />
+</div>
+<div id="session-info" class="section level1">
+<h1>Session Info</h1>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code></pre></div>
+<pre><code>## - Session info ------------------------------------------------------------------------------
+##  setting  value                       
+##  version  R version 4.0.3 (2020-10-10)
+##  os       Windows 10 x64              
+##  system   x86_64, mingw32             
+##  ui       RStudio                     
+##  language (EN)                        
+##  collate  English_Germany.1252        
+##  ctype    English_Germany.1252        
+##  tz       Europe/Berlin               
+##  date     2021-04-21                  
+## 
+## - Packages ----------------------------------------------------------------------------------
+##  ! package        * version    date       lib source        
+##  P assertthat       0.2.1      2019-03-21 [?] CRAN (R 4.0.0)
+##  P backports        1.2.1      2020-12-09 [?] CRAN (R 4.0.3)
+##  P broom            0.7.6      2021-04-05 [?] CRAN (R 4.0.3)
+##  P bslib            0.2.4      2021-01-25 [?] CRAN (R 4.0.4)
+##  P cachem           1.0.4      2021-02-13 [?] CRAN (R 4.0.4)
+##  P cellranger       1.1.0      2016-07-27 [?] CRAN (R 4.0.0)
+##  P cli              2.4.0      2021-04-05 [?] CRAN (R 4.0.3)
+##  P codetools        0.2-16     2018-12-24 [?] CRAN (R 4.0.3)
+##  P colorspace       2.0-0      2020-11-11 [?] CRAN (R 4.0.3)
+##  P crayon           1.4.1      2021-02-08 [?] CRAN (R 4.0.4)
+##  P curl             4.3        2019-12-02 [?] CRAN (R 4.0.0)
+##  P data.table       1.14.0     2021-02-21 [?] CRAN (R 4.0.4)
+##  P DBI              1.1.1      2021-01-15 [?] CRAN (R 4.0.3)
+##  P dbplyr           2.1.1      2021-04-06 [?] CRAN (R 4.0.3)
+##  P digest           0.6.27     2020-10-24 [?] CRAN (R 4.0.3)
+##  P dplyr          * 1.0.5      2021-03-05 [?] CRAN (R 4.0.4)
+##  P edgarWebR      * 1.0.3      2020-09-28 [?] CRAN (R 4.0.5)
+##  P ellipsis         0.3.1      2020-05-15 [?] CRAN (R 4.0.0)
+##  P evaluate         0.14       2019-05-28 [?] CRAN (R 4.0.0)
+##  P fansi            0.4.2      2021-01-15 [?] CRAN (R 4.0.3)
+##  P farver           2.1.0      2021-02-28 [?] CRAN (R 4.0.4)
+##  P fastmap          1.1.0      2021-01-25 [?] CRAN (R 4.0.4)
+##  P forcats        * 0.5.1      2021-01-27 [?] CRAN (R 4.0.4)
+##  P fs               1.5.0      2020-07-31 [?] CRAN (R 4.0.2)
+##  P fst            * 0.9.4      2020-08-27 [?] CRAN (R 4.0.2)
+##  P furrr          * 0.2.2      2021-01-29 [?] CRAN (R 4.0.4)
+##  P future         * 1.21.0     2020-12-10 [?] CRAN (R 4.0.3)
+##  P fuzzyjoin      * 0.1.6      2020-05-15 [?] CRAN (R 4.0.2)
+##  P generics         0.1.0      2020-10-31 [?] CRAN (R 4.0.3)
+##  P ggplot2        * 3.3.3      2020-12-30 [?] CRAN (R 4.0.3)
+##  P globals          0.14.0     2020-11-22 [?] CRAN (R 4.0.3)
+##  P glue             1.4.2      2020-08-27 [?] CRAN (R 4.0.2)
+##  P googledrive      1.0.1      2020-05-05 [?] CRAN (R 4.0.0)
+##  P gtable           0.3.0      2019-03-25 [?] CRAN (R 4.0.0)
+##  P haven            2.3.1      2020-06-01 [?] CRAN (R 4.0.0)
+##  P here           * 1.0.1      2020-12-13 [?] CRAN (R 4.0.3)
+##  P highr            0.8        2019-03-20 [?] CRAN (R 4.0.0)
+##  P hms              1.0.0      2021-01-13 [?] CRAN (R 4.0.3)
+##  P htmltools        0.5.1.1    2021-01-22 [?] CRAN (R 4.0.4)
+##  P httpuv           1.5.5      2021-01-13 [?] CRAN (R 4.0.3)
+##  P httr             1.4.2      2020-07-20 [?] CRAN (R 4.0.2)
+##  P ISOcodes       * 2021.02.24 2021-02-24 [?] CRAN (R 4.0.4)
+##  P janeaustenr      0.1.5      2017-06-10 [?] CRAN (R 4.0.0)
+##  P janitor        * 2.1.0      2021-01-05 [?] CRAN (R 4.0.3)
+##  P jquerylib        0.1.3      2020-12-17 [?] CRAN (R 4.0.4)
+##  P jsonlite         1.7.2      2020-12-09 [?] CRAN (R 4.0.3)
+##  P kableExtra     * 1.3.4      2021-02-20 [?] CRAN (R 4.0.4)
+##  P knitr            1.31       2021-01-27 [?] CRAN (R 4.0.4)
+##  P koRpus         * 0.13-5     2021-02-02 [?] CRAN (R 4.0.5)
+##  P koRpus.lang.en * 0.1-4      2020-10-24 [?] CRAN (R 4.0.5)
+##  P labeling         0.4.2      2020-10-20 [?] CRAN (R 4.0.3)
+##  P later            1.1.0.1    2020-06-05 [?] CRAN (R 4.0.0)
+##  P lattice          0.20-41    2020-04-02 [?] CRAN (R 4.0.3)
+##  P lifecycle        1.0.0      2021-02-15 [?] CRAN (R 4.0.4)
+##  P listenv          0.8.0      2019-12-05 [?] CRAN (R 4.0.0)
+##  P lubridate      * 1.7.10     2021-02-26 [?] CRAN (R 4.0.4)
+##  P magrittr         2.0.1      2020-11-17 [?] CRAN (R 4.0.3)
+##  P Matrix           1.2-18     2019-11-27 [?] CRAN (R 4.0.3)
+##  P mime             0.10       2021-02-13 [?] CRAN (R 4.0.4)
+##  P modelr           0.1.8      2020-05-19 [?] CRAN (R 4.0.0)
+##  P modeltools       0.2-23     2020-03-05 [?] CRAN (R 4.0.3)
+##  P munsell          0.5.0      2018-06-12 [?] CRAN (R 4.0.0)
+##  P NLP              0.2-1      2020-10-14 [?] CRAN (R 4.0.3)
+##  P openxlsx       * 4.2.3      2020-10-27 [?] CRAN (R 4.0.3)
+##  P parallelly       1.24.0     2021-03-14 [?] CRAN (R 4.0.4)
+##  P patchwork      * 1.1.1      2020-12-17 [?] CRAN (R 4.0.3)
+##  P pillar           1.5.1      2021-03-05 [?] CRAN (R 4.0.4)
+##  P pkgconfig        2.0.3      2019-09-22 [?] CRAN (R 4.0.0)
+##  P plyr             1.8.6      2020-03-03 [?] CRAN (R 4.0.0)
+##  P prettyunits      1.1.1      2020-01-24 [?] CRAN (R 4.0.0)
+##  P progress         1.2.2      2019-05-16 [?] CRAN (R 4.0.0)
+##  P promises         1.2.0.1    2021-02-11 [?] CRAN (R 4.0.4)
+##  P purrr          * 0.3.4      2020-04-17 [?] CRAN (R 4.0.0)
+##  P R6               2.5.0      2020-10-28 [?] CRAN (R 4.0.3)
+##  P rappdirs         0.3.3      2021-01-31 [?] CRAN (R 4.0.4)
+##  P Rcpp             1.0.6      2021-01-15 [?] CRAN (R 4.0.3)
+##  P readr          * 1.4.0      2020-10-05 [?] CRAN (R 4.0.3)
+##  P readtext       * 0.80       2020-09-22 [?] CRAN (R 4.0.2)
+##  P readxl           1.3.1      2019-03-13 [?] CRAN (R 4.0.0)
+##    renv             0.13.1     2021-03-18 [1] CRAN (R 4.0.3)
+##  P reprex           2.0.0      2021-04-02 [?] CRAN (R 4.0.5)
+##  P reshape2         1.4.4      2020-04-09 [?] CRAN (R 4.0.0)
+##  P rlang            0.4.10     2020-12-30 [?] CRAN (R 4.0.3)
+##  P rmarkdown        2.7        2021-02-19 [?] CRAN (R 4.0.4)
+##  P rprojroot        2.0.2      2020-11-15 [?] CRAN (R 4.0.3)
+##  P rstudioapi       0.13       2020-11-12 [?] CRAN (R 4.0.3)
+##  P rvest          * 1.0.0      2021-03-09 [?] CRAN (R 4.0.4)
+##  P sass             0.3.1      2021-01-24 [?] CRAN (R 4.0.4)
+##  P scales         * 1.1.1      2020-05-11 [?] CRAN (R 4.0.0)
+##  P sessioninfo      1.1.1      2018-11-05 [?] CRAN (R 4.0.0)
+##  P shiny          * 1.6.0      2021-01-25 [?] CRAN (R 4.0.4)
+##  P shinyWidgets   * 0.6.0      2021-03-15 [?] CRAN (R 4.0.4)
+##  P slam             0.1-48     2020-12-03 [?] CRAN (R 4.0.3)
+##  P snakecase        0.11.0     2019-05-25 [?] CRAN (R 4.0.0)
+##  P SnowballC        0.7.0      2020-04-01 [?] CRAN (R 4.0.0)
+##  P stringdist     * 0.9.6.3    2020-10-09 [?] CRAN (R 4.0.3)
+##  P stringi        * 1.5.3      2020-09-09 [?] CRAN (R 4.0.2)
+##  P stringr        * 1.4.0      2019-02-10 [?] CRAN (R 4.0.2)
+##  P svglite          2.0.0      2021-02-20 [?] CRAN (R 4.0.4)
+##  P sylly          * 0.1-6      2020-09-20 [?] CRAN (R 4.0.5)
+##  P sylly.en         0.1-3      2018-03-19 [?] CRAN (R 4.0.5)
+##  P systemfonts      1.0.1      2021-02-09 [?] CRAN (R 4.0.4)
+##  P textdata         0.4.1      2020-05-04 [?] CRAN (R 4.0.5)
+##  P textstem       * 0.1.4      2018-04-09 [?] CRAN (R 4.0.5)
+##  P tibble         * 3.1.0      2021-02-25 [?] CRAN (R 4.0.4)
+##  P tidyr          * 1.1.3      2021-03-03 [?] CRAN (R 4.0.4)
+##  P tidyselect       1.1.0      2020-05-11 [?] CRAN (R 4.0.0)
+##  P tidytext       * 0.3.0      2021-01-06 [?] CRAN (R 4.0.3)
+##  P tidyverse      * 1.3.0      2019-11-21 [?] CRAN (R 4.0.0)
+##  P tm               0.7-8      2020-11-18 [?] CRAN (R 4.0.3)
+##  P tokenizers       0.2.1      2018-03-29 [?] CRAN (R 4.0.0)
+##  P topicmodels    * 0.2-12     2021-01-29 [?] CRAN (R 4.0.5)
+##  P utf8             1.2.1      2021-03-12 [?] CRAN (R 4.0.3)
+##  P vctrs            0.3.7      2021-03-29 [?] CRAN (R 4.0.5)
+##  P viridisLite      0.3.0      2018-02-01 [?] CRAN (R 4.0.0)
+##  P webshot          0.5.2      2019-11-22 [?] CRAN (R 4.0.0)
+##  P withr            2.4.1      2021-01-26 [?] CRAN (R 4.0.4)
+##  P XBRL             0.99.18    2017-03-28 [?] CRAN (R 4.0.5)
+##  P xfun             0.22       2021-03-11 [?] CRAN (R 4.0.4)
+##  P xml2           * 1.3.2      2020-04-23 [?] CRAN (R 4.0.0)
+##  P xtable           1.8-4      2019-04-21 [?] CRAN (R 4.0.0)
+##  P yaml             2.2.1      2020-02-01 [?] CRAN (R 4.0.0)
+##  P zip            * 2.1.1      2020-08-27 [?] CRAN (R 4.0.2)
+## 
+## [1] E:/R/R_projects/MMA22_ACC/renv/library/R-4.0/x86_64-w64-mingw32
+## [2] C:/Users/MUcke/AppData/Local/Temp/Rtmpy4W2Au/renv-system-library
+## 
+##  P -- Loaded and on-disk path mismatch.</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

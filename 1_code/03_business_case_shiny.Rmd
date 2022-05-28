@@ -30,39 +30,43 @@ show the Layout of the dashboard.
 
 # Input Function
 
-![Function: Variable
-Cost](images/2022-05-27%2019_23_40-C__Users_MUcke_Pictures_Greenshot.png)
+![Shiny - Input Functions (Variable
+Costs)](images/Shiny%20-%20Input%20Functions%20(Variable%20Costs).png)
 
-![Function: Fixed Costs](images/2022-05-27%2019_38_29-.png)
+![Shiny - Input Functions (Fixed
+Costs)](images/Shiny%20-%20Input%20Functions%20(Fixed%20Costs).png)
 
-![Function: Price](images/2022-05-27%2019_38_51-.png)
+![Shiny - Input Functions
+(Price)](images/Shiny%20-%20Input%20Functions%20(Price).png)
 
 # Contribution Margin
 
-![Contribution Margin](images/2022-05-27%2019_23_52-.png)
+![Shiny - Contribution
+Margin](images/Shiny%20-%20Contribution%20Margin.png)
 
 # Sensitivity Analysis
 
-![Sensitivity Analysis:
-Volume](images/2022-05-27%2019_24_03-C__Users_MUcke_Pictures_Greenshot.png)
+![Shiny - Sensitivity Analysis
+(Volume)](images/Shiny%20-%20Sensitivity%20Analysis%20(Volume).png)
 
-![Sensitivity Analysis:
-Price](images/2022-05-27%2019_39_05-127.0.0.1_3382.png)
+![Shiny - Sensitivity Analysis
+(Price)](images/Shiny%20-%20Sensitivity%20Analysis%20(Price).png)
 
-![Sensitivity Analysis: Variable
-Cost](images/2022-05-27%2019_39_16-127.0.0.1_3382.png)
+![Shiny - Sensitivity Analysis (Variable
+Cost)](images/Shiny%20-%20Sensitivity%20Analysis%20(Variable%20Cost).png)
 
-![Sensitivity Analysis: Fixed
-Cost](images/2022-05-27%2019_39_27-C__Users_MUcke_Pictures_Greenshot.png)
+![Shiny - Sensitivity Analysis (Fixed
+Cost)](images/Shiny%20-%20Sensitivity%20Analysis%20(Fixed%20Cost).png)
 
-![Sensitivity Analysis: Volume Discount
-Factor](images/2022-05-27%2019_39_37-127.0.0.1_3382.png)
+![Shiny - Sensitivity Analysis (Volume
+Discount)](images/Shiny%20-%20Sensitivity%20Analysis%20(Volume%20Discount).png)
 
 # Monte Carlo Simulation
 
-![Monte Carlo Simulation](images/2022-05-27%2019_24_13-.png)
+![Shiny - Monte Carlo
+Analysis](images/Shiny%20-%20Monte%20Carlo%20Analysis.png)
 
 # Amortization
 
-![Amortization
-Graph](images/2022-05-27%2019_24_22-C__Users_MUcke_Pictures_Greenshot.png)
+![Shiny - Amortization
+Analysis](images/Shiny%20-%20Amortization%20Analysis.png)

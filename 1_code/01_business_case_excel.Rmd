@@ -26,20 +26,21 @@ to show the Layout of the dashboard.
 
 # Input Sheet
 
-![Excel Business Case (Input)](images/2022-05-27%2018_32_21-.png)
+![Excel (Input Data)](images/Excel%20(Input%20Data).png)
 
 # Function Sheet
 
-![Function: Variable
-Cost](images/2022-05-27%2018_35_09-business_case.xlsx%20%20-%20%201%20-%20Excel.png)
+![Excel (Input Graphs)](images/Excel%20(Input%20Graphs).png)
 
-![Function: Fixed
-Cost](images/2022-05-27%2018_35_27-business_case.xlsx%20%20-%20%201%20-%20Excel-01.png)
+# Price Volume Graph
 
-![Function:
-Price](images/2022-05-27%2018_34_53-business_case.xlsx%20%20-%20%201%20-%20Excel.png)
+![Excel (Price-Volume Graph)](images/Excel%20(Price-Volume%20Graph).png)
 
-# Contribution Margin Sheet
+# Contribution Margin
 
-![Contribution
-Margin](images/2022-05-27%2018_38_08-business_case.xlsx%20%20-%20%202%20-%20Excel.png)
+![Excel (Contribution
+Margin)](images/Excel%20(Contribution%20Margin).png)
+
+# Amortization
+
+![Excel (Amortization)](images/Excel%20(Amortization).png)

@@ -2,7 +2,7 @@ name: "Accounting Class"
 title: "Accounting Class"
 type: inverse
 left:
-  - text: "Day 1 - Basics and Business Case"
+  - text: "Day 1 - Business Case"
     menu:
       - text: "Session 1 - Business Case (Excel Sheet)"
         href: ./01_business_case_excel.html
@@ -10,16 +10,22 @@ left:
         href: ./02_business_case_html.html
       - text: "Session 2 - Business Case (Shiny App)"
         href: ./03_business_case_shiny.html
-  - text: "Day 2 - Analysing Data"
+  - text: "Day 2 - Getting and Analyizing Financial Data"
     menu:
-       - text: "Session 1 - XXX"
+       - text: "Session 1 - Getting XBRL Files"
+         href: ./00_get_edgar_data.html
+       - text: "Session 2 - Annual Reports"
+         href: ./00_get_arcom_data.html
+       - text: "Session 3 - Parsing XBRL Files"
+         href: ./00_xbrl_data.html
+       - text: "Session 4 - Analyzing XBRL Files"
          href: ./04_xbrl_analyze.html
-       - text: "Session 2 - XXX"
+       - text: "Session 5 - Textual Analysis (US/Europe)"
          href: ./05_textual_analysis.html
-       - text: "Session 3 - XXX"
-         href: ./06_excel_ratio_analysis.html
 right:
-  - text: "Contact"
-    href: ./contact.html
+  - text: "LinkedIn"
+    href: https://www.linkedin.com/in/matthias-uckert-579644a9/
+  - text: "University"
+    href: https://www.bwl.uni-mannheim.de/en/daske/team/research-assistants/matthias-uckert-msc/
   - text: "GitHub"
     href: https://github.com/MatthiasUckert

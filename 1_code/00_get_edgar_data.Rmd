@@ -1,0 +1,665 @@
+---
+title: "Getting Data from the Web: SEC's EDGAR"
+author: "Matthias Uckert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    self_contained: no
+---
+
+------------------------------------------------------------------------
+
+# Description
+
+In this session we will retrieve information from the SEC EDGAR
+database. Getting data from EDGAR is exemplary for getting information
+from the web, where we have API (Application Programming Interface)
+access.
+
+Throughout this script we will use custom functions. All the script
+specific functions are stored in this folder:
+**1_code/00_functions/f-get_edgar_data.R** (As a reference I also put
+the important functions in the script)
+
+EDGAR is an established source of financial information. But normally
+companies and researchers start gathering financial information from
+commercial databases such as **Bureau Van Dijk - Orbis**, **Refinitiv -
+Datastream** or **Compustat**
+
+-   Compustat: <https://wrds-www.wharton.upenn.edu/>
+
+-   Orbis: <https://orbis4.bvdinfo.com/ip>
+
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(here::here())) 
+knitr::opts_chunk$set(root.dir = normalizePath(here::here())) 
+```
+
+------------------------------------------------------------------------
+
+# Script Setup
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse); library(edgarWebR); library(lubridate); library(here)
+library(furrr); library(stringi); library(textstem); library(tidytext)
+library(janitor); library(tools); library(patchwork); library(scales)
+library(kableExtra); library(openxlsx)
+
+source("1_code/functions/f-all.R")
+source("1_code/00_download_data.R")
+source("1_code/functions/f-get_edgar_data.R")
+```
+
+------------------------------------------------------------------------
+
+# Code
+
+------------------------------------------------------------------------
+
+## Paths
+
+```{r paths}
+lst_paths <- list(
+  dir_main    = "2_output/00_get_edgar_data/",
+  path_filing = "2_output/00_get_edgar_data/edgar_filings.rds",
+  path_detail = "2_output/00_get_edgar_data/edgar_details.rds",
+  path_f500   = "2_output/00_get_edgar_data/f500.xlsx"
+) %>% create_dirs()
+```
+
+------------------------------------------------------------------------
+
+## Get Fortune 500 Companies
+
+To get our initial sample, we use an open source data repository
+'datahub.io' to retrieve the [**fortune 500 companies**]{.underline}
+with some financial information. We won't use the complete data set, but
+filter for the [**top 100**]{.underline} companies (using less companies
+will let the code run faster) with the highest market capitalization.
+You can change the number of companies by changing the integer vector:
+**.n_companies** in the chunk below.
+
+<details>
+
+<summary>
+
+We use a custom function: **get_f500()** to download the Fortune 500
+dataset ***(click on arrow to show)***.
+
+</summary>
+
+```{r function: getf500()}
+get_f500 <- function() {
+  
+  # Source: https://datahub.io/core/s-and-p-500-companies-financials#r
+  
+  json_file <- 'https://datahub.io/core/s-and-p-500-companies-financials/datapackage.json'
+  json_data <- jsonlite::fromJSON(paste(readLines(json_file), collapse=""))
+
+  for(i in 1:length(json_data$resources$datahub$type)){
+    if(json_data$resources$datahub$type[i]=='derived/csv'){
+      path_to_file = json_data$resources$path[i]
+      data <- read.csv(url(path_to_file))
+    }
+  }
+  
+  return(data)
+}
+```
+
+</details>
+
+------------------------------------------------------------------------
+
+### Download Dataset
+
+```{r get-fortune500-firms, message=FALSE, warning=FALSE}
+.n_companies <- 100
+  # browseURL("https://datahub.io/core/s-and-p-500-companies-financials#r")
+tab_f500_all <- get_f500() %>%
+  # Function from the janitor package, makes nice column names
+  clean_names() %>%
+  # Arrange, so that the highest market cap appears first in the dataframe
+  arrange(desc(market_cap)) 
+
+write.xlsx(tab_f500_all, lst_paths$path_f500, TRUE)
+
+# Select only the firms with the highest market cap
+tab_f500_t10 <- slice(tab_f500_all, 1:.n_companies)
+
+# Quick look at the companies we use
+select(tab_f500_t10, symbol, name, sector)[1:10, ] %>%
+  show_table()
+```
+
+------------------------------------------------------------------------
+
+## Get Company Index-Links
+
+Before we download data in bulk, let us first explore the SEC's EDGAR
+website:
+
+```{r browse-url1}
+# browseURL(tab_f500_all$sec_filings[1])
+```
+
+The first step is to retrieve the index-links for the fortune 500
+companies we selected in the first step. Downloading data from the web
+is always tricky. We can run into request limits, client or server side
+issues. So thinking about how to set up a download is crucial in order
+to make the analysis
+
+<details>
+
+<summary>
+
+We use a custom function: **map_company_filings()** to retrieve the
+Index Links from EDGAR ***(click on arrow to show)***.
+
+</summary>
+
+```{r function: map_company_filings()}
+map_company_filings <- function(
+  .tickers, .ownership = FALSE, .type = "", .before = "",
+  .count = 100, .page = 1, .progress = TRUE, .sleep = 0, .retry = 5) {
+  sf <- purrr::safely(edgarWebR::company_filings)
+  names(.tickers) <- .tickers
+  
+  
+  pb <- progress::progress_bar$new(total = length(.tickers))
+  
+  lst <- purrr::map(
+    .x = .tickers,
+    .f = ~ {
+      if (.progress) pb$tick() # Progress bar
+      Sys.sleep(.sleep) # Optionally, a sleep parameter
+      check <- sf(.x, .ownership, .type, .before, .count, .page) # store results
+      # check if we run into an error, and repeat as long until it works
+      if (!is.null(check$error)) {
+        for (i in seq_len(.retry)) {
+          check <- sf(.x, .ownership, .type, .before, .count, .page)
+          if (is.null(check$error)) {
+            break
+          }
+        }
+      }
+      return(check)
+    }
+  ) %>%
+    purrr::transpose() %>%
+    purrr::map(., purrr::compact)
+  
+  print(paste0("Results: ", scales::comma(length(lst$result))))
+  print(paste0("Errors:  ", scales::comma(length(lst$error))))
+  
+  return(lst)
+}
+```
+
+</details>
+
+------------------------------------------------------------------------
+
+### Download Index-Links
+
+In addition to our custom function, we use a really simple caching
+procedure so that we don't have to re-run the whole expression if we
+already extracted index-links (throughout the session you will see such
+easy caching, if you use code in production you can also switch to
+already published libraries auch as R.cache).
+
+```{r download-index-links, message=FALSE, warning=FALSE}
+if (!file.exists(lst_paths$path_filing)) {
+  .prc <- tibble(symbol = character(), .rows = 0)
+} else {
+  .prc <- read_rds(lst_paths$path_filing)
+}
+
+tab_f500_use <- filter(tab_f500_t10, !symbol %in% .prc$symbol)
+
+if (nrow(tab_f500_use) > 0) {
+  lst_filings <- map_company_filings(
+    .tickers = tab_f500_use$symbol, .type = "10-K", .count = 100, 
+    .sleep = .2, .progress = FALSE
+    )
+  tab_filings <- bind_rows(.prc, bind_rows(lst_filings$result, .id = "symbol"))
+  write_rds(tab_filings, lst_paths$path_filing)
+} else {
+  tab_filings <- .prc
+}
+
+tab_filings <- tab_filings %>%
+  mutate(id = stri_replace_all_fixed(
+    basename(href), paste0(".", file_ext(href)), "")
+    ) %>% distinct(id, .keep_all = TRUE)
+
+```
+
+In total we got 8 errors. Let us look at an example error case.
+
+```{r show-errors}
+tab_f500_t10 %>%
+  filter(!symbol %in% read_rds(lst_paths$path_filing)$symbol) %>%
+  show_table(.n = 5)
+# browseURL("https://www.sec.gov/cgi-bin/browse-edgar?company=BRK.B&match=&filenum=&State=&Country=&SIC=&myowner=exclude&action=getcompany")
+```
+
+Let's quickly look at the result. (There are several ways to do this.
+For small Dataframes we can simply use the RStudio build-in viewer.
+Here, we wrote a simple function show_table() that formats the output
+nicely in HTML format)
+
+```{r show-index-links}
+show_table(tab_filings, .n = 5)
+```
+
+------------------------------------------------------------------------
+
+## Get Company Details
+
+After we got the index links from EDGAR, we proceed by scraping filing
+details.
+
+<details>
+
+<summary>
+
+We use a custom function: **map_filing_details()** to retrieve the firm
+details from EDGAR ***(click on arrow to show)***.
+
+</summary>
+
+```{r function: map_filing_details()}
+download_edgar_files <- function(.tab, .dir, .retry = 5, .sleep = 1) {
+  if (!dir.exists(.dir)) dir.create(.dir, recursive = TRUE)
+  files_zip <- list.files(.dir, pattern = "zip$")
+  
+  
+  tab_ <- .tab %>%
+    select(year, symbol, document, href, file_ext) %>%
+    mutate(
+      file_ext = case_when(
+        file_ext == "txt" ~ "txt",
+        startsWith(file_ext, "htm") ~ "htm",
+        TRUE ~ "xxx"
+      ),
+      path_downlod = file.path(.dir, document),
+      path_zip = file.path(.dir, paste0(file_ext, "_", symbol, "-", year, ".zip"))
+    ) %>%
+    group_by(symbol, year, path_zip) %>%
+    summarise(across(c(document, href, path_downlod), list), .groups = "drop") %>%
+    filter(!basename(path_zip) %in% files_zip)
+  
+  if (nrow(tab_) == 0) return(NULL)
+  
+  
+  lst_ <- group_split(tab_, symbol, year)
+  
+  
+  
+  
+  f_try <- function(.url, .path) {
+    try(download.file(.url, .path, quiet = TRUE, mode = "wb"), silent = TRUE)
+  }
+  
+  f_download <- function(.row, .retry) {
+    
+    urls_ <- unlist(.row$href)
+    paths_ <- unlist(.row$path_downlod)
+    
+    lgl_sucess_ <- logical(length(urls_))
+    
+    for (i in seq_len(length(urls_))) {
+      check_ <- f_try(urls_[i], paths_[i])
+      
+      if (inherits(check_, "try-error")) {
+        for (j in 1:.retry) {
+          check_ <- f_try(urls_[i], paths_[i])
+          if (!inherits(check_, "try-error")) break
+          Sys.sleep(.sleep)
+        }
+      }
+      
+      lgl_sucess_[i] <- ifelse(inherits(check_, "try-error"), FALSE, TRUE)
+      Sys.sleep(.sleep)
+      
+    }
+    .row[["success"]] <- list(lgl_sucess_)
+    return(.row)
+    
+  }
+  
+  f_zip <- function(.row, .dir) {
+    paths_ <- unlist(.row$path_downlod)
+    zip_ <- .row$path_zip
+    files_ <- list.files(.dir)
+    paths_ <- paths_[basename(paths_) %in% files_]
+    
+    zip::zipr(zip_, paths_, compression_level = 9)
+    invisible(file.remove(paths_))
+    
+  }
+  
+  f_all <- function(.row, .dir, .retry) {
+    tab_ <- suppressMessages(suppressWarnings(invisible(f_download(.row, .retry))))
+    suppressMessages(suppressWarnings(invisible(f_zip(.row, .dir))))
+    return(tab_)
+  }
+  
+  f_all(.row = lst_[[1]], .dir = .dir, .retry)
+  
+  pb <- progress::progress_bar$new(total = length(lst_))
+  map_dfr(lst_, ~ {pb$tick(); f_all(.x, .dir, .retry)})
+  
+  
+}
+```
+
+</details>
+
+------------------------------------------------------------------------
+
+### Download Details
+
+```{r download-details}
+if (!file.exists(lst_paths$path_detail)) {
+  .prc <- tibble(id = character(), .rows = 0)
+} else {
+  .prc <- read_rds(lst_paths$path_detail)
+}
+tab_filings_use <- filter(tab_filings, !id %in% .prc$id)
+
+if (nrow(tab_filings_use) > 0) {
+  lst_details <- map_filing_details(
+    .id = tab_filings_use$id, .hrefs = tab_filings_use$href, .sleep = 1
+    )
+  lst_details <- transpose(lst_details$result)
+  lst_details <- map(lst_details, ~ bind_rows(.x, .id = "id"))
+  tab_details <- reduce(lst_details, left_join, by = "id")
+  
+  tab_details <- bind_rows(.prc, .tab_details)
+  write_rds(.tab_details, lst_paths$path_detail)
+} else {
+  tab_details <- .prc
+}
+rm(tab_filings_use)
+
+```
+
+From the **`r comma(nrow(tab_filings))`** index links we retrieved in
+the last step, we got **`r comma(nrow(tab_details))`** different
+document links.
+
+It's important to notice, that such data retrieval tasks often result in
+very large datasets.
+
+------------------------------------------------------------------------
+
+```{r show-details, echo=FALSE}
+tab_details %>%
+  mutate(year = year(period_date)) %>%
+  rename(type = type.x) %>%
+  group_by(type, year) %>%
+  count() %>%
+  pivot_wider(names_from = year, values_from = n, names_sort = TRUE, values_fill = 0) %>%
+  show_table()
+```
+
+------------------------------------------------------------------------
+
+## Select Documents for Download
+
+In order to reduce the amount of documents we download, we pre-select
+specific documents.
+
+```{r select-documents}
+tab_download <- tab_details %>%
+  distinct() %>%
+  left_join(select(tab_filings, symbol, id), by = "id") %>%
+  mutate(
+    file_ext = tools::file_ext(href),
+    year = year(period_date),
+    size = size / 1e6,
+    across(where(is.character), ~ stri_replace_all_regex(., "[[:blank:]]+", " ")),
+    across(c(type.y, description.y), ~ if_else(. %in% c("", " "), NA_character_, .))
+    ) %>%
+  select(id, document, state = company_incorporation_state, 
+         sic = sic_code, year, symbol, company_name, company_cik, 
+         type1 = type.x, type2 = type.y, desc = description.y, 
+         period_date, href, size, file_ext) %>%
+  filter(between(year, 2005, 2020))
+```
+
+```{r show-selected-docs, echo=FALSE}
+tab_download %>%
+  rename(type = type1) %>%
+  group_by(type, year) %>%
+  count() %>%
+  pivot_wider(names_from = year, values_from = n, names_sort = TRUE, values_fill = 0) %>%
+  show_table()
+```
+
+------------------------------------------------------------------------
+
+## Overview: Number and Size of Documents
+
+As you can see in the plot and the prints below, getting data from the
+web can result in really big data sets. (Keep in mind that we only
+downloaded data for 100 companies). The **download_edgar_files()**
+function will alleviate this problem by zipping data before writing to
+disk.
+
+```{r plot-size-and-num}
+.tmp <- tab_download %>%
+  group_by(year) %>%
+  summarise(size = sum(size), n = n(), .groups = "drop")
+
+
+.geom_size <- .tmp %>%
+  ggplot(aes(x = year, y = size)) +
+  geom_line(color = "blue") + 
+  geom_point() + 
+  labs(x = NULL, y = NULL) + 
+  scale_y_continuous(labels = scales::comma) + 
+  theme_bw() + 
+  ggtitle("Size per Year (in MB)")
+
+.geom_n <- .tmp %>%
+  ggplot(aes(x = year, y = n)) +
+  geom_col(fill = "blue") + 
+  labs(x = NULL, y = NULL) + 
+  scale_y_continuous(labels = scales::comma) + 
+  theme_bw() + 
+  ggtitle("Number of Documents per year")
+
+.geom_size / .geom_n
+  
+```
+
+```{r print-txt-size}
+tab_download_txt <- tab_download %>%
+  filter(file_ext == "txt", desc == "Complete submission text file") %>%
+  arrange(symbol, desc(year), desc(period_date)) %>%
+  distinct(symbol, year, .keep_all = TRUE) %>%
+  distinct(document, .keep_all = TRUE)
+
+cat(paste0(
+  "Docs: ", comma(nrow(tab_download_txt)), "\n",
+  "Size: ", comma(sum(tab_download_txt$size)), " MB")
+  )
+```
+
+```{r print-htm-size}
+tab_download_htm <- tab_download %>%
+  filter(startsWith(file_ext, "htm"), grepl("10-K", desc)) %>%
+  arrange(symbol, desc(year), desc(period_date)) %>%
+  distinct(symbol, year, .keep_all = TRUE) %>%
+  distinct(document, .keep_all = TRUE)
+
+cat(paste0(
+  "Docs: ", comma(nrow(tab_download_htm)), "\n",
+  "Size: ", comma(sum(tab_download_htm$size)), " MB")
+  )
+```
+
+```{r print-xxx-size}
+tab_download_xxx <- tab_download %>%
+  filter(startsWith(file_ext, "x")) %>%
+  arrange(symbol, desc(year), desc(period_date)) %>%
+  distinct(document, .keep_all = TRUE)
+
+cat(paste0(
+  "Docs: ", comma(nrow(tab_download_xxx)), "\n",
+  "Size: ", comma(sum(tab_download_xxx$size)), " MB")
+  )
+```
+
+------------------------------------------------------------------------
+
+## Download Documents
+
+<details>
+
+<summary>
+
+We use a custom function: **download_edgar_files()** to download
+documents from EDGAR ***(click on arrow to show)***.
+
+</summary>
+
+```{r function: download_edgar_files()}
+download_edgar_files <- function(.tab, .dir, .retry = 5, .sleep = 1) {
+  if (!dir.exists(.dir)) dir.create(.dir, recursive = TRUE)
+  files_zip <- list.files(.dir, pattern = "zip$")
+  
+  
+  tab_ <- .tab %>%
+    select(year, symbol, document, href, file_ext) %>%
+    mutate(
+      file_ext = case_when(
+        file_ext == "txt" ~ "txt",
+        startsWith(file_ext, "htm") ~ "htm",
+        TRUE ~ "xxx"
+      ),
+      path_downlod = file.path(.dir, document),
+      path_zip = file.path(.dir, paste0(file_ext, "_", symbol, "-", year, ".zip"))
+    ) %>%
+    group_by(symbol, year, path_zip) %>%
+    summarise(across(c(document, href, path_downlod), list), .groups = "drop") %>%
+    filter(!basename(path_zip) %in% files_zip)
+  
+  if (nrow(tab_) == 0) return(NULL)
+  
+  lst_ <- group_split(tab_, symbol, year)
+  
+  f_try <- function(.url, .path) {
+    try(download.file(.url, .path, quiet = TRUE, mode = "wb"), silent = TRUE)
+  }
+  
+  f_download <- function(.row, .retry) {
+    
+    urls_ <- unlist(.row$href)
+    paths_ <- unlist(.row$path_downlod)
+    
+    lgl_sucess_ <- logical(length(urls_))
+    
+    for (i in seq_len(length(urls_))) {
+      check_ <- f_try(urls_[i], paths_[i])
+      
+      if (inherits(check_, "try-error")) {
+        for (j in 1:.retry) {
+          check_ <- f_try(urls_[i], paths_[i])
+          if (!inherits(check_, "try-error")) break
+          Sys.sleep(.sleep)
+        }
+      }
+      
+      lgl_sucess_[i] <- ifelse(inherits(check_, "try-error"), FALSE, TRUE)
+      Sys.sleep(.sleep)
+      
+    }
+    .row[["success"]] <- list(lgl_sucess_)
+    return(.row)
+    
+  }
+  
+  f_zip <- function(.row, .dir) {
+    paths_ <- unlist(.row$path_downlod)
+    zip_ <- .row$path_zip
+    files_ <- list.files(.dir)
+    paths_ <- paths_[basename(paths_) %in% files_]
+    
+    zip::zipr(zip_, paths_, compression_level = 9)
+    invisible(file.remove(paths_))
+    
+  }
+  
+  f_all <- function(.row, .dir, .retry) {
+    tab_ <- suppressMessages(suppressWarnings(invisible(f_download(.row, .retry))))
+    suppressMessages(suppressWarnings(invisible(f_zip(.row, .dir))))
+    return(tab_)
+  }
+  
+  f_all(.row = lst_[[1]], .dir = .dir, .retry)
+  
+  pb <- progress::progress_bar$new(total = length(lst_))
+  map_dfr(lst_, ~ {pb$tick(); f_all(.x, .dir, .retry)})
+  
+  
+}
+```
+
+</details>
+
+------------------------------------------------------------------------
+
+```{r download-files}
+.dir_docs <- "2_output/00_get_edgar_data/documents/"
+tab_xxx <- download_edgar_files(tab_download_xxx, .dir_docs, 10, 2)
+tab_htm <- download_edgar_files(tab_download_htm, .dir_docs, 10, 2)
+tab_txt <- download_edgar_files(tab_download_txt, .dir_docs, 10, 2)
+
+tab_zip_files <- list_files_tab(.dir_docs, info = TRUE) %>%
+  select(doc_id, file_ext, path, size) %>%
+  mutate(size = size / 1e6)
+```
+
+Below you can see that we were able to reduce the dataset from more than
+40 GB to just 3.7 GB by simply zipping the output.
+
+```{r print-all-size}
+cat(paste0(
+  "Docs: ", comma(nrow(tab_zip_files)), "\n",
+  "Size: ", comma(sum(tab_zip_files$size)), " MB")
+  )
+```
+
+------------------------------------------------------------------------
+
+## Save Files
+
+```{r save-output}
+write_rds(tab_download_htm, "2_output/00_get_edgar_data/htm_download.rds")
+write_rds(tab_download_txt, "2_output/00_get_edgar_data/txt_download.rds")
+write_rds(tab_download_xxx, "2_output/00_get_edgar_data/xxx_download.rds")
+```
+
+------------------------------------------------------------------------
+
+# Own Function Calls
+
+```{r function-call}
+lsf.str()
+```
+
+------------------------------------------------------------------------
+
+# Session Info
+
+```{r session-info}
+sessioninfo::session_info()
+```

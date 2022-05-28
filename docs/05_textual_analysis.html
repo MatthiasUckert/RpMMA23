@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthias Uckert" />
+
+
+<title>Textual Analysis</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  { color: #cccccc; background-color: #303030; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ffcfaf; } /* Alert */
+code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #dca3a3; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #f0dfaf; } /* ControlFlow */
+code span.ch { color: #dca3a3; } /* Char */
+code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code span.co { color: #7f9f7f; } /* Comment */
+code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code span.do { color: #7f9f7f; } /* Documentation */
+code span.dt { color: #dfdfbf; } /* DataType */
+code span.dv { color: #dcdccc; } /* DecVal */
+code span.er { color: #c3bf9f; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #c0bed1; } /* Float */
+code span.fu { color: #efef8f; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+code span.kw { color: #f0dfaf; } /* Keyword */
+code span.op { color: #f0efd0; } /* Operator */
+code span.ot { color: #efef8f; } /* Other */
+code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code span.sc { color: #dca3a3; } /* SpecialChar */
+code span.ss { color: #cc9393; } /* SpecialString */
+code span.st { color: #cc9393; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #cc9393; } /* VerbatimString */
+code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Accounting Class</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Day 1 - Business Case
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./01_business_case_excel.html">Session 1 - Business Case (Excel Sheet)</a>
+    </li>
+    <li>
+      <a href="./02_business_case_html.html">Session 2 - Business Case (HTML Layout)</a>
+    </li>
+    <li>
+      <a href="./03_business_case_shiny.html">Session 2 - Business Case (Shiny App)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Day 2 - Getting and Analyizing Financial Data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./00_get_edgar_data.html">Session 1 - Getting XBRL Files</a>
+    </li>
+    <li>
+      <a href="./00_get_arcom_data.html">Session 2 - Annual Reports</a>
+    </li>
+    <li>
+      <a href="./00_xbrl_data.html">Session 3 - Parsing XBRL Files</a>
+    </li>
+    <li>
+      <a href="./04_xbrl_analyze.html">Session 4 - Analyzing XBRL Files</a>
+    </li>
+    <li>
+      <a href="./05_textual_analysis.html">Session 5 - Textual Analysis (US/Europe)</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://www.linkedin.com/in/matthias-uckert-579644a9/">LinkedIn</a>
+</li>
+<li>
+  <a href="https://www.bwl.uni-mannheim.de/en/daske/team/research-assistants/matthias-uckert-msc/">University</a>
+</li>
+<li>
+  <a href="https://github.com/MatthiasUckert">GitHub</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Textual Analysis</h1>
+<h4 class="author">Matthias Uckert</h4>
+<h4 class="date">28 May, 2022</h4>
+
+</div>
+
+
+<hr />
+<div id="description" class="section level1">
+<h1>Description</h1>
+<p>In this session will we use the SEC EDGAR 10-K text files and the
+annual reports from www.AnnualReport.com we downloaded in on day 1 in
+session 1 and session 2. The purpose of this session is to show the
+procedure how to extract information from unstructured text.</p>
+<p>Throughout this script we will use custom functions to download and
+transform data. All the script specific functions are stored in this
+folder: <strong>1_code/00_functions/f-f-textual_analysis.R</strong> (As
+a reference I also put the important functions in the script)</p>
+<hr />
+</div>
+<div id="script-setup" class="section level1">
+<h1>Script Setup</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse); <span class="fu">library</span>(tidytext); <span class="fu">library</span>(readtext); <span class="fu">library</span>(furrr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fst); <span class="fu">library</span>(stringi); <span class="fu">library</span>(ISOcodes); <span class="fu">library</span>(scales); <span class="fu">library</span>(topicmodels)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;1_code/functions/f-all.R&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;1_code/functions/f-textual_analysis.R&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>.workers <span class="ot">&lt;-</span> <span class="fu">min</span>(<span class="fu">availableCores</span>() <span class="sc">/</span> <span class="dv">2</span>, <span class="dv">16</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="code" class="section level1">
+<h1>Code</h1>
+<hr />
+<div id="paths-files" class="section level2">
+<h2>Paths &amp; Files</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>lst_paths <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_main =</span> <span class="st">&quot;2_output/05_textual_analysis&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_pdf =</span> <span class="st">&quot;2_output/00_get_arcom_data/documents/&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_sec =</span> <span class="st">&quot;2_output/00_get_edgar_data/documents/&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_pdf_data =</span> <span class="st">&quot;2_output/00_get_arcom_data/arcom_firm_data.rds&quot;</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_sec_data =</span> <span class="st">&quot;2_output/00_get_edgar_data/txt_download.rds&quot;</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_token =</span> <span class="st">&quot;2_output/05_textual_analysis/token&quot;</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_stop =</span> <span class="st">&quot;2_output/05_textual_analysis/lm_stop.rds&quot;</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_1gram =</span> <span class="st">&quot;2_output/05_textual_analysis/1gram.rds&quot;</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_2gram =</span> <span class="st">&quot;2_output/05_textual_analysis/2gram.rds&quot;</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_frq_1gram =</span> <span class="st">&quot;2_output/05_textual_analysis/frq_1gram.rds&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_frq_2gram =</span> <span class="st">&quot;2_output/05_textual_analysis/frq_2gram.rds&quot;</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_com_1gram =</span> <span class="st">&quot;2_output/05_textual_analysis/com_1gram.rds&quot;</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_com_2gram =</span> <span class="st">&quot;2_output/05_textual_analysis/com_2gram.rds&quot;</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_lda =</span> <span class="st">&quot;2_output/05_textual_analysis/lda.rds&quot;</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">path_not_2gram =</span> <span class="st">&quot;2_output/05_textual_analysis/not_2gram.rds&quot;</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">dir_cache =</span> <span class="st">&quot;2_output/04_xbrl_analyze/cache/cache_&quot;</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">create_dirs</span>()</span></code></pre></div>
+<hr />
+<p>First we read in all the raw files stored in the session specific
+folders for EDGAR and www.AnnualReport.com</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tab_files_pdf <span class="ot">&lt;-</span> <span class="fu">list_files_tab</span>(lst_paths<span class="sc">$</span>dir_pdf, <span class="at">reg =</span> <span class="st">&quot;pdf$&quot;</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>tab_files_sec <span class="ot">&lt;-</span> <span class="fu">list_files_tab</span>(lst_paths<span class="sc">$</span>dir_sec, <span class="at">reg =</span> <span class="st">&quot;zip$&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">startsWith</span>(doc_id, <span class="st">&quot;txt&quot;</span>))</span></code></pre></div>
+<hr />
+</div>
+<div id="read-tables" class="section level2">
+<h2>Read Tables</h2>
+<p>Additionally, we read in company information to conduct analyses
+between Europe aand the United States. We do so by recoding all non-US
+countries to ‘Europe’</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>tab_pdf_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_pdf_data) <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>isin)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>tab_sec_data <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_sec_data) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">doc_id =</span> <span class="fu">paste0</span>(file_ext, <span class="st">&quot;_&quot;</span>, symbol, <span class="st">&quot;-&quot;</span>, year)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, year, <span class="at">company =</span> company_name) <span class="sc">%&gt;%</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country_code =</span> <span class="st">&quot;USA&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">select</span>(ISO_3166_1, <span class="at">country_code =</span> Alpha_3, <span class="at">country =</span> Name), <span class="at">by =</span> <span class="st">&quot;country_code&quot;</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>tab_data <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(tab_pdf_data, tab_sec_data) <span class="sc">%&gt;%</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">if_else</span>(<span class="sc">!</span>country <span class="sc">==</span> <span class="st">&quot;United States&quot;</span>, <span class="st">&quot;Europe&quot;</span>, country))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(tab_pdf_data, tab_sec_data)</span></code></pre></div>
+<hr />
+</div>
+<div id="select-files" class="section level2">
+<h2>Select Files</h2>
+<p>To limit the dataset we read into memory, we restrict our analysis to
+the time frame between 2006-2015 (10 years) and only use companies for
+which we have a balanced panel</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>tab_files <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(tab_files_pdf, tab_files_sec) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">select</span>(tab_data, doc_id, country, year, company), <span class="at">by =</span> <span class="st">&quot;doc_id&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(country)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">between</span>(year, <span class="dv">2006</span>, <span class="dv">2015</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(company) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">all</span>(<span class="dv">2006</span><span class="sc">:</span><span class="dv">2015</span> <span class="sc">%in%</span> year))</span></code></pre></div>
+<p>The resulting sample looks the follows:</p>
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+country
+</th>
+<th style="text-align:right;">
+n_firm
+</th>
+<th style="text-align:right;">
+n_doc
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Europe
+</td>
+<td style="text-align:right;">
+140
+</td>
+<td style="text-align:right;">
+1400
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+United States
+</td>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:right;">
+590
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To have equal amount of United States and European files we sample
+our set to 25 companies per jurisdiction. In total we will have 50
+comapanies over 10 years which amounts to 500 files that we analyze</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>tmp <span class="ot">&lt;-</span> <span class="fu">distinct</span>(tab_files, country, company) <span class="sc">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country) <span class="sc">%&gt;%</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">25</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>tab_files <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(tab_files, tmp, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;company&quot;</span>))</span></code></pre></div>
+<p>The resulting sample looks the follows:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tab_files <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(country) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n_firm =</span> <span class="fu">n_distinct</span>(company), <span class="at">n_doc =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_table</span>()</span></code></pre></div>
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+country
+</th>
+<th style="text-align:right;">
+n_firm
+</th>
+<th style="text-align:right;">
+n_doc
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Europe
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+250
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+United States
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+250
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tab_files_pdf <span class="ot">&lt;-</span> <span class="fu">filter</span>(tab_files, country <span class="sc">==</span> <span class="st">&quot;Europe&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>tab_files_sec <span class="ot">&lt;-</span> <span class="fu">filter</span>(tab_files, country <span class="sc">==</span> <span class="st">&quot;United States&quot;</span>)</span></code></pre></div>
+<hr />
+</div>
+<div id="process-european-files" class="section level2">
+<h2>Process European Files</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>.prc <span class="ot">&lt;-</span> <span class="fu">list_files_tab</span>(lst_paths<span class="sc">$</span>dir_token)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>tab_files_pdf_use <span class="ot">&lt;-</span> <span class="fu">filter</span>(tab_files_pdf, <span class="sc">!</span>doc_id <span class="sc">%in%</span> .prc<span class="sc">$</span>doc_id)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(tab_files_pdf_use) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;multisession&quot;</span>, <span class="at">workers =</span> .workers)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">future_walk</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.x =</span> tab_files_pdf_use<span class="sc">$</span>path,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.f =</span> <span class="sc">~</span> <span class="fu">pdf_read_and_tokenize</span>(.x, lst_paths<span class="sc">$</span>dir_token),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">.options =</span> <span class="fu">furrr_options</span>(<span class="at">seed =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;default&quot;</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(tab_files_pdf_use)</span></code></pre></div>
+<hr />
+</div>
+<div id="process-united-states-files" class="section level2">
+<h2>Process United States Files</h2>
+<details>
+<summary>
+<p>We use a custom function: <strong>sec_read_and_tokenize()</strong> to
+extract the test from the sec files <strong><em>(click on arrow to
+show)</em></strong>.</p>
+</summary>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sec_read_and_tokenize <span class="ot">&lt;-</span> <span class="cf">function</span>(.path, <span class="at">.dir =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  tab_  <span class="ot">&lt;-</span> <span class="fu">try</span>(readtext<span class="sc">::</span><span class="fu">readtext</span>(.path))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">inherits</span>(tab_, <span class="st">&quot;try-error&quot;</span>)) {</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    text_ <span class="ot">&lt;-</span> stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(tab_<span class="sc">$</span>text, <span class="st">&quot;([[:blank:]]|[[:space:]])+&quot;</span>, <span class="st">&quot; &quot;</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    text_ <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">stri_extract_all_regex</span>(text_, <span class="st">&quot;&lt;DOCUMENT&gt;.+?&lt;/DOCUMENT&gt;&quot;</span>))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    text_ <span class="ot">&lt;-</span> text_[<span class="fu">grepl</span>(<span class="st">&quot;&lt;TYPE&gt;10-K|&lt;TYPE&gt;EX-&quot;</span>, text_)]</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    text_ <span class="ot">&lt;-</span> <span class="fu">paste</span>(text_, <span class="at">collapse =</span> <span class="st">&quot; &quot;</span>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    tab_ <span class="ot">&lt;-</span> tab_ <span class="sc">%&gt;%</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>doc_id) <span class="sc">%&gt;%</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">text =</span> <span class="fu">remove_html_tags</span>(text_)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>      tidytext<span class="sc">::</span><span class="fu">unnest_tokens</span>(word, text) <span class="sc">%&gt;%</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span><span class="fu">grepl</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">d&quot;</span>, word)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">nchar</span>(word) <span class="sc">&gt;</span> <span class="dv">3</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(.dir)) {</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    fst<span class="sc">::</span><span class="fu">write_fst</span>(tab_, <span class="fu">file.path</span>(.dir, <span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.zip$&quot;</span>, <span class="st">&quot;.fst&quot;</span>, <span class="fu">basename</span>(.path))))</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(tab_)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>remove_html_tags <span class="ot">&lt;-</span> <span class="cf">function</span>(.string, <span class="at">rm_linebreaks =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>  string_ <span class="ot">&lt;-</span> .string</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (rm_linebreaks) {</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    string_ <span class="ot">&lt;-</span> stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(string_, <span class="st">&quot;([[:blank:]]|[[:space:]])+&quot;</span>, <span class="st">&quot; &quot;</span>)  </span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>  string_ <span class="ot">&lt;-</span> string_ <span class="sc">%&gt;%</span></span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(., <span class="st">&quot;(?i)&lt;script.*?&gt;.*?&lt;/script.*?&gt;&quot;</span>, <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(., <span class="st">&quot;(?i)&lt;xbrl.*?&gt;.*?&lt;/xbrl.*?&gt;&quot;</span>, <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(., <span class="st">&quot;(?i)&lt;xml.*?&gt;.*?&lt;/xml.*?&gt;&quot;</span>, <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(., <span class="st">&quot;(?i)&lt;link:.*?/&gt;&quot;</span>, <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(., <span class="st">&quot;(?i)&lt;table.*?&gt;.*?&lt;/table.*?&gt;&quot;</span>, <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># stringi::stri_replace_all_regex(., &quot;(?i)&lt;ix.*?&gt;.*?&lt;/ix.*?&gt;&quot;, &quot;&quot;) %&gt;%</span></span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(., <span class="st">&quot;(?i)&lt;.*?&gt;|&amp;#.+?;|&amp;lt;.*?&amp;gt;&quot;</span>, <span class="st">&quot;&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(., <span class="st">&quot;(?i)&amp;nbsp;&quot;</span>, <span class="st">&quot; &quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(., <span class="st">&quot;(?i)&amp;amp;&quot;</span>, <span class="st">&quot;&amp;&quot;</span>) </span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (rm_linebreaks) {</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    string_ <span class="ot">&lt;-</span> stringi<span class="sc">::</span><span class="fu">stri_replace_all_regex</span>(string_, <span class="st">&quot;([[:blank:]]|[[:space:]])+&quot;</span>, <span class="st">&quot; &quot;</span>)  </span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">trimws</span>(string_))</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>.prc <span class="ot">&lt;-</span> <span class="fu">list_files_tab</span>(lst_paths<span class="sc">$</span>dir_token)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>tab_files_sec_use <span class="ot">&lt;-</span> <span class="fu">filter</span>(tab_files_sec, <span class="sc">!</span>doc_id <span class="sc">%in%</span> .prc<span class="sc">$</span>doc_id)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># if (nrow(tab_files_sec_use) &gt; 0) {</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   plan(&quot;multisession&quot;, workers = .workers)</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   future_walk(</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     .x = tab_files_sec_use$path,</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#     .f = ~ sec_read_and_tokenize(.x, lst_paths$dir_token),</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     .options = furrr_options(seed = TRUE)</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   plan(&quot;default&quot;)</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co"># rm(tab_files_sec_use)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>files_token <span class="ot">&lt;-</span> <span class="fu">list_files_tab</span>(lst_paths<span class="sc">$</span>dir_token) <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(doc_id <span class="sc">%in%</span> tab_files<span class="sc">$</span>doc_id)</span></code></pre></div>
+<hr />
+</div>
+<div id="get-ngrams" class="section level2">
+<h2>Get Ngrams</h2>
+<p>Our next step is to use the tokenized dataset and count the number of
+occurrences per word. Eventually, we want to have meaningful words for
+our purpose of analyzing financial disclosures. Let’s look at an example
+term count for one document.</p>
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+word
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+financial
+</td>
+<td style="text-align:right;">
+563
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+million
+</td>
+<td style="text-align:right;">
+425
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+with
+</td>
+<td style="text-align:right;">
+394
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+group
+</td>
+<td style="text-align:right;">
+388
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+statements
+</td>
+<td style="text-align:right;">
+378
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+year
+</td>
+<td style="text-align:right;">
+320
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+from
+</td>
+<td style="text-align:right;">
+303
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cash
+</td>
+<td style="text-align:right;">
+295
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+which
+</td>
+<td style="text-align:right;">
+280
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+antofagasta
+</td>
+<td style="text-align:right;">
+278
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>As we can see, a lot of the words are generic words (so called
+stopwords). Those words are a necessity for each language but don’t add
+much information, hence reducing the overall information-to-noice ratio.
+One way to remove such words from our analysis is to compare them
+against common stop-word list. For our purpose we will use the Loughran
+&amp; McDonald stop-word list</p>
+<hr />
+<div id="download-stopword-list" class="section level3">
+<h3>Download Stopword list</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>.path_lm_stop <span class="ot">&lt;-</span> <span class="st">&quot;2_output/05_textual_analysis/lm_stop.rds&quot;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(lst_paths<span class="sc">$</span>path_stop)) {</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  tab_lm_stop <span class="ot">&lt;-</span> <span class="fu">get_lm_stop</span>()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(tab_lm_stop, lst_paths<span class="sc">$</span>path_stop)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  tab_lm_stop <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_stop)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_fst</span>(files_token<span class="sc">$</span>path[<span class="dv">1</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(word, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(tab_lm_stop, <span class="at">by =</span> <span class="st">&quot;word&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_table</span>(<span class="at">.n =</span> <span class="dv">10</span>)</span></code></pre></div>
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+word
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+million
+</td>
+<td style="text-align:right;">
+425
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+with
+</td>
+<td style="text-align:right;">
+394
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+year
+</td>
+<td style="text-align:right;">
+320
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+from
+</td>
+<td style="text-align:right;">
+303
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cash
+</td>
+<td style="text-align:right;">
+295
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+which
+</td>
+<td style="text-align:right;">
+280
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+copper
+</td>
+<td style="text-align:right;">
+241
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+other
+</td>
+<td style="text-align:right;">
+197
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+annual
+</td>
+<td style="text-align:right;">
+184
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+this
+</td>
+<td style="text-align:right;">
+164
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This process of removing stopwords is not perfect. In general
+stopword lists are highly domain dependend. In our example removing the
+word <strong>cash</strong> might be not ideal, since it can form the
+collocation <strong>cash and cash equivalents</strong> which is clearly
+a relevant accounting term. Nonetheless, terms like
+<strong>with</strong>, <strong>from</strong>, <strong>which</strong>,
+<strong>other</strong> and <strong>this</strong> are to frequent in its
+usage, as they can add any information to the subsequent analyses.</p>
+<hr />
+</div>
+<div id="count-ngrams" class="section level3">
+<h3>Count Ngrams</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(lst_paths<span class="sc">$</span>path_1gram)) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;multisession&quot;</span>, <span class="at">workers =</span> .workers)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  tab_1gram <span class="ot">&lt;-</span> <span class="fu">future_map_dfr</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">.x =</span> <span class="fu">set_names</span>(files_token<span class="sc">$</span>path, files_token<span class="sc">$</span>doc_id),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.f =</span> <span class="sc">~</span> <span class="fu">get_ngrams</span>(.x, <span class="dv">1</span>, tab_lm_stop, <span class="cn">TRUE</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.options =</span> <span class="fu">furrr_options</span>(<span class="at">seed =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">.id =</span> <span class="st">&quot;doc_id&quot;</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;default&quot;</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(tab_1gram, lst_paths<span class="sc">$</span>path_1gram, <span class="at">compress =</span> <span class="st">&quot;gz&quot;</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  tab_1gram <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_1gram)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(lst_paths<span class="sc">$</span>path_2gram)) {</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;multisession&quot;</span>, <span class="at">workers =</span> .workers)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  tab_2gram <span class="ot">&lt;-</span> <span class="fu">future_map_dfr</span>(</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">.x =</span> <span class="fu">set_names</span>(files_token<span class="sc">$</span>path, files_token<span class="sc">$</span>doc_id),</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">.f =</span> <span class="sc">~</span> <span class="fu">get_ngrams</span>(.x, <span class="dv">2</span>, tab_lm_stop, <span class="cn">TRUE</span>),</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">.options =</span> <span class="fu">furrr_options</span>(<span class="at">seed =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">.id =</span> <span class="st">&quot;doc_id&quot;</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="st">&quot;default&quot;</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(tab_2gram, lst_paths<span class="sc">$</span>path_2gram, <span class="at">compress =</span> <span class="st">&quot;gz&quot;</span>)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  tab_2gram <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_2gram)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+</div>
+</div>
+<div id="analysis-by-country" class="section level2">
+<h2>Analysis by Country</h2>
+<p>First, we have a quick look at the top 20 unigrams and bigrams for
+European and US companies</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>frq_1gram <span class="ot">&lt;-</span> <span class="fu">prep_top_n_by</span>(tab_1gram, tab_data, country, <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">display_top_n_by</span>(country)</span></code></pre></div>
+<p><img src="05_textual_analysis_files/figure-html/show-frq-1gram-1.png" width="672" /><img src="05_textual_analysis_files/figure-html/show-frq-1gram-2.png" width="672" /></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>frq_2gram <span class="ot">&lt;-</span> <span class="fu">prep_top_n_by</span>(tab_2gram, tab_data, country, <span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">display_top_n_by</span>(country)</span></code></pre></div>
+<p><img src="05_textual_analysis_files/figure-html/show-frq-2gram-1.png" width="672" /><img src="05_textual_analysis_files/figure-html/show-frq-2gram-2.png" width="672" /></p>
+<p>The analysis doesn’t reveal a lot of useful information, but shows
+that our cleaning procedure was successful.</p>
+<hr />
+</div>
+<div id="sentiment" class="section level2">
+<h2>Sentiment</h2>
+<p>Next, we have a simple comparison of European and US firms in terms
+of their word sentiments. We will use the custom function
+<strong>show_sentiment()</strong> which has the sentiment list of
+Loughram &amp; McDonald (see: Tim Loughran and Bill McDonald, 2011, When
+is a Liability not a Liability?) already implemented.</p>
+<details>
+<summary>
+<p>Show function: <strong>show_sentiment()</strong> <strong><em>(click
+on arrow to show)</em></strong>.</p>
+</summary>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>show_sentiment <span class="ot">&lt;-</span> <span class="cf">function</span>(.tab, <span class="at">.type =</span> <span class="fu">c</span>(<span class="st">&quot;pos/neg&quot;</span>, <span class="st">&quot;uncertainty&quot;</span>, <span class="st">&quot;litigious&quot;</span>, <span class="st">&quot;constraining&quot;</span>, <span class="st">&quot;superfluous&quot;</span>)) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  tab_ <span class="ot">&lt;-</span> .tab <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(<span class="fu">get_sentiments</span>(<span class="st">&quot;loughran&quot;</span>), <span class="at">by =</span> <span class="st">&quot;word&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(<span class="fu">select</span>(tab_data, doc_id, country, year), <span class="at">by =</span> <span class="st">&quot;doc_id&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(country, year, sentiment) <span class="sc">%&gt;%</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">sum</span>(n), <span class="at">.groups =</span> <span class="st">&quot;drop_last&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">p =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">as.integer</span>(year))</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (.type <span class="sc">==</span> <span class="st">&quot;pos/neg&quot;</span>) {</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    tab_ <span class="ot">&lt;-</span> tab_ <span class="sc">%&gt;%</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sentiment <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;positive&quot;</span>, <span class="st">&quot;negative&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="at">p =</span> <span class="fu">if_else</span>(sentiment <span class="sc">==</span> <span class="st">&quot;negative&quot;</span>, <span class="sc">-</span>p, p))</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    tab_ <span class="ot">&lt;-</span> tab_ <span class="sc">%&gt;%</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">filter</span>(sentiment <span class="sc">%in%</span> <span class="fu">c</span>(.type))</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  tab_ <span class="sc">%&gt;%</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> p, <span class="at">color =</span> sentiment, <span class="at">fill =</span> sentiment)) <span class="sc">+</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_area</span>(<span class="at">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>country, <span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span> <span class="fu">pretty_breaks</span>()) <span class="sc">+</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="dv">2009</span>)) <span class="sc">+</span></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="fu">toupper</span>(.type))</span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<p>We will use the categories: <strong>Positive/Negative</strong>,
+<strong>Uncertainty</strong>, <strong>Litigious</strong>,
+<strong>Constraining</strong>, and <strong>Superfluous</strong> for our
+analysis.</p>
+<div id="word-lists" class="section level3">
+<h3>Word Lists</h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_sentiments</span>(<span class="st">&quot;loughran&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sentiment) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> sentiment, <span class="at">values_from =</span> word) <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_table</span>(<span class="at">.n =</span> <span class="dv">10</span>)</span></code></pre></div>
+<div
+style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class=" lightable-paper lightable-hover table" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+id
+</th>
+<th style="text-align:left;">
+negative
+</th>
+<th style="text-align:left;">
+positive
+</th>
+<th style="text-align:left;">
+uncertainty
+</th>
+<th style="text-align:left;">
+litigious
+</th>
+<th style="text-align:left;">
+constraining
+</th>
+<th style="text-align:left;">
+superfluous
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+abandon
+</td>
+<td style="text-align:left;">
+able
+</td>
+<td style="text-align:left;">
+abeyance
+</td>
+<td style="text-align:left;">
+abovementioned
+</td>
+<td style="text-align:left;">
+abide
+</td>
+<td style="text-align:left;">
+aegis
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+abandoned
+</td>
+<td style="text-align:left;">
+abundance
+</td>
+<td style="text-align:left;">
+abeyances
+</td>
+<td style="text-align:left;">
+abrogate
+</td>
+<td style="text-align:left;">
+abiding
+</td>
+<td style="text-align:left;">
+amorphous
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+abandoning
+</td>
+<td style="text-align:left;">
+abundant
+</td>
+<td style="text-align:left;">
+almost
+</td>
+<td style="text-align:left;">
+abrogated
+</td>
+<td style="text-align:left;">
+bound
+</td>
+<td style="text-align:left;">
+anticipatory
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+abandonment
+</td>
+<td style="text-align:left;">
+acclaimed
+</td>
+<td style="text-align:left;">
+alteration
+</td>
+<td style="text-align:left;">
+abrogates
+</td>
+<td style="text-align:left;">
+bounded
+</td>
+<td style="text-align:left;">
+appertaining
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+abandonments
+</td>
+<td style="text-align:left;">
+accomplish
+</td>
+<td style="text-align:left;">
+alterations
+</td>
+<td style="text-align:left;">
+abrogating
+</td>
+<td style="text-align:left;">
+commit
+</td>
+<td style="text-align:left;">
+assimilate
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+abandons
+</td>
+<td style="text-align:left;">
+accomplished
+</td>
+<td style="text-align:left;">
+ambiguities
+</td>
+<td style="text-align:left;">
+abrogation
+</td>
+<td style="text-align:left;">
+commitment
+</td>
+<td style="text-align:left;">
+assimilating
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+abdicated
+</td>
+<td style="text-align:left;">
+accomplishes
+</td>
+<td style="text-align:left;">
+ambiguity
+</td>
+<td style="text-align:left;">
+abrogations
+</td>
+<td style="text-align:left;">
+commitments
+</td>
+<td style="text-align:left;">
+assimilation
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+abdicates
+</td>
+<td style="text-align:left;">
+accomplishing
+</td>
+<td style="text-align:left;">
+ambiguous
+</td>
+<td style="text-align:left;">
+absolve
+</td>
+<td style="text-align:left;">
+commits
+</td>
+<td style="text-align:left;">
+bifurcated
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+abdicating
+</td>
+<td style="text-align:left;">
+accomplishment
+</td>
+<td style="text-align:left;">
+anomalies
+</td>
+<td style="text-align:left;">
+absolved
+</td>
+<td style="text-align:left;">
+committed
+</td>
+<td style="text-align:left;">
+bifurcation
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+abdication
+</td>
+<td style="text-align:left;">
+accomplishments
+</td>
+<td style="text-align:left;">
+anomalous
+</td>
+<td style="text-align:left;">
+absolves
+</td>
+<td style="text-align:left;">
+committing
+</td>
+<td style="text-align:left;">
+cessions
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="sentiment-analysis" class="section level3">
+<h3>Sentiment Analysis</h3>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_sentiment</span>(tab_1gram, <span class="st">&quot;pos/neg&quot;</span>)</span></code></pre></div>
+<p><img src="05_textual_analysis_files/figure-html/show-sentiment-graphs-1.png" width="672" /></p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_sentiment</span>(tab_1gram, <span class="st">&quot;uncertainty&quot;</span>)</span></code></pre></div>
+<p><img src="05_textual_analysis_files/figure-html/show-sentiment-graphs-2.png" width="672" /></p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_sentiment</span>(tab_1gram, <span class="st">&quot;litigious&quot;</span>)</span></code></pre></div>
+<p><img src="05_textual_analysis_files/figure-html/show-sentiment-graphs-3.png" width="672" /></p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_sentiment</span>(tab_1gram, <span class="st">&quot;constraining&quot;</span>)</span></code></pre></div>
+<p><img src="05_textual_analysis_files/figure-html/show-sentiment-graphs-4.png" width="672" /></p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_sentiment</span>(tab_1gram, <span class="st">&quot;superfluous&quot;</span>)</span></code></pre></div>
+<p><img src="05_textual_analysis_files/figure-html/show-sentiment-graphs-5.png" width="672" /></p>
+</div>
+</div>
+<div id="compare-word-frequecies" class="section level2">
+<h2>Compare Word Frequecies</h2>
+<p>In the next step we move to a more insightful analysis and compare
+the word frequencies for unigrams and bygrams between the two
+jurisdictions.</p>
+<details>
+<summary>
+<p>Show function: <strong>compare_word_frequqncies()</strong>
+<strong><em>(click on arrow to show)</em></strong>.</p>
+</summary>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>compare_word_frequqncies <span class="ot">&lt;-</span> <span class="cf">function</span>(.tab, .tab_data) {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  .tab <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(<span class="fu">select</span>(.tab_data, doc_id, country), <span class="at">by =</span> <span class="st">&quot;doc_id&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(country, word) <span class="sc">%&gt;%</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">sum</span>(n), <span class="at">.groups =</span> <span class="st">&quot;drop_last&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">p =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>n) <span class="sc">%&gt;%</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> country, <span class="at">values_from =</span> p) <span class="sc">%&gt;%</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Europe) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(<span class="st">`</span><span class="at">United States</span><span class="st">`</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="st">`</span><span class="at">United States</span><span class="st">`</span>, <span class="at">y =</span> Europe)) <span class="sc">+</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_abline</span>(<span class="at">color =</span> <span class="st">&quot;gray40&quot;</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_jitter</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">height =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> word), <span class="at">check_overlap =</span> <span class="cn">TRUE</span>, <span class="at">vjust =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_log10</span>(<span class="at">labels =</span> <span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_log10</span>(<span class="at">labels =</span> <span class="fu">percent_format</span>()) <span class="sc">+</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_gradient</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.001</span>), <span class="at">low =</span> <span class="st">&quot;lightblue&quot;</span>, <span class="at">high =</span> <span class="st">&quot;blue&quot;</span>) <span class="sc">+</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">&quot;none&quot;</span>) <span class="sc">+</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>()</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</details>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(lst_paths<span class="sc">$</span>path_com_1gram)) {</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  com_1gram <span class="ot">&lt;-</span> <span class="fu">compare_word_frequqncies</span>(tab_1gram, tab_data)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(com_1gram, lst_paths<span class="sc">$</span>path_com_1gram, <span class="at">compress =</span> <span class="st">&quot;gz&quot;</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  com_1gram <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_com_1gram)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>com_1gram</span></code></pre></div>
+<p><img src="05_textual_analysis_files/figure-html/word-com-1gram-1.png" width="672" /></p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(lst_paths<span class="sc">$</span>path_com_2gram)) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  com_2gram <span class="ot">&lt;-</span> <span class="fu">compare_word_frequqncies</span>(tab_2gram, tab_data)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(com_2gram, lst_paths<span class="sc">$</span>path_com_2gram, <span class="at">compress =</span> <span class="st">&quot;gz&quot;</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  com_2gram <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_com_2gram)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>com_2gram</span></code></pre></div>
+<p><img src="05_textual_analysis_files/figure-html/word-com-2gram-1.png" width="672" /></p>
+<p>We can see that in in our setting US and European firms have
+relatively comparable frequencies for most words and bigrams. This is to
+be expected since we downloaded only high-market cap firms across all
+industries, hence might not have sufficient variation in underlying
+business models. We will try to gain some more insight in the textual
+differences between US and European firms by applying topic modeling
+algorithms</p>
+</div>
+<div id="topic-modelling" class="section level2">
+<h2>Topic Modelling</h2>
+<p>The math behind topic modeling is rather complex, so we won’t go into
+details here. The basic idea is that we want to find common topics among
+a number of documents and subsequently classify the documents under
+those topics. In our example we chose to model eight topics (this is a
+rather abitrary choice)</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(lst_paths<span class="sc">$</span>path_lda)) {</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  dtm <span class="ot">&lt;-</span> <span class="fu">cast_dtm</span>(tab_1gram, doc_id, word, n)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  lda <span class="ot">&lt;-</span> <span class="fu">LDA</span>(dtm, <span class="at">k =</span> <span class="dv">8</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">seed =</span> <span class="dv">1234</span>))</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_rds</span>(lda, lst_paths<span class="sc">$</span>path_lda)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  lda <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(lst_paths<span class="sc">$</span>path_lda)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div id="show-topics" class="section level3">
+<h3>Show Topics</h3>
+<p><img src="05_textual_analysis_files/figure-html/show-topics-1.png" width="672" /></p>
+</div>
+<div id="evaluate-fit-per-country" class="section level3">
+<h3>Evaluate Fit per country</h3>
+<p>Last we want to evaluate which topics are represenative for a
+specific collection of annual reports within a jurisdiction. For that
+purpose we use the gamma-matrix, which gives us the following
+conditional probability:</p>
+<p><span class="math inline">\(P(topic|token) = P(token|topic)P(topic) /
+P(token)\)</span></p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>tab_lda_beta <span class="ot">&lt;-</span> <span class="fu">tidy</span>(lda, <span class="at">matrix =</span> <span class="st">&quot;gamma&quot;</span>)</span></code></pre></div>
+<p>We can see that our crude approach is still not enough to find
+specific topics that are unique for a collection of
+jurisdiction-specific topics.</p>
+<p><img src="05_textual_analysis_files/figure-html/show-fit-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+<div id="own-function-calls" class="section level1">
+<h1>Own Function Calls</h1>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lsf.str</span>()</span></code></pre></div>
+<pre><code>## compare_word_frequqncies : function (.tab, .tab_data)  
+## create_dirs : function (.dirs)  
+## display_top_n_by : function (.tab, .col)  
+## downlad_ar : function (.url, .dir)  
+## download_edgar_files : function (.tab, .dir, .retry = 5, .sleep = 1)  
+## download_google_drive : function (.id, .dir = NULL, .read_fun = NULL, .overwrite = FALSE)  
+## fnc_fix_cost : function (.cf, .v, .vm)  
+## fnc_fix_mult : function (.v, .vm)  
+## fnc_fix_unit : function (.cf, .v, .vm)  
+## fnc_rev : function (.p, .v)  
+## fnc_rev_sigmoid : function (.v)  
+## fnc_rev_unit : function (.p, .v)  
+## fnc_var_cost : function (.cv, .v, .vb, .vc, .vd, .d)  
+## fnc_var_disc : function (.v, .vb, .vc, .vd, .d)  
+## fnc_var_unit : function (.cv, .v, .vb, .vc, .vd, .d)  
+## get_amortization : function (.tab, .years, .invest, .discount)  
+## get_cm_table : function (.tab)  
+## get_company_table : function (.url)  
+## get_f500 : function ()  
+## get_infos : function (.path)  
+## get_input_table : function (.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, 
+##     .vc = 0, .vd = 0, .d = 0, .vm = 0, .ca = 0)  
+## get_lm_stop : function ()  
+## get_ngrams : function (.path, .ngram, .stop = tibble(word = &quot;&quot;, 
+##     .rows = 0), .rm_num = TRUE)  
+## get_profit : function (.tab)  
+## list_files_tab : function (dirs, reg = &quot;*&quot;, id = &quot;doc_id&quot;, rec = FALSE, 
+##     info = FALSE)  
+## map_company_filings : function (.tickers, .ownership = FALSE, .type = &quot;&quot;, 
+##     .before = &quot;&quot;, .count = 100, .page = 1, .progress = TRUE, 
+##     .sleep = 0, .retry = 5)  
+## map_filing_details : function (.id, .hrefs, .progress = TRUE, .sleep = 0, 
+##     .retry = 5)  
+## own_get_fs : function (.path, .dir_cache)  
+## own_XBRL : function ()  
+## own_xbrlDoAll : function (file.inst, cache.dir = &quot;xbrl.Cache&quot;, prefix.out = NULL, 
+##     verbose = FALSE, delete.cached.inst = TRUE)  
+## pdf_read_and_tokenize : function (.path, .dir)  
+## plot_amortization : function (.tab, .size)  
+## plot_monte_carlo : function (.tab, .size)  
+## plot_points : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, 
+##     .title = &quot;&quot;, .size)  
+## plot_profits : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, 
+##     .title = &quot;&quot;, .size = 16)  
+## prep_top_n_by : function (.tab_word, .tab_data, .col, .n = 10)  
+## remove_html_tags : function (.string, rm_linebreaks = TRUE)  
+## safe_get_company_table : function (...)  
+## sec_read_and_tokenize : function (.path, .dir = NULL)  
+## show_sentiment : function (.tab, .type = c(&quot;pos/neg&quot;, &quot;uncertainty&quot;, 
+##     &quot;litigious&quot;, &quot;constraining&quot;, &quot;superfluous&quot;))  
+## show_table : function (.tab, .n = Inf)  
+## standardize_name : function (.name)  
+## xbrl_extract_elements : function (.zip, .dir_tmp, .dir_out)  
+## xbrl_extract_line_items : function (.tab, .tags)  
+## xbrl_process_elements : function (.inst)</code></pre>
+<hr />
+</div>
+<div id="session-info" class="section level1">
+<h1>Session Info</h1>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code></pre></div>
+<pre><code>## - Session info ----------------------------------------
+##  setting  value
+##  version  R version 4.1.2 (2021-11-01)
+##  os       Windows 10 x64 (build 22000)
+##  system   x86_64, mingw32
+##  ui       RStudio
+##  language (EN)
+##  collate  English_Germany.1252
+##  ctype    English_Germany.1252
+##  tz       Europe/Berlin
+##  date     2022-05-28
+##  rstudio  2022.02.2+485 Prairie Trillium (desktop)
+##  pandoc   2.17.1.1 @ C:/Program Files/RStudio/bin/quarto/bin/ (via rmarkdown)
+## 
+## - Packages --------------------------------------------
+##  package        * version    date (UTC) lib source
+##  assertthat       0.2.1      2019-03-21 [1] CRAN (R 4.1.0)
+##  backports        1.4.1      2021-12-13 [1] CRAN (R 4.1.2)
+##  broom            0.7.12     2022-01-28 [1] CRAN (R 4.1.2)
+##  bslib            0.3.1      2021-10-06 [1] CRAN (R 4.1.1)
+##  cellranger       1.1.0      2016-07-27 [1] CRAN (R 4.1.0)
+##  cli              3.2.0      2022-02-14 [1] CRAN (R 4.1.2)
+##  codetools        0.2-18     2020-11-04 [2] CRAN (R 4.1.2)
+##  colorspace       2.0-2      2021-06-24 [1] CRAN (R 4.1.1)
+##  crayon           1.5.0      2022-02-14 [1] CRAN (R 4.1.2)
+##  curl             4.3.2      2021-06-23 [1] CRAN (R 4.1.0)
+##  data.table       1.14.2     2021-09-27 [1] CRAN (R 4.1.1)
+##  DBI              1.1.2      2021-12-20 [1] CRAN (R 4.1.2)
+##  dbplyr           2.1.1      2021-04-06 [1] CRAN (R 4.1.0)
+##  digest           0.6.29     2021-12-01 [1] CRAN (R 4.1.2)
+##  dplyr          * 1.0.8      2022-02-08 [1] CRAN (R 4.1.2)
+##  edgarWebR      * 1.1.0      2021-04-24 [1] CRAN (R 4.1.0)
+##  ellipsis         0.3.2      2021-04-29 [1] CRAN (R 4.1.0)
+##  evaluate         0.14       2019-05-28 [1] CRAN (R 4.1.0)
+##  fansi            1.0.2      2022-01-14 [1] CRAN (R 4.1.2)
+##  farver           2.1.0      2021-02-28 [1] CRAN (R 4.1.0)
+##  fastmap          1.1.0      2021-01-25 [1] CRAN (R 4.1.0)
+##  forcats        * 0.5.1      2021-01-27 [1] CRAN (R 4.1.0)
+##  fs               1.5.2      2021-12-08 [1] CRAN (R 4.1.2)
+##  fst            * 0.9.8      2022-02-08 [1] CRAN (R 4.1.2)
+##  fstcore        * 0.9.8      2022-02-04 [1] CRAN (R 4.1.2)
+##  furrr          * 0.2.3      2021-06-25 [1] CRAN (R 4.1.0)
+##  future         * 1.23.0     2021-10-31 [1] CRAN (R 4.1.1)
+##  fuzzyjoin      * 0.1.6      2020-05-15 [1] CRAN (R 4.1.0)
+##  generics         0.1.2      2022-01-31 [1] CRAN (R 4.1.2)
+##  ggplot2        * 3.3.5      2021-06-25 [1] CRAN (R 4.1.0)
+##  ggthemes       * 4.2.4      2021-01-20 [1] CRAN (R 4.1.2)
+##  globals          0.14.0     2020-11-22 [1] CRAN (R 4.1.0)
+##  glue             1.6.2      2022-02-24 [1] CRAN (R 4.1.2)
+##  gtable           0.3.0      2019-03-25 [1] CRAN (R 4.1.0)
+##  haven            2.4.3      2021-08-04 [1] CRAN (R 4.1.1)
+##  here           * 1.0.1      2020-12-13 [1] CRAN (R 4.1.0)
+##  highr            0.9        2021-04-16 [1] CRAN (R 4.1.0)
+##  hms              1.1.1      2021-09-26 [1] CRAN (R 4.1.1)
+##  htmltools        0.5.2      2021-08-25 [1] CRAN (R 4.1.1)
+##  htmlwidgets    * 1.5.4      2021-09-08 [1] CRAN (R 4.1.3)
+##  httr             1.4.2      2020-07-20 [1] CRAN (R 4.1.0)
+##  ISOcodes       * 2022.01.10 2022-01-10 [1] CRAN (R 4.1.2)
+##  janeaustenr      0.1.5      2017-06-10 [1] CRAN (R 4.1.0)
+##  janitor        * 2.1.0      2021-01-05 [1] CRAN (R 4.1.0)
+##  jquerylib        0.1.4      2021-04-26 [1] CRAN (R 4.1.0)
+##  jsonlite         1.7.3      2022-01-17 [1] CRAN (R 4.1.2)
+##  kableExtra     * 1.3.4      2021-02-20 [1] CRAN (R 4.1.0)
+##  knitr            1.37       2021-12-16 [1] CRAN (R 4.1.2)
+##  koRpus         * 0.13-8     2021-05-17 [1] CRAN (R 4.1.3)
+##  koRpus.lang.en * 0.1-4      2020-10-24 [1] CRAN (R 4.1.3)
+##  labeling         0.4.2      2020-10-20 [1] CRAN (R 4.1.0)
+##  lattice          0.20-45    2021-09-22 [2] CRAN (R 4.1.2)
+##  lazyeval         0.2.2      2019-03-15 [1] CRAN (R 4.1.0)
+##  lifecycle        1.0.1      2021-09-24 [1] CRAN (R 4.1.1)
+##  listenv          0.8.0      2019-12-05 [1] CRAN (R 4.1.0)
+##  lubridate      * 1.8.0      2021-10-07 [1] CRAN (R 4.1.1)
+##  magrittr         2.0.2      2022-01-26 [1] CRAN (R 4.1.2)
+##  Matrix           1.4-0      2021-12-08 [1] CRAN (R 4.1.2)
+##  modelr           0.1.8      2020-05-19 [1] CRAN (R 4.1.0)
+##  modeltools       0.2-23     2020-03-05 [1] CRAN (R 4.1.1)
+##  munsell          0.5.0      2018-06-12 [1] CRAN (R 4.1.0)
+##  NLP              0.2-1      2020-10-14 [1] CRAN (R 4.1.0)
+##  openxlsx       * 4.2.5      2021-12-14 [1] CRAN (R 4.1.2)
+##  parallelly       1.30.0     2021-12-17 [1] CRAN (R 4.1.2)
+##  patchwork      * 1.1.1      2020-12-17 [1] CRAN (R 4.1.0)
+##  pillar           1.7.0      2022-02-01 [1] CRAN (R 4.1.2)
+##  pkgconfig        2.0.3      2019-09-22 [1] CRAN (R 4.1.0)
+##  plotly         * 4.10.0     2021-10-09 [1] CRAN (R 4.1.3)
+##  plyr             1.8.6      2020-03-03 [1] CRAN (R 4.1.0)
+##  prettyunits      1.1.1      2020-01-24 [1] CRAN (R 4.1.0)
+##  progress         1.2.2      2019-05-16 [1] CRAN (R 4.1.0)
+##  purrr          * 0.3.4      2020-04-17 [1] CRAN (R 4.1.0)
+##  R6               2.5.1      2021-08-19 [1] CRAN (R 4.1.1)
+##  Rcpp             1.0.8      2022-01-13 [1] CRAN (R 4.1.2)
+##  readr          * 2.1.2      2022-01-30 [1] CRAN (R 4.1.2)
+##  readtext       * 0.81       2021-07-14 [1] CRAN (R 4.1.0)
+##  readxl           1.3.1      2019-03-13 [1] CRAN (R 4.1.0)
+##  reprex           2.0.1      2021-08-05 [1] CRAN (R 4.1.1)
+##  reshape2         1.4.4      2020-04-09 [1] CRAN (R 4.1.0)
+##  rlang            1.0.1      2022-02-03 [1] CRAN (R 4.1.2)
+##  rmarkdown        2.11       2021-09-14 [1] CRAN (R 4.1.1)
+##  rprojroot        2.0.2      2020-11-15 [1] CRAN (R 4.1.0)
+##  rstudioapi       0.13       2020-11-12 [1] CRAN (R 4.1.0)
+##  rvest          * 1.0.2      2021-10-16 [1] CRAN (R 4.1.1)
+##  sass             0.4.0      2021-05-12 [1] CRAN (R 4.1.0)
+##  scales         * 1.1.1      2020-05-11 [1] CRAN (R 4.1.0)
+##  sessioninfo      1.2.2      2021-12-06 [1] CRAN (R 4.1.2)
+##  slam             0.1-50     2022-01-08 [1] CRAN (R 4.1.2)
+##  snakecase        0.11.0     2019-05-25 [1] CRAN (R 4.1.0)
+##  SnowballC        0.7.0      2020-04-01 [1] CRAN (R 4.1.0)
+##  stringdist     * 0.9.8      2021-09-09 [1] CRAN (R 4.1.1)
+##  stringi        * 1.7.6      2021-11-29 [1] CRAN (R 4.1.2)
+##  stringr        * 1.4.0      2019-02-10 [1] CRAN (R 4.1.0)
+##  svglite          2.1.0      2022-02-03 [1] CRAN (R 4.1.2)
+##  sylly          * 0.1-6      2020-09-20 [1] CRAN (R 4.1.3)
+##  sylly.en         0.1-3      2018-03-19 [1] CRAN (R 4.1.3)
+##  systemfonts      1.0.4      2022-02-11 [1] CRAN (R 4.1.2)
+##  textstem       * 0.1.4      2018-04-09 [1] CRAN (R 4.1.3)
+##  tibble         * 3.1.6      2021-11-07 [1] CRAN (R 4.1.2)
+##  tidyr          * 1.2.0      2022-02-01 [1] CRAN (R 4.1.2)
+##  tidyselect       1.1.1      2021-04-30 [1] CRAN (R 4.1.0)
+##  tidytext       * 0.3.2      2021-09-30 [1] CRAN (R 4.1.1)
+##  tidyverse      * 1.3.1      2021-04-15 [1] CRAN (R 4.1.0)
+##  tm               0.7-8      2020-11-18 [1] CRAN (R 4.1.0)
+##  tokenizers       0.2.1      2018-03-29 [1] CRAN (R 4.1.0)
+##  topicmodels    * 0.2-12     2021-01-29 [1] CRAN (R 4.1.3)
+##  tzdb             0.2.0      2021-10-27 [1] CRAN (R 4.1.1)
+##  utf8             1.2.2      2021-07-24 [1] CRAN (R 4.1.1)
+##  vctrs            0.3.8      2021-04-29 [1] CRAN (R 4.1.0)
+##  viridisLite      0.4.0      2021-04-13 [1] CRAN (R 4.1.0)
+##  webshot          0.5.2      2019-11-22 [1] CRAN (R 4.1.0)
+##  withr            2.4.3      2021-11-30 [1] CRAN (R 4.1.2)
+##  XBRL             0.99.19    2021-10-18 [1] CRAN (R 4.1.1)
+##  xfun             0.29       2021-12-14 [1] CRAN (R 4.1.2)
+##  xml2           * 1.3.3      2021-11-30 [1] CRAN (R 4.1.2)
+##  yaml             2.2.2      2022-01-25 [1] CRAN (R 4.1.2)
+##  zip            * 2.2.0      2021-05-31 [1] CRAN (R 4.1.0)
+## 
+##  [1] E:/R/R_library
+##  [2] C:/Program Files/R/R-4.1.2/library
+## 
+## -------------------------------------------------------</code></pre>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

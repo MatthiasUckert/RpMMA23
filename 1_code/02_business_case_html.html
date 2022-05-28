@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Matthias Uckert" />
+
+
+<title>Business Case</title>
+
+<script src="02_business_case_html_files/header-attrs-2.11/header-attrs.js"></script>
+<script src="02_business_case_html_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="02_business_case_html_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="02_business_case_html_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="02_business_case_html_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="02_business_case_html_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="02_business_case_html_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="02_business_case_html_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="02_business_case_html_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="02_business_case_html_files/navigation-1.1/tabsets.js"></script>
+<link href="02_business_case_html_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="02_business_case_html_files/highlightjs-9.12.0/highlight.js"></script>
+<script src="02_business_case_html_files/kePrint-0.0.1/kePrint.js"></script>
+<link href="02_business_case_html_files/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Business Case</h1>
+<h4 class="author">Matthias Uckert</h4>
+<h4 class="date">28 May, 2022</h4>
+
+</div>
+
+
+<p>In this session we will translate the logic of our business case into
+R. The output will be a static HTML report. R will give us more
+flexibility and performance advantages in comparison to Excel. The
+transition might be challenging at first, but if done accurately,
+functions in R can be re-used in many other cases.</p>
+<p>In the following we will mimic the functionalities of the Excel
+Business case.</p>
+<div id="define-input-functions" class="section level1">
+<h1>Define Input Functions</h1>
+<p>To derive our our profitability of our product, we first must define
+some input function. Namely, we need a function that defines the
+<strong>Variable Costs</strong>, <strong>Product Fixed Costs</strong>,
+and <strong>Revenue</strong></p>
+<div id="function-variable-cost" class="section level2">
+<h2>Function: Variable Cost</h2>
+<p>We define a function for the <strong>Variable Costs</strong>:
+<em>fnc_var_cost()</em> with the following Input Parameters:</p>
+<ul>
+<li><p><strong>.cv (Variable Cost):</strong> Initial Variable</p></li>
+<li><p><strong>.v (Volume):</strong> The volume we want to derive the
+total variable cost for.</p></li>
+<li><p><strong>.vb (Base Volume):</strong> The base (minimum) volume.
+for ever additional x (.vd) volume we get an y (.d) discount on our
+variable cost.</p></li>
+<li><p><strong>.vc (Cap Volume):</strong> The cap (maximum) volume.
+After this volume no discount is granted anymore.</p></li>
+<li><p><strong>.vd (Volume Discount):</strong> For ever x (.vd)
+additional unit over the base volume (.vb) we get an y (.d) percent
+discount.</p></li>
+<li><p><strong>.d (Discount):</strong> The discount we get for ever x
+(.vd) additional unit over the base volume (.vb)</p></li>
+</ul>
+<pre class="r"><code>fnc_var_disc &lt;- function(.v, .vb, .vc, .vd, .d) {
+  vu_ &lt;- dplyr::case_when(
+    .v &lt; .vb ~ .vb,
+    .v &gt; .vc ~ .vc,
+    TRUE ~ .v
+  )
+  floor((vu_ - .vb) / .vd) * .d
+}
+
+fnc_var_unit &lt;- function(.cv, .v, .vb, .vc, .vd, .d) {
+  disc_ &lt;- fnc_var_disc(.v, .vb, .vc, .vd, .d)
+  .cv * (1 - disc_)
+}
+
+fnc_var_cost &lt;- function(.cv, .v, .vb, .vc, .vd, .d) {
+  .v * fnc_var_unit(.cv, .v, .vb, .vc, .vd, .d)
+}</code></pre>
+<p>For convenience we added two helper functions <em>fnc_var_disc() and
+fnc_var_unit()</em> that calculate the discount as a function of volume
+and the unit cost of our product. Those functions will result in
+so-called <strong>Step Functions.</strong> Next we plot this functions
+with the following values:</p>
+<ul>
+<li><p><strong>.cv (Variable Cost):</strong> 1</p></li>
+<li><p><strong>.v (Volume):</strong> Range between 500 and
+10,000</p></li>
+<li><p><strong>.vb (Base Volume):</strong> 2,500</p></li>
+<li><p><strong>.vc (Cap Volume):</strong> 7,500</p></li>
+<li><p><strong>.vd (Volume Discount):</strong> 1,000</p></li>
+<li><p><strong>.d (Discount):</strong> 5.00%</p></li>
+</ul>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="function-fixed-cost" class="section level2">
+<h2>Function: Fixed Cost</h2>
+<p>We define a function for the <strong>Fixed Costs</strong>:
+<em>fnc_var_cost()</em> with the following Input Parameters:</p>
+<ul>
+<li><p><strong>.cf (Variable Cost):</strong> Initial Fixed
+Costs</p></li>
+<li><p><strong>.v (Volume):</strong> The volume we want to derive the
+total variable cost for.</p></li>
+<li><p><strong>.vm (Volume Multiplier):</strong> Fixed Cost double at
+this point</p></li>
+</ul>
+<pre class="r"><code>fnc_fix_mult &lt;- function(.v, .vm) {
+  ceiling(.v / .vm)
+}
+
+fnc_fix_cost &lt;- function(.cf, .v, .vm) {
+  .cf * fnc_fix_mult(.v, .vm)
+}
+
+fnc_fix_unit &lt;- function(.cf, .v, .vm) {
+  (.cf * fnc_fix_mult(.v, .vm)) / .v
+}</code></pre>
+<p>For convenience we added two helper functions <em>fnc_fix_disc() and
+fnc_fix_unit()</em> that calculate the multiplier as a function of
+volume and the directly attributable unit fix cost of our product. Next
+we plot this functions with the following values:</p>
+<ul>
+<li><p><strong>.cf (Fixed Cost):</strong> 1</p></li>
+<li><p><strong>.v (Volume):</strong> Range between 500 and
+10,000</p></li>
+<li><p><strong>.vm (Volume Multiplier):</strong> 1,000</p></li>
+</ul>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="function-price-revenue" class="section level2">
+<h2>Function: Price (Revenue)</h2>
+<p>We define a function for the <strong>Revenue</strong>:
+<em>fnc_rev()</em> with the following Input Parameters:</p>
+<ul>
+<li><p><strong>.v (Volume):</strong> The volume we want to derive the
+total variable cost for.</p></li>
+<li><p><strong>.p (Price):</strong> Initial Price</p></li>
+</ul>
+<p>To do so, we first model the price as a function of volume by using a
+so-called sigmoid function.</p>
+<p>We limit the resulting S-Curve between .6 to 1. The idea behind this
+is, that for every addition unit we want to sell, we have to lower the
+price by a certain amount.</p>
+<pre class="r"><code>fnc_rev_sigmoid &lt;- function(.v) {
+  (1 - (1 / (1 + exp(-((.v / 1000) - 4.25))))) * .4 + .6
+}
+
+fnc_rev_unit &lt;- function(.p, .v) {
+  .p * fnc_rev_sigmoid(.v)
+}
+
+fnc_rev &lt;- function(.p, .v) {
+  .v * fnc_rev_unit(.p, .v)
+}</code></pre>
+<p>Next we plot this functions with the following values:</p>
+<ul>
+<li><p><strong>.p(Price):</strong> 750</p></li>
+<li><p><strong>.v (Volume):</strong> Range between 500 and
+10,000</p></li>
+</ul>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+</div>
+<div id="define-other-functions" class="section level1">
+<h1>Define Other Functions</h1>
+<p>After we defined the input functions for variable cost, fixed cost
+and price, we will program functions that give us the the contribution
+margins and the profit of our business case. We will use a dataframe
+logic which is very similar to Excel, but with significant more
+flexibility.</p>
+<div id="function-input-table" class="section level2">
+<h2>Function: Input Table</h2>
+<p>First we define a function with all the input variables,
+specifically: <u><strong>.v (Volume)</strong></u>, .<u><strong>p
+(Price)</strong></u>, <u><strong>.cv (Variable Cost)</strong></u>,
+<u><strong>.cf (Fixed Cost)</strong></u>, <u><strong>.vb (Base Volume -
+for Variable Cost)</strong></u>, <u><strong>.cv (Cap Volume - for
+Variable Cost)</strong></u>, <u><strong>.vd (Volume Discount - for
+Variable Cost)</strong></u>, <u><strong>.d (Discount - for Variable
+Cost)</strong></u>, <u><strong>.vm (Volume Multiplier - for Fixed
+Cost)</strong></u>, .<u><strong>ca (Company Cost)</strong>.</u></p>
+<pre class="r"><code>get_input_table &lt;- function(.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, .vc = 0, 
+                            .vd = 0, .d = 0, .vm = 0, .ca = 0) {
+  tibble::tibble(
+    v = .v, p = .p, cv = .cv, cf = .cf, ca = .ca, vb = .vb, vc = .vc,
+    vd = .vd, d = .d, vm = .vm,
+  )
+}
+get_input_table(.v = 7500, .p = 750, .cv = 500, .cf = 50000, .vb = 3000, .vc = 8000, 
+                .vd = 750, .d = .05, .vm = 1000, .ca = 250000)</code></pre>
+<pre><code>## # A tibble: 1 x 10
+##       v     p    cv    cf     ca    vb    vc    vd     d    vm
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1  7500   750   500 50000 250000  3000  8000   750  0.05  1000</code></pre>
+</div>
+<div id="function-profit" class="section level2">
+<h2>Function: Profit</h2>
+<p>Next we define a function that calculates the Contribution Margins
+and the Profit for our input factor. This function takes a dataframe as
+only argument which is the dataframe we produce with the function
+<strong>get_input_table()</strong></p>
+<pre class="r"><code>get_input_table(.v = 7500, .p = 750, .cv = 500, .cf = 50000, .vb = 3000, .vc = 8000, 
+                .vd = 750, .d = .05, .vm = 1000, .ca = 250000) %&gt;%
+  get_profit()</code></pre>
+<pre><code>## # A tibble: 1 x 22
+##       v     p    cv    cf     ca    vb    vc    vd     d    vm discount var_unit
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1  7500   750   500 50000 250000  3000  8000   750  0.05  1000      0.3      350
+## # ... with 10 more variables: var_cost &lt;dbl&gt;, multiple &lt;dbl&gt;, fix_unit &lt;dbl&gt;,
+## #   fix_cost &lt;dbl&gt;, sigmoid &lt;dbl&gt;, price &lt;dbl&gt;, revenue &lt;dbl&gt;, cm1 &lt;dbl&gt;,
+## #   cm2 &lt;dbl&gt;, profit &lt;dbl&gt;</code></pre>
+</div>
+<div id="functions-other" class="section level2">
+<h2>Functions: Other</h2>
+<p>We also make some functions that will help us to reshape the
+data.</p>
+<pre class="r"><code>get_cm_table &lt;- function(.tab) {
+  .tab %&gt;%
+    get_profit() %&gt;%
+    dplyr::select(
+      Revenue = revenue,
+      `Variable Cost` = var_cost,
+      `Contribution Margin I` = cm1,
+      `Fixed Cost` = fix_cost,
+      `Contribution Margin II` = cm2,
+      `Company Cost` = ca,
+      `Profit` = profit
+    ) %&gt;%
+    tidyr::pivot_longer(cols = dplyr::everything()) %&gt;%
+    dplyr::mutate(
+      perc = value / first(value),
+      value = scales::comma(value),
+      perc = scales::percent(perc)
+    )
+}
+
+get_amortization &lt;- function(.tab, .years, .invest, .discount) {
+  .tab %&gt;%
+    tidyr::expand_grid(year = seq_len(.years)) %&gt;%
+    dplyr::select(year, dplyr::everything()) %&gt;%
+    get_profit() %&gt;%
+    dplyr::mutate(dcf = profit / ((1 + .discount)^year)) %&gt;%
+    dplyr::select(year, dcf) %&gt;%
+    tibble::add_row(year = 0, dcf = -.invest) %&gt;%
+    dplyr::arrange(year) %&gt;%
+    dplyr::mutate(csum = cumsum(dcf)) %&gt;%
+    dplyr::mutate(
+      col1 = dplyr::if_else(csum &lt; 0, &quot;red&quot;, &quot;green&quot;),
+      col2 = dplyr::if_else(dcf &lt; 0, &quot;red&quot;, &quot;green&quot;)
+    ) %&gt;%
+    dplyr::select(year, dcf, csum, col1, col2)
+}</code></pre>
+</div>
+</div>
+<div id="cm-i-cm-ii-and-profit" class="section level1">
+<h1>CM I, CM II, and Profit</h1>
+<p>Using the Functions <strong>get_input_table()</strong>,
+<strong>get_profit()</strong>, and <strong>get_cm_table()</strong>, we
+can show a scenario analysis for the Contribution Margin and Profit.</p>
+<pre class="r"><code>tab_ &lt;- get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+)
+
+s1 &lt;- mutate(tab_, v = 2500) %&gt;%
+  get_profit() %&gt;%
+  get_cm_table() %&gt;%
+  rename(`# 2,500` = value, `% 2,500` = perc)
+
+s2 &lt;- mutate(tab_, v = 5000) %&gt;%
+  get_profit() %&gt;%
+  get_cm_table() %&gt;%
+  rename(`# 5,000` = value, `% 5,000` = perc)
+
+s3 &lt;- mutate(tab_, v = 7500) %&gt;%
+  get_profit() %&gt;%
+  get_cm_table() %&gt;%
+  rename(`# 7,500` = value, `% 7,500` = perc)
+
+s4 &lt;- mutate(tab_, v = 10000) %&gt;%
+  get_profit() %&gt;%
+  get_cm_table() %&gt;%
+  rename(`# 10,000` = value, `% 10,000` = perc)
+
+s1 %&gt;%
+  left_join(s2, by = &quot;name&quot;) %&gt;%
+  left_join(s3, by = &quot;name&quot;) %&gt;%
+  left_join(s4, by = &quot;name&quot;) %&gt;%
+  kableExtra::kbl(align = &quot;lcccccc&quot;, col.names = NULL) %&gt;%
+  kableExtra::kable_paper(html_font = &quot;Times New Roman&quot;) %&gt;%
+  kableExtra::column_spec(column = c(1, 3, 5, 7), border_right = TRUE) %&gt;%
+  kableExtra::row_spec(row = c(1, 3, 5, 7), bold = TRUE) %&gt;%
+  kableExtra::add_header_above(
+    c(&quot; &quot; = 1, &quot;Volume: 2,500&quot; = 2, &quot;Volume: 5,000&quot; = 2, &quot;Volume: 7,500&quot; = 2, &quot;Volume: 10,000&quot; = 2)
+    )</code></pre>
+<table class=" lightable-paper" style="font-family: Times New Roman; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="empty-cells: hide;" colspan="1">
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Volume: 2,500
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Volume: 5,000
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Volume: 7,500
+</div>
+</th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2">
+<div style="border-bottom: 1px solid #00000020; padding-bottom: 5px; ">
+Volume: 10,000
+</div>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;border-right:1px solid;font-weight: bold;">
+Revenue
+</td>
+<td style="text-align:center;font-weight: bold;">
+1,763,965
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+100.0%
+</td>
+<td style="text-align:center;font-weight: bold;">
+2,731,232
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+100.00%
+</td>
+<td style="text-align:center;font-weight: bold;">
+3,458,985
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+100.00%
+</td>
+<td style="text-align:left;font-weight: bold;">
+4,509,518
+</td>
+<td style="text-align:center;font-weight: bold;">
+100.00%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;">
+Variable Cost
+</td>
+<td style="text-align:center;">
+1,250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+70.9%
+</td>
+<td style="text-align:center;">
+2,250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+82.38%
+</td>
+<td style="text-align:center;">
+2,625,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+75.89%
+</td>
+<td style="text-align:left;">
+3,500,000
+</td>
+<td style="text-align:center;">
+77.61%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;font-weight: bold;">
+Contribution Margin I
+</td>
+<td style="text-align:center;font-weight: bold;">
+513,965
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+29.1%
+</td>
+<td style="text-align:center;font-weight: bold;">
+481,232
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+17.62%
+</td>
+<td style="text-align:center;font-weight: bold;">
+833,985
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+24.11%
+</td>
+<td style="text-align:left;font-weight: bold;">
+1,009,518
+</td>
+<td style="text-align:center;font-weight: bold;">
+22.39%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;">
+Fixed Cost
+</td>
+<td style="text-align:center;">
+150,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+8.5%
+</td>
+<td style="text-align:center;">
+250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+9.15%
+</td>
+<td style="text-align:center;">
+400,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+11.56%
+</td>
+<td style="text-align:left;">
+500,000
+</td>
+<td style="text-align:center;">
+11.09%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;font-weight: bold;">
+Contribution Margin II
+</td>
+<td style="text-align:center;font-weight: bold;">
+363,965
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+20.6%
+</td>
+<td style="text-align:center;font-weight: bold;">
+231,232
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+8.47%
+</td>
+<td style="text-align:center;font-weight: bold;">
+433,985
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+12.55%
+</td>
+<td style="text-align:left;font-weight: bold;">
+509,518
+</td>
+<td style="text-align:center;font-weight: bold;">
+11.30%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;">
+Company Cost
+</td>
+<td style="text-align:center;">
+250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+14.2%
+</td>
+<td style="text-align:center;">
+250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+9.15%
+</td>
+<td style="text-align:center;">
+250,000
+</td>
+<td style="text-align:center;border-right:1px solid;">
+7.23%
+</td>
+<td style="text-align:left;">
+250,000
+</td>
+<td style="text-align:center;">
+5.54%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;border-right:1px solid;font-weight: bold;">
+Profit
+</td>
+<td style="text-align:center;font-weight: bold;">
+113,965
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+6.5%
+</td>
+<td style="text-align:center;font-weight: bold;">
+-18,768
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+-0.69%
+</td>
+<td style="text-align:center;font-weight: bold;">
+183,985
+</td>
+<td style="text-align:center;border-right:1px solid;font-weight: bold;">
+5.32%
+</td>
+<td style="text-align:left;font-weight: bold;">
+259,518
+</td>
+<td style="text-align:center;font-weight: bold;">
+5.75%
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="sensitivity" class="section level1">
+<h1>Sensitivity</h1>
+<p>Next we look at the sensitivity of the profit to the input factors:
+<strong>Volume, Price, Variable Cost, Fixed Cost, and Volume
+Discount.</strong> We don’t need to program an new function for this.
+The vectorized functions we defined up until now are sufficient, the
+only thing we need to do is adding a range for the input variable we
+want to observe to the <strong>get_input_table()</strong> function.</p>
+<pre class="r"><code>.seq &lt;- seq(500, 10000, 25)
+get_input_table(
+  .v = .seq, .p = .def_p, .cv = .def_cv, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) %&gt;%
+  get_profit() %&gt;%
+  plot_profits(v, profit, .xlab = &quot;Volume&quot;, &quot;Profit&quot;, &quot;Profit (Volume)&quot;, .size = 11)</code></pre>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>.seq &lt;- seq(500, 1000, 5)
+get_input_table(
+  .v = .def_v, .p = .seq, .cv = .def_cv, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) %&gt;%
+  get_profit() %&gt;%
+  plot_profits(p, profit, .xlab = &quot;Price&quot;, &quot;Profit&quot;, &quot;Profit (Price)&quot;, .size = 11)</code></pre>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<pre class="r"><code>.seq &lt;- seq(250, 1000, 5)
+get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .seq, .cf = .def_cf,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) %&gt;%
+  get_profit() %&gt;%
+  plot_profits(cv, profit, .xlab = &quot;Variable Cost&quot;, &quot;Profit&quot;, &quot;Profit (Variable Cost)&quot;, .size = 11)</code></pre>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-3.png" width="672" /></p>
+<pre class="r"><code>.seq &lt;- seq(25000, 100000, 1000)
+get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .seq,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .def_d,
+  .vm = .def_vm, .ca = .def_ca
+) %&gt;%
+  get_profit() %&gt;%
+  plot_profits(cf, profit, .xlab = &quot;Fixed Cost&quot;, &quot;Profit&quot;, &quot;Profit (Fixed Cost)&quot;, .size = 11)</code></pre>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-4.png" width="672" /></p>
+<pre class="r"><code>.seq &lt;- seq(.01, .1, .001)
+get_input_table(
+  .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .def_cv,
+  .vb = .def_vb, .vc = .def_vc, .vd = .def_vd, .d = .seq,
+  .vm = .def_vm, .ca = .def_ca
+) %&gt;%
+  get_profit() %&gt;%
+  plot_profits(d, profit, .xlab = &quot;Discount&quot;, &quot;Profit&quot;, &quot;Profit (Discount)&quot;, .size = 11)</code></pre>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-5.png" width="672" /></p>
+</div>
+<div id="amortization" class="section level1">
+<h1>Amortization</h1>
+<p>With the function get_amortization(), we can easily plot the
+amortization time of our business case. Again this function takes the
+dataframe of get_input_table() as input. Additionally, it has other 3
+Arguments: <strong>.years (NUmber of Years to plot), .invest (Initial
+Investment), .discount (Required Rate of Return)</strong></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="monte-carlo" class="section level1">
+<h1>Monte Carlo</h1>
+<p>Up until here, everything we did you could also have done in Excel
+(and most of it we have in our Excel Business Case). One aspect we
+cannot do in Excel (At least not without VBA, or Add-Ins) is to perform
+a Monte Carlo Analysis. Given that we have many input factors, and some
+of our inputs are related non-linearly to other inputs, it is a priori
+not clear how profitable out business case is under specific assumption.
+A Monte Carlo Analysis will help us to evaluate this, by simulating
+random inputs (with defined probability distributions) and calculates
+the profit. With this we can observe the profit distribution and get a
+feeling how robust our business model is to changing input factors
+(uncertainty).</p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<table class=" lightable-paper table" style="font-family: Times New Roman; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
+<tbody>
+<tr>
+<td style="text-align:left;">
+Profit &gt; 0
+</td>
+<td style="text-align:center;">
+53%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Profit &lt; 0
+</td>
+<td style="text-align:center;">
+47%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mean
+</td>
+<td style="text-align:center;">
+118,780
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Median
+</td>
+<td style="text-align:center;">
+89,773
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Minimum
+</td>
+<td style="text-align:center;">
+-13,204,871
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Maximum
+</td>
+<td style="text-align:center;">
+8,942,726
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="section" class="section level1">
+<h1></h1>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

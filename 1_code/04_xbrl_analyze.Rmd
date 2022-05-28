@@ -1,0 +1,189 @@
+---
+title: "Analyzing Data: XBRL Elements"
+author: "Matthias Uckert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+------------------------------------------------------------------------
+
+# Description
+
+In this session we perform a simple extraction of XBRL line items and calculate some accounting ratios.
+
+Throughout this script we will use custom functions. All the script specific functions are stored in this folder: **1_code/00_functions/f-xbrl_analyze.R** (As a reference I also put the important functions in the script)
+
+```{r setup, include=FALSE, purl=FALSE}
+knitr::opts_knit$set(root.dir = normalizePath(here::here())) 
+knitr::opts_chunk$set(root.dir = normalizePath(here::here())) 
+```
+
+------------------------------------------------------------------------
+
+# Script Setup
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse); library(lubridate); library(furrr);library(openxlsx);
+library(janitor)
+
+source("1_code/functions/f-all.R")
+source("1_code/00_download_data.R")
+source("1_code/functions/f-xbrl_analyze.R")
+
+.workers <- min(availableCores() / 2, 16)
+```
+
+# Code
+
+------------------------------------------------------------------------
+
+## Paths
+
+```{r paths}
+lst_paths <- list(
+  dir_main    = "2_output/04_xbrl_analyze/",
+  path_xbrl_input = "2_output/00_xbrl_data/xbrl_elements1.rds",
+  path_orbis = "0_data/orbis_f500_bs_items.xlsx",
+  dir_cache = "2_output/04_xbrl_analyze/cache/cache_"
+) %>% create_dirs()
+```
+
+------------------------------------------------------------------------
+
+## Read Data
+
+```{r read-and-transform-data, cache = TRUE, cache.path = lst_paths$dir_cache}
+tab_orbis <- read.xlsx(lst_paths$path_orbis, 2) %>%
+  clean_names() %>%
+  select(-x1, -country, -country_iso_code) %>%
+  rename(company = company_name_latin_alphabet, symbol = ticker_symbol, 
+         sic_code = us_sic_core_code_3_digits, sic_name = us_sic_core_code_description) %>%
+  pivot_longer(!matches("company|symbol|sic_code|sic_name")) %>%
+  mutate(
+    value = suppressWarnings(as.numeric(value)) * 1000,
+    name = gsub("_th_usd", "", name)
+    ) %>%
+  separate(name, c("line_item", "year"), convert = TRUE, sep = "_(?=\\d{4})") %>%
+  pivot_wider(names_from = line_item)
+
+tab_xbrl <- read_rds(lst_paths$path_xbrl_input) %>%
+  left_join(distinct(tab_orbis, symbol, company, sic_code, sic_name), by = "symbol")
+
+tab_bs <- tab_xbrl %>%
+  filter(desc == "Balance Sheet", is.na(add)) %>%
+  select(symbol, company, sic_code, sic_name, value)
+```
+
+------------------------------------------------------------------------
+
+## Get Balance Sheet Items
+
+In this analysis we will focus on the 2 balance sheet items **Goodwill** and **Total Assets** to calulate a simple ration of the percentage of Goodwill in the Balance Sheet.
+
+<details>
+
+<summary>
+
+We use a custom function: **xbrl_extract_line_items()** extract the relevant items ***(click on arrow to show)***.
+
+</summary>
+
+```{r function: xbrl_extract_line_items()}
+xbrl_extract_line_items <- function(.tab, .tags) {
+  tab_ <- dplyr::filter(.tab, tag %in% .tags) 
+  
+  if (nrow(tab_) == 0 | !"amount" %in% colnames(.tab)) {
+    return(tibble::tibble(.rows = 0))
+  }
+  
+  tab_ %>%
+    dplyr::filter(tag %in% .tags) %>%
+    dplyr::mutate(
+      year = lubridate::year(endDate),
+      amount = as.numeric(amount)
+    ) %>%
+    dplyr::group_by(year, tag) %>%
+    dplyr::filter(amount == max(amount)) %>%
+    dplyr::ungroup() %>%
+    dplyr::distinct(tag, year, amount) %>%
+    dplyr::mutate(tag = tolower(stringi::stri_replace_first_regex(tag, ".+?_", ""))) %>%
+    tidyr::pivot_wider(names_from = tag, values_from = amount, values_fill = 0)
+}
+```
+
+</details>
+
+------------------------------------------------------------------------
+
+```{r get-bs-items, cache = TRUE, cache.path = lst_paths$dir_cache}
+tags <- c("us-gaap_Goodwill", "us-gaap_Assets")
+
+plan("multisession", workers = .workers)
+tab_gw <- tab_bs %>%
+  mutate(
+    value = future_map(
+      .x = value,
+      .f = ~ xbrl_extract_line_items(.x, tags),
+      .options = furrr_options(seed = TRUE)
+    )
+  ) %>%
+  unnest(value) %>%
+  distinct(symbol, year, .keep_all = TRUE) %>%
+  mutate(goodwill = if_else(is.na(goodwill), 0, goodwill)) %>%
+  filter(assets > 0) %>%
+  group_by(symbol) %>%
+  filter(all(2011:2020 %in% year)) %>%
+  ungroup() %>%
+  filter(between(year, 2011, 2020))
+plan("default")
+```
+
+## Analysis on Industry Level
+Next we perform a simple analysis on SIC code level to show the differences in Goodwill across industries
+
+```{r group-by-sic-code}
+tab_gw_sic <- tab_gw %>%
+  filter(!is.na(sic_name)) %>%
+  group_by(sic_code, sic_name, year) %>%
+  summarise(across(where(is.numeric), ~ sum(., na.rm = TRUE)), .groups = "drop_last") %>%
+  mutate(goodwill_to_asset = goodwill / assets) %>%
+  filter(mean(goodwill_to_asset) > 0) %>%
+  ungroup()
+```
+ 
+
+```{r plot-graphs, out.height="75%", out.width="100%"}
+tab_gw_sic %>%
+  ggplot(aes(year, goodwill_to_asset, color = sic_code)) +
+  geom_line() + 
+  geom_point() + 
+  scale_x_continuous(breaks = c(2012, 2019)) + 
+  scale_y_continuous(labels = scales::percent) + 
+  facet_wrap(~ sic_code) + 
+  labs(x = NULL, y = NULL) + 
+  theme_bw() + 
+  theme(legend.position = "none")
+```
+
+
+```{r show-sic-codes, echo=FALSE}
+tab_gw_sic %>%
+  group_by(sic_code) %>%
+  filter(mean(goodwill_to_asset) > 0) %>%
+  distinct(sic_code, sic_name) %>%
+  show_table()
+```
+
+# Own Function Calls
+
+```{r function-calls}
+lsf.str()
+```
+
+------------------------------------------------------------------------
+
+# Session Info
+
+```{r session-info}
+sessioninfo::session_info()
+```
