@@ -4,11 +4,13 @@ type: inverse
 left:
   - text: "Day 1 - Business Case"
     menu:
+      - text: "Session 0 - Used Packages"
+        href: ./00_install_packages.html
       - text: "Session 1 - Business Case (Excel Sheet)"
         href: ./01_business_case_excel.html
       - text: "Session 2 - Business Case (HTML Layout)"
         href: ./02_business_case_html.html
-      - text: "Session 2 - Business Case (Shiny App)"
+      - text: "Session 3 - Business Case (Shiny App)"
         href: ./03_business_case_shiny.html
   - text: "Day 2 - Getting and Analyizing Financial Data"
     menu:

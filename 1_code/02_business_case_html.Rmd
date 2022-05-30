@@ -17,15 +17,12 @@ knitr::opts_chunk$set(root.dir = normalizePath(here::here()))
 ```
 
 ```{r include=FALSE}
-library(plotly)
 library(tidyverse)
-library(htmlwidgets)
-library(openxlsx)
 library(janitor)
-library(furrr)
 library(scales)
 library(ggthemes)
 library(patchwork)
+library(kableExtra)
 options(scipen = 999)
 source("1_code/functions/f-02_business_case.R", encoding = "UTF-8")
 source("1_code/functions/v-02_business_case_default_values.R")
@@ -70,6 +67,11 @@ the following Input Parameters:
     unit over the base volume (.vb)
 
 ```{r}
+.cv <- 500; .v <- 7500; .vb <- 3000; .vc <- 8000; .vd <- 750; .d <- .05
+```
+
+
+```{r}
 fnc_var_disc <- function(.v, .vb, .vc, .vd, .d) {
   vu_ <- dplyr::case_when(
     .v < .vb ~ .vb,
@@ -79,15 +81,34 @@ fnc_var_disc <- function(.v, .vb, .vc, .vd, .d) {
   floor((vu_ - .vb) / .vd) * .d
 }
 
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat("\nDiscount - Volume:", i, ":", percent(fnc_var_disc(i, .vb, .vc, .vd, .d)))
+}
+
+```
+
+
+```{r}
 fnc_var_unit <- function(.cv, .v, .vb, .vc, .vd, .d) {
   disc_ <- fnc_var_disc(.v, .vb, .vc, .vd, .d)
   .cv * (1 - disc_)
 }
 
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat("\nUnit Cost - Volume:", i, ":", comma(fnc_var_unit(.cv, i, .vb, .vc, .vd, .d)))
+}
+
+```
+
+
+```{r}
 fnc_var_cost <- function(.cv, .v, .vb, .vc, .vd, .d) {
   .v * fnc_var_unit(.cv, .v, .vb, .vc, .vd, .d)
 }
 
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat("\nTotal Cost - Volume:", i, ":", comma(fnc_var_cost(.cv, i, .vb, .vc, .vd, .d)))
+}
 ```
 
 For convenience we added two helper functions *fnc_var_disc() and
@@ -137,19 +158,41 @@ following Input Parameters:
 
 -   **.vm (Volume Multiplier):** Fixed Cost double at this point
 
+```{r}
+.cf<- 50000; .vm <- 1000
+```
+
+
 ```{r message=FALSE, warning=FALSE}
 fnc_fix_mult <- function(.v, .vm) {
   ceiling(.v / .vm)
 }
 
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat("\nFixed Cost Multiplier - Volume:", i, ":", comma(fnc_fix_mult(i, .vm)))
+}
+```
+
+
+```{r message=FALSE, warning=FALSE}
 fnc_fix_cost <- function(.cf, .v, .vm) {
   .cf * fnc_fix_mult(.v, .vm)
 }
 
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat("\nFixed Cost - Volume:", i, ":", comma(fnc_fix_cost(.cf, i, .vm)))
+}
+```
+
+
+```{r message=FALSE, warning=FALSE}
 fnc_fix_unit <- function(.cf, .v, .vm) {
   (.cf * fnc_fix_mult(.v, .vm)) / .v
 }
 
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat("\nUnit Fixed Cost - Volume:", i, ":", comma(fnc_fix_unit(.cf, i, .vm)))
+}
 ```
 
 For convenience we added two helper functions *fnc_fix_disc() and
@@ -195,17 +238,40 @@ We limit the resulting S-Curve between .6 to 1. The idea behind this is,
 that for every addition unit we want to sell, we have to lower the price
 by a certain amount.
 
+```{r}
+.p <- 750
+```
+
+
 ```{r message=FALSE, warning=FALSE}
 fnc_rev_sigmoid <- function(.v) {
   (1 - (1 / (1 + exp(-((.v / 1000) - 4.25))))) * .4 + .6
 }
 
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat("\nSigmoid - Volume:", i, ":", percent(fnc_rev_sigmoid(i)))
+}
+```
+
+
+```{r message=FALSE, warning=FALSE}
 fnc_rev_unit <- function(.p, .v) {
   .p * fnc_rev_sigmoid(.v)
 }
 
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat("\nUnit Revenue (Price) - Volume:", i, ":", comma(fnc_rev_unit(.p, i)))
+}
+```
+
+
+```{r message=FALSE, warning=FALSE}
 fnc_rev <- function(.p, .v) {
   .v * fnc_rev_unit(.p, .v)
+}
+
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat("\nRevenue- Volume:", i, ":", comma(fnc_rev(.p, i)))
 }
 ```
 
@@ -250,6 +316,11 @@ Cost)**]{.underline}, [**.vm (Volume Multiplier - for Fixed
 Cost)**]{.underline}, .[**ca (Company Cost)**.]{.underline}
 
 ```{r}
+.ca <- 250000
+```
+
+
+```{r}
 get_input_table <- function(.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, .vc = 0, 
                             .vd = 0, .d = 0, .vm = 0, .ca = 0) {
   tibble::tibble(
@@ -257,8 +328,17 @@ get_input_table <- function(.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, .vc = 0,
     vd = .vd, d = .d, vm = .vm,
   )
 }
-get_input_table(.v = 7500, .p = 750, .cv = 500, .cf = 50000, .vb = 3000, .vc = 8000, 
-                .vd = 750, .d = .05, .vm = 1000, .ca = 250000)
+
+get_input_table(
+  .v = .v, .p = .p, .cv = .cv, .cf = .cf, .vb = .vb, .vc = .vc,
+  .vd = .vd, .d = .d, .vm = .vm, .ca = .ca
+) %>%
+  mutate(
+    across(!matches("^d$"), comma), 
+    d = percent(d)
+    ) %>%
+  kbl(align = "c") %>%
+  kable_paper(full_width = FALSE)
 ```
 
 ## Function: Profit
@@ -269,9 +349,19 @@ argument which is the dataframe we produce with the function
 **get_input_table()**
 
 ```{r}
-get_input_table(.v = 7500, .p = 750, .cv = 500, .cf = 50000, .vb = 3000, .vc = 8000, 
-                .vd = 750, .d = .05, .vm = 1000, .ca = 250000) %>%
-  get_profit()
+get_input_table(
+  .v = .v, .p = .p, .cv = .cv, .cf = .cf, .vb = .vb, .vc = .vc,
+  .vd = .vd, .d = .d, .vm = .vm, .ca = .ca
+) %>%
+  get_profit() %>%
+  mutate(
+    across(!matches("^d$|discount"), comma), 
+    d = percent(d),
+    discount = percent(discount)
+    ) %>%
+  select(discount:profit) %>%
+  kbl(align = "c") %>%
+  kable_paper(full_width = FALSE)
 ```
 
 ## Functions: Other
@@ -298,7 +388,10 @@ get_cm_table <- function(.tab) {
       perc = scales::percent(perc)
     )
 }
+```
 
+
+```{r}
 get_amortization <- function(.tab, .years, .invest, .discount) {
   .tab %>%
     tidyr::expand_grid(year = seq_len(.years)) %>%
@@ -488,4 +581,3 @@ tab_mc %>%
 
 ```
 
-# 

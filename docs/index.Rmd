@@ -40,89 +40,69 @@ You can navigate to the individual sessions by either following the link
 in the table of contents, or by navigating through the drop-down menus
 at the top of the page.
 
-+------------+------------+-----------------------------------------+
-| Day        | Session    | Description                             |
-+:===========+:===========+:========================================+
-| Day 1      | Session 1  | [**Building an Excel Business           |
-|            |            | Case**](01_busine                       |
-|            |            | ss_case_excel.html "Day 1 - Session 1") |
-|            |            |                                         |
-|            |            | In this session we will start by        |
-|            |            | building a simple business case in      |
-|            |            | Excel. Specifically, we will evaluate a |
-|            |            | small business decision with common     |
-|            |            | metrics such as Contribution Margins    |
-|            |            | and Amortization Period.                |
-+------------+------------+-----------------------------------------+
-|            | Session 2  | [**Translating Excel into               |
-|            |            | R**](02_                                |
-|            |            | business_case_html "Day 1 - Session 2") |
-|            |            |                                         |
-|            |            | In this session we will take the logic  |
-|            |            | of the business case of Session 1 and   |
-|            |            | translate it into R code. This session  |
-|            |            | will help you to do the transition from |
-|            |            | Excel to R. The outcome of this session |
-|            |            | will be a static Report.                |
-+------------+------------+-----------------------------------------+
-|            | Session 3  | [**Building an interactive Business     |
-|            |            | Case in                                 |
-|            |            | R**](03_busine                          |
-|            |            | ss_case_shiny.html "Day 1 - Session 3") |
-|            |            |                                         |
-|            |            | In the last session of the day, we will |
-|            |            | ... the full power of R and build an    |
-|            |            | interactive shiny application. This     |
-|            |            | application will enable us to have a    |
-|            |            | far deeper understanding of the         |
-|            |            | business case than we could have with   |
-|            |            | only the Excel Workbook or the static   |
-|            |            | Report of Session 1 and Session 2.      |
-+------------+------------+-----------------------------------------+
-| Day 2      | Session 1  | [**Getting Data from the Web: SEC's     |
-|            |            | EDGAR**](00_g                           |
-|            |            | et_edgar_data.html "Day 2 - Session 1") |
-|            |            |                                         |
-|            |            | In this session we will learn how the   |
-|            |            | use the Electronic Data Gathering,      |
-|            |            | Analysis, and Retrieval system (EDGAR)  |
-|            |            | API to download US Financial Reports.   |
-+------------+------------+-----------------------------------------+
-|            | Session 2  | [**Getting Data from the Web:           |
-|            |            | www.AnnualReport.com**](00_g            |
-|            |            | et_arcom_data.html "Day 2 - Session 2") |
-|            |            |                                         |
-|            |            | In this session we will learn how to    |
-|            |            | scrape websites if no API is provided.  |
-|            |            | Specifically we will download PDF       |
-|            |            | Annual Reports from                     |
-|            |            | www.AnnualReport.com.                   |
-+------------+------------+-----------------------------------------+
-|            | Session 3  | [**Getting Data from the Web:           |
-|            |            | XBRL**]                                 |
-|            |            | (00_xbrl_data.html "Day 2 - Session 3") |
-|            |            |                                         |
-|            |            | In this session we will extract         |
-|            |            | structured information from files that  |
-|            |            | are tagged using eXtensible Business    |
-|            |            | Reporting Language (XBRL) framework.    |
-+------------+------------+-----------------------------------------+
-|            | Session 4  | [**Analyzing Data: XBRL                 |
-|            |            | Tags**](04                              |
-|            |            | _xbrl_analyze.html "Day 2 - Session 4") |
-|            |            |                                         |
-|            |            | This session gives a small use case of  |
-|            |            | the data encoded in XBRL files.         |
-+------------+------------+-----------------------------------------+
-|            | Session 5  | [**Analyzing Data: Textual              |
-|            |            | Analysis**](05_tex                      |
-|            |            | tual_analysis.html "Day 2 - Session 5") |
-|            |            |                                         |
-|            |            | In the last session of the day, we will |
-|            |            | do some simple analysis of words and    |
-|            |            | phrases occurring in US and European    |
-|            |            | financial statements.                   |
-+------------+------------+-----------------------------------------+
++-------+-----------+------------------------------------------------+
+| Day   | Session   | Description                                    |
++:======+:==========+:===============================================+
+| Day 1 | Session 1 | **Building an Excel Business Case**            |
+|       |           |                                                |
+|       |           | In this session we will start by building a    |
+|       |           | simple business case in Excel. Specifically,   |
+|       |           | we will evaluate a small business decision     |
+|       |           | with common metrics such as Contribution       |
+|       |           | Margins and Amortization Period.               |
++-------+-----------+------------------------------------------------+
+|       | Session 2 | **Translating Excel into R**                   |
+|       |           |                                                |
+|       |           | In this session we will take the logic of the  |
+|       |           | business case of Session 1 and translate it    |
+|       |           | into R code. This session will help you to do  |
+|       |           | the transition from Excel to R. The outcome of |
+|       |           | this session will be a static Report.          |
++-------+-----------+------------------------------------------------+
+|       | Session 3 | **Building an interactive Business Case in R** |
+|       |           |                                                |
+|       |           | In the last session of the day, we will ...    |
+|       |           | the full power of R and build an interactive   |
+|       |           | shiny application. This application will       |
+|       |           | enable us to have a far deeper understanding   |
+|       |           | of the business case than we could have with   |
+|       |           | only the Excel Workbook or the static Report   |
+|       |           | of Session 1 and Session 2.                    |
++-------+-----------+------------------------------------------------+
+| Day 2 | Session 1 | **Getting Data from the Web: SEC's EDGAR**     |
+|       |           |                                                |
+|       |           | In this session we will learn how the use the  |
+|       |           | Electronic Data Gathering, Analysis, and       |
+|       |           | Retrieval system (EDGAR) API to download US    |
+|       |           | Financial Reports.                             |
++-------+-----------+------------------------------------------------+
+|       | Session 2 | **Getting Data from the Web:                   |
+|       |           | www.AnnualReport.com**                         |
+|       |           |                                                |
+|       |           | In this session we will learn how to scrape    |
+|       |           | websites if no API is provided. Specifically   |
+|       |           | we will download PDF Annual Reports from       |
+|       |           | www.AnnualReport.com.                          |
++-------+-----------+------------------------------------------------+
+|       | Session 3 | **Getting Data from the Web: XBRL**            |
+|       |           |                                                |
+|       |           | In this session we will extract structured     |
+|       |           | information from files that are tagged using   |
+|       |           | eXtensible Business Reporting Language (XBRL)  |
+|       |           | framework.                                     |
++-------+-----------+------------------------------------------------+
+|       | Session 4 | **Analyzing Data: XBRL Tags**                  |
+|       |           |                                                |
+|       |           | This session gives a small use case of the     |
+|       |           | data encoded in XBRL files.                    |
++-------+-----------+------------------------------------------------+
+|       | Session 5 | **Analyzing Data: Textual Analysis**           |
+|       |           |                                                |
+|       |           | In the last session of the day, we will do     |
+|       |           | some simple analysis of words and phrases      |
+|       |           | occurring in US and European financial         |
+|       |           | statements.                                    |
++-------+-----------+------------------------------------------------+
 
 ------------------------------------------------------------------------
 

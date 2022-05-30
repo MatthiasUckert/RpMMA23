@@ -1,0 +1,61 @@
+---
+title: "Install Packages"
+author: "Matthias Uckert"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float:
+      collapsed: false
+    self_contained: no
+---
+
+Throughout, the sessions we will use a number of R packages. 
+Please, copy and paste the code below to install the necessary packages.
+
+```{r eval=FALSE}
+vec_pck <- c(
+  "tidyverse",
+  "janitor",
+  "scales",
+  "ggthemes",
+  "patchwork",
+  "kableExtra",
+  "rvest",
+  "xml2",
+  "furrr",
+  "openxlsx",
+  "fuzzyjoin",
+  "stringdist",
+  "ISOcodes",
+  "edgarWebR",
+  "lubridate",
+  "here",
+  "stringi",
+  "textstem",
+  "tidytext",
+  "tools",
+  "zip",
+  "shiny",
+  "shinyWidgets",
+  "topicmodels",
+  "fst"
+)
+
+inst_pck <- installed.packages()[, 1]
+not_installed <- vec_pck[!vec_pck %in% inst_pck]
+
+if (length(not_installed) > 0) {
+  for (pck in not_installed) {
+    install.packages(pck)
+  }
+}
+
+```
+
+In case some of the packages cannot be installed the first time, just manually select this package again and install it with the following code
+```{r eval=FALSE}
+install.packages("PACKAGE")
+```
+

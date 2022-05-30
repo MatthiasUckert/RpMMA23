@@ -9,9 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Matthias Uckert" />
 
 
-<title>Mannheim Master in Management Analytics 2023</title>
+<title>Install Packages</title>
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -44,6 +45,100 @@
     </style>
 
 
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  { color: #cccccc; background-color: #303030; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ffcfaf; } /* Alert */
+code span.an { color: #7f9f7f; font-weight: bold; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bn { color: #dca3a3; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #f0dfaf; } /* ControlFlow */
+code span.ch { color: #dca3a3; } /* Char */
+code span.cn { color: #dca3a3; font-weight: bold; } /* Constant */
+code span.co { color: #7f9f7f; } /* Comment */
+code span.cv { color: #7f9f7f; font-weight: bold; } /* CommentVar */
+code span.do { color: #7f9f7f; } /* Documentation */
+code span.dt { color: #dfdfbf; } /* DataType */
+code span.dv { color: #dcdccc; } /* DecVal */
+code span.er { color: #c3bf9f; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #c0bed1; } /* Float */
+code span.fu { color: #efef8f; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #7f9f7f; font-weight: bold; } /* Information */
+code span.kw { color: #f0dfaf; } /* Keyword */
+code span.op { color: #f0efd0; } /* Operator */
+code span.ot { color: #efef8f; } /* Other */
+code span.pp { color: #ffcfaf; font-weight: bold; } /* Preprocessor */
+code span.sc { color: #dca3a3; } /* SpecialChar */
+code span.ss { color: #cc9393; } /* SpecialString */
+code span.st { color: #cc9393; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #cc9393; } /* VerbatimString */
+code span.wa { color: #7f9f7f; font-weight: bold; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -376,142 +471,55 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Mannheim Master in Management Analytics
-2023</h1>
-<h3 class="subtitle">Accounting Class</h3>
+<h1 class="title toc-ignore">Install Packages</h1>
+<h4 class="author">Matthias Uckert</h4>
+<h4 class="date">30 May, 2022</h4>
 
 </div>
 
 
-<hr />
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>Welcome to the practical application sessions of the <strong>Mannheim
-Master in Management Analytics - Accounting Class 2023.</strong> In the
-next days you will see how to solve common business applications with R
-and Excel and to dive deeper into some research related application.</p>
-<p>The goal of those sessions is to give you a general overview of how
-common workflows can be automated/streamlined.</p>
-<p>All sessions are programmed in R and a basic understanding of
-programming is needed. The code itself applies relatively advanced
-methods, hence it is not assumed that you follow each single logical
-step. Rather this part of the course is designed to give you a high
-level understanding of what is possible using common open-source
-languages such as R.</p>
-<hr />
-</div>
-<div id="get-the-code" class="section level1">
-<h1>Get The Code</h1>
-<p>The complete code is hosted on my GitHub page: <a
-href="https://github.com/MatthiasUckert/RpMMA23"
-class="uri">https://github.com/MatthiasUckert/RpMMA23</a></p>
-<p>Simply fork the repository into your own GitHub or download the
-Project.</p>
-<hr />
-</div>
-<div id="table-of-content" class="section level1">
-<h1>Table of Content</h1>
-<p>You can navigate to the individual sessions by either following the
-link in the table of contents, or by navigating through the drop-down
-menus at the top of the page.</p>
-<table style="width:92%;">
-<colgroup>
-<col width="19%" />
-<col width="19%" />
-<col width="52%" />
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">Day</th>
-<th align="left">Session</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Day 1</td>
-<td align="left">Session 1</td>
-<td align="left"><p><strong>Building an Excel Business Case</strong></p>
-<p>In this session we will start by building a simple business case in
-Excel. Specifically, we will evaluate a small business decision with
-common metrics such as Contribution Margins and Amortization
-Period.</p></td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="left">Session 2</td>
-<td align="left"><p><strong>Translating Excel into R</strong></p>
-<p>In this session we will take the logic of the business case of
-Session 1 and translate it into R code. This session will help you to do
-the transition from Excel to R. The outcome of this session will be a
-static Report.</p></td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="left">Session 3</td>
-<td align="left"><p><strong>Building an interactive Business Case in
-R</strong></p>
-<p>In the last session of the day, we will … the full power of R and
-build an interactive shiny application. This application will enable us
-to have a far deeper understanding of the business case than we could
-have with only the Excel Workbook or the static Report of Session 1 and
-Session 2.</p></td>
-</tr>
-<tr class="even">
-<td align="left">Day 2</td>
-<td align="left">Session 1</td>
-<td align="left"><p><strong>Getting Data from the Web: SEC’s
-EDGAR</strong></p>
-<p>In this session we will learn how the use the Electronic Data
-Gathering, Analysis, and Retrieval system (EDGAR) API to download US
-Financial Reports.</p></td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="left">Session 2</td>
-<td align="left"><p><strong>Getting Data from the Web:
-www.AnnualReport.com</strong></p>
-<p>In this session we will learn how to scrape websites if no API is
-provided. Specifically we will download PDF Annual Reports from
-www.AnnualReport.com.</p></td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="left">Session 3</td>
-<td align="left"><p><strong>Getting Data from the Web: XBRL</strong></p>
-<p>In this session we will extract structured information from files
-that are tagged using eXtensible Business Reporting Language (XBRL)
-framework.</p></td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-<td align="left">Session 4</td>
-<td align="left"><p><strong>Analyzing Data: XBRL Tags</strong></p>
-<p>This session gives a small use case of the data encoded in XBRL
-files.</p></td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-<td align="left">Session 5</td>
-<td align="left"><p><strong>Analyzing Data: Textual
-Analysis</strong></p>
-<p>In the last session of the day, we will do some simple analysis of
-words and phrases occurring in US and European financial
-statements.</p></td>
-</tr>
-</tbody>
-</table>
-<hr />
-</div>
-<div id="interesting-readings" class="section level1">
-<h1>Interesting Readings</h1>
-<ul>
-<li><strong>Advanced R: <a href="https://adv-r.hadley.nz/"
-class="uri">https://adv-r.hadley.nz/</a></strong></li>
-<li><strong>R for Data Science: <a href="https://r4ds.had.co.nz/"
-class="uri">https://r4ds.had.co.nz/</a></strong></li>
-</ul>
-</div>
+<p>Throughout, the sessions we will use a number of R packages. Please,
+copy and paste the code below to install the necessary packages.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>vec_pck <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;tidyverse&quot;</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;janitor&quot;</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;scales&quot;</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;ggthemes&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;patchwork&quot;</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;kableExtra&quot;</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rvest&quot;</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;xml2&quot;</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;furrr&quot;</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;openxlsx&quot;</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fuzzyjoin&quot;</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;stringdist&quot;</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;ISOcodes&quot;</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;edgarWebR&quot;</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;lubridate&quot;</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;here&quot;</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;stringi&quot;</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;textstem&quot;</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;tidytext&quot;</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;tools&quot;</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;zip&quot;</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;shiny&quot;</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;shinyWidgets&quot;</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;topicmodels&quot;</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;fst&quot;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>inst_pck <span class="ot">&lt;-</span> <span class="fu">installed.packages</span>()[, <span class="dv">1</span>]</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>not_installed <span class="ot">&lt;-</span> vec_pck[<span class="sc">!</span>vec_pck <span class="sc">%in%</span> inst_pck]</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(not_installed) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (pck <span class="cf">in</span> not_installed) {</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(pck)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>In case some of the packages cannot be installed the first time, just
+manually select this package again and install it with the following
+code</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;PACKAGE&quot;</span>)</span></code></pre></div>
 
 
 
@@ -562,7 +570,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2",
+      selectors: "h1,h2,h3",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {

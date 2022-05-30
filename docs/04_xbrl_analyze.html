@@ -416,6 +416,9 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="./00_install_packages.html">Session 0 - Used Packages</a>
+    </li>
+    <li>
       <a href="./01_business_case_excel.html">Session 1 - Business Case (Excel Sheet)</a>
     </li>
     <li>
@@ -472,7 +475,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Analyzing Data: XBRL Elements</h1>
 <h4 class="author">Matthias Uckert</h4>
-<h4 class="date">28 May, 2022</h4>
+<h4 class="date">30 May, 2022</h4>
 
 </div>
 
@@ -732,7 +735,9 @@ services
 <div id="own-function-calls" class="section level1">
 <h1>Own Function Calls</h1>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lsf.str</span>()</span></code></pre></div>
-<pre><code>## create_dirs : function (.dirs)  
+<pre><code>## compare_word_frequqncies : function (.tab, .tab_data)  
+## create_dirs : function (.dirs)  
+## display_top_n_by : function (.tab, .col)  
 ## downlad_ar : function (.url, .dir)  
 ## download_edgar_files : function (.tab, .dir, .retry = 5, .sleep = 1)  
 ## download_google_drive : function (.id, .dir = NULL, .read_fun = NULL, .overwrite = FALSE)  
@@ -750,28 +755,30 @@ services
 ## get_company_table : function (.url)  
 ## get_f500 : function ()  
 ## get_infos : function (.path)  
-## get_input_table : function (.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, 
-##     .vc = 0, .vd = 0, .d = 0, .vm = 0, .ca = 0)  
+## get_input_table : function (.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, .vc = 0, .vd = 0, .d = 0, 
+##     .vm = 0, .ca = 0)  
+## get_lm_stop : function ()  
+## get_ngrams : function (.path, .ngram, .stop = tibble(word = &quot;&quot;, .rows = 0), .rm_num = TRUE)  
 ## get_profit : function (.tab)  
-## list_files_tab : function (dirs, reg = &quot;*&quot;, id = &quot;doc_id&quot;, rec = FALSE, 
-##     info = FALSE)  
-## map_company_filings : function (.tickers, .ownership = FALSE, .type = &quot;&quot;, 
-##     .before = &quot;&quot;, .count = 100, .page = 1, .progress = TRUE, 
-##     .sleep = 0, .retry = 5)  
-## map_filing_details : function (.id, .hrefs, .progress = TRUE, .sleep = 0, 
-##     .retry = 5)  
+## list_files_tab : function (dirs, reg = &quot;*&quot;, id = &quot;doc_id&quot;, rec = FALSE, info = FALSE)  
+## map_company_filings : function (.tickers, .ownership = FALSE, .type = &quot;&quot;, .before = &quot;&quot;, .count = 100, 
+##     .page = 1, .progress = TRUE, .sleep = 0, .retry = 5)  
+## map_filing_details : function (.id, .hrefs, .progress = TRUE, .sleep = 0, .retry = 5)  
 ## own_get_fs : function (.path, .dir_cache)  
 ## own_XBRL : function ()  
-## own_xbrlDoAll : function (file.inst, cache.dir = &quot;xbrl.Cache&quot;, prefix.out = NULL, 
-##     verbose = FALSE, delete.cached.inst = TRUE)  
+## own_xbrlDoAll : function (file.inst, cache.dir = &quot;xbrl.Cache&quot;, prefix.out = NULL, verbose = FALSE, 
+##     delete.cached.inst = TRUE)  
+## pdf_read_and_tokenize : function (.path, .dir)  
 ## plot_amortization : function (.tab, .size)  
 ## plot_monte_carlo : function (.tab, .size)  
-## plot_points : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, 
-##     .title = &quot;&quot;, .size)  
-## plot_profits : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, 
-##     .title = &quot;&quot;, .size = 16)  
+## plot_points : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, .title = &quot;&quot;, .size)  
+## plot_profits : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, .title = &quot;&quot;, .size = 16)  
+## prep_top_n_by : function (.tab_word, .tab_data, .col, .n = 10)  
 ## remove_html_tags : function (.string, rm_linebreaks = TRUE)  
 ## safe_get_company_table : function (...)  
+## sec_read_and_tokenize : function (.path, .dir = NULL)  
+## show_sentiment : function (.tab, .type = c(&quot;pos/neg&quot;, &quot;uncertainty&quot;, &quot;litigious&quot;, &quot;constraining&quot;, 
+##     &quot;superfluous&quot;))  
 ## show_table : function (.tab, .n = Inf)  
 ## standardize_name : function (.name)  
 ## xbrl_extract_elements : function (.zip, .dir_tmp, .dir_out)  
@@ -782,7 +789,7 @@ services
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code></pre></div>
-<pre><code>## - Session info ----------------------------------------
+<pre><code>## - Session info ----------------------------------------------------------------
 ##  setting  value
 ##  version  R version 4.1.2 (2021-11-01)
 ##  os       Windows 10 x64 (build 22000)
@@ -792,11 +799,11 @@ services
 ##  collate  English_Germany.1252
 ##  ctype    English_Germany.1252
 ##  tz       Europe/Berlin
-##  date     2022-05-28
+##  date     2022-05-30
 ##  rstudio  2022.02.2+485 Prairie Trillium (desktop)
 ##  pandoc   2.17.1.1 @ C:/Program Files/RStudio/bin/quarto/bin/ (via rmarkdown)
 ## 
-## - Packages --------------------------------------------
+## - Packages --------------------------------------------------------------------
 ##  package        * version    date (UTC) lib source
 ##  assertthat       0.2.1      2019-03-21 [1] CRAN (R 4.1.0)
 ##  backports        1.4.1      2021-12-13 [1] CRAN (R 4.1.2)
@@ -837,7 +844,6 @@ services
 ##  highr            0.9        2021-04-16 [1] CRAN (R 4.1.0)
 ##  hms              1.1.1      2021-09-26 [1] CRAN (R 4.1.1)
 ##  htmltools        0.5.2      2021-08-25 [1] CRAN (R 4.1.1)
-##  htmlwidgets    * 1.5.4      2021-09-08 [1] CRAN (R 4.1.3)
 ##  httr             1.4.2      2020-07-20 [1] CRAN (R 4.1.0)
 ##  ISOcodes       * 2022.01.10 2022-01-10 [1] CRAN (R 4.1.2)
 ##  janeaustenr      0.1.5      2017-06-10 [1] CRAN (R 4.1.0)
@@ -850,7 +856,6 @@ services
 ##  koRpus.lang.en * 0.1-4      2020-10-24 [1] CRAN (R 4.1.3)
 ##  labeling         0.4.2      2020-10-20 [1] CRAN (R 4.1.0)
 ##  lattice          0.20-45    2021-09-22 [2] CRAN (R 4.1.2)
-##  lazyeval         0.2.2      2019-03-15 [1] CRAN (R 4.1.0)
 ##  lifecycle        1.0.1      2021-09-24 [1] CRAN (R 4.1.1)
 ##  listenv          0.8.0      2019-12-05 [1] CRAN (R 4.1.0)
 ##  lubridate      * 1.8.0      2021-10-07 [1] CRAN (R 4.1.1)
@@ -865,11 +870,14 @@ services
 ##  patchwork      * 1.1.1      2020-12-17 [1] CRAN (R 4.1.0)
 ##  pillar           1.7.0      2022-02-01 [1] CRAN (R 4.1.2)
 ##  pkgconfig        2.0.3      2019-09-22 [1] CRAN (R 4.1.0)
-##  plotly         * 4.10.0     2021-10-09 [1] CRAN (R 4.1.3)
 ##  plyr             1.8.6      2020-03-03 [1] CRAN (R 4.1.0)
 ##  prettyunits      1.1.1      2020-01-24 [1] CRAN (R 4.1.0)
 ##  progress         1.2.2      2019-05-16 [1] CRAN (R 4.1.0)
 ##  purrr          * 0.3.4      2020-04-17 [1] CRAN (R 4.1.0)
+##  R.cache          0.15.0     2021-04-30 [1] CRAN (R 4.1.0)
+##  R.methodsS3      1.8.1      2020-08-26 [1] CRAN (R 4.1.0)
+##  R.oo             1.24.0     2020-08-26 [1] CRAN (R 4.1.0)
+##  R.utils          2.11.0     2021-09-26 [1] CRAN (R 4.1.1)
 ##  R6               2.5.1      2021-08-19 [1] CRAN (R 4.1.1)
 ##  Rcpp             1.0.8      2022-01-13 [1] CRAN (R 4.1.2)
 ##  readr          * 2.1.2      2022-01-30 [1] CRAN (R 4.1.2)
@@ -891,6 +899,7 @@ services
 ##  stringdist     * 0.9.8      2021-09-09 [1] CRAN (R 4.1.1)
 ##  stringi        * 1.7.6      2021-11-29 [1] CRAN (R 4.1.2)
 ##  stringr        * 1.4.0      2019-02-10 [1] CRAN (R 4.1.0)
+##  styler           1.6.2      2021-09-23 [1] CRAN (R 4.1.1)
 ##  svglite          2.1.0      2022-02-03 [1] CRAN (R 4.1.2)
 ##  sylly          * 0.1-6      2020-09-20 [1] CRAN (R 4.1.3)
 ##  sylly.en         0.1-3      2018-03-19 [1] CRAN (R 4.1.3)
@@ -919,7 +928,7 @@ services
 ##  [1] E:/R/R_library
 ##  [2] C:/Program Files/R/R-4.1.2/library
 ## 
-## -------------------------------------------------------</code></pre>
+## -------------------------------------------------------------------------------</code></pre>
 </div>
 
 
@@ -971,7 +980,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2",
+      selectors: "h1,h2,h3",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
