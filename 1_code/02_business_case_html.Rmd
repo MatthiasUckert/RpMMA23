@@ -70,7 +70,6 @@ the following Input Parameters:
 .cv <- 500; .v <- 7500; .vb <- 3000; .vc <- 8000; .vd <- 750; .d <- .05
 ```
 
-
 ```{r}
 fnc_var_disc <- function(.v, .vb, .vc, .vd, .d) {
   vu_ <- dplyr::case_when(
@@ -81,12 +80,11 @@ fnc_var_disc <- function(.v, .vb, .vc, .vd, .d) {
   floor((vu_ - .vb) / .vd) * .d
 }
 
-for (i in c(1000, 3000, 4000, 8000, 9000)) {
+for (i in c(1000, 3750, 4000, 8000, 9000)) {
   cat("\nDiscount - Volume:", i, ":", percent(fnc_var_disc(i, .vb, .vc, .vd, .d)))
 }
 
 ```
-
 
 ```{r}
 fnc_var_unit <- function(.cv, .v, .vb, .vc, .vd, .d) {
@@ -99,7 +97,6 @@ for (i in c(1000, 3000, 4000, 8000, 9000)) {
 }
 
 ```
-
 
 ```{r}
 fnc_var_cost <- function(.cv, .v, .vb, .vc, .vd, .d) {
@@ -162,7 +159,6 @@ following Input Parameters:
 .cf<- 50000; .vm <- 1000
 ```
 
-
 ```{r message=FALSE, warning=FALSE}
 fnc_fix_mult <- function(.v, .vm) {
   ceiling(.v / .vm)
@@ -173,7 +169,6 @@ for (i in c(1000, 3000, 4000, 8000, 9000)) {
 }
 ```
 
-
 ```{r message=FALSE, warning=FALSE}
 fnc_fix_cost <- function(.cf, .v, .vm) {
   .cf * fnc_fix_mult(.v, .vm)
@@ -183,7 +178,6 @@ for (i in c(1000, 3000, 4000, 8000, 9000)) {
   cat("\nFixed Cost - Volume:", i, ":", comma(fnc_fix_cost(.cf, i, .vm)))
 }
 ```
-
 
 ```{r message=FALSE, warning=FALSE}
 fnc_fix_unit <- function(.cf, .v, .vm) {
@@ -208,8 +202,7 @@ this functions with the following values:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 .seq <- seq(500, 10000, 5)
-tab_cf <- get_input_table(.cf = .def_cf, .v = .seq, .vm = .def_vm)
-tab_cf <- tab_cf %>%
+tab_cf <- get_input_table(.cf = .def_cf, .v = .seq, .vm = .def_vm) %>%
   mutate(
     multiple = fnc_fix_mult(.v = v, .vm = vm),
     var_unit = fnc_fix_unit(.cf = cf, .v = v, .vm = vm),
@@ -242,7 +235,6 @@ by a certain amount.
 .p <- 750
 ```
 
-
 ```{r message=FALSE, warning=FALSE}
 fnc_rev_sigmoid <- function(.v) {
   (1 - (1 / (1 + exp(-((.v / 1000) - 4.25))))) * .4 + .6
@@ -253,7 +245,6 @@ for (i in c(1000, 3000, 4000, 8000, 9000)) {
 }
 ```
 
-
 ```{r message=FALSE, warning=FALSE}
 fnc_rev_unit <- function(.p, .v) {
   .p * fnc_rev_sigmoid(.v)
@@ -263,7 +254,6 @@ for (i in c(1000, 3000, 4000, 8000, 9000)) {
   cat("\nUnit Revenue (Price) - Volume:", i, ":", comma(fnc_rev_unit(.p, i)))
 }
 ```
-
 
 ```{r message=FALSE, warning=FALSE}
 fnc_rev <- function(.p, .v) {
@@ -318,7 +308,6 @@ Cost)**]{.underline}, .[**ca (Company Cost)**.]{.underline}
 ```{r}
 .ca <- 250000
 ```
-
 
 ```{r}
 get_input_table <- function(.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, .vc = 0, 
@@ -389,7 +378,6 @@ get_cm_table <- function(.tab) {
     )
 }
 ```
-
 
 ```{r}
 get_amortization <- function(.tab, .years, .invest, .discount) {
@@ -547,7 +535,7 @@ feeling how robust our business model is to changing input factors
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 set.seed(123)
-.n = 100000
+.n = 1000000
 tab_mc <- get_input_table(
   .v = rnorm(n = .n, mean = .def_v, sd = .def_vsd), 
   .p = rnorm(n = .n, mean = .def_p, sd = .def_psd), 
@@ -580,4 +568,3 @@ tab_mc %>%
   kableExtra::kable_styling(full_width = FALSE, position = "center")
 
 ```
-

@@ -475,7 +475,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Data from the Web: XBRL</h1>
 <h4 class="author">Matthias Uckert</h4>
-<h4 class="date">30 May, 2022</h4>
+<h4 class="date">01 June, 2022</h4>
 
 </div>
 
@@ -1673,61 +1673,47 @@ NA
 <div id="own-function-calls" class="section level1">
 <h1>Own Function Calls</h1>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lsf.str</span>()</span></code></pre></div>
-<pre><code>## compare_word_frequqncies : function (.tab, .tab_data)  
-## create_dirs : function (.dirs)  
-## display_top_n_by : function (.tab, .col)  
+<pre><code>## create_dirs : function (.dirs)  
 ## downlad_ar : function (.url, .dir)  
-## download_edgar_files : function (.tab, .dir, .retry = 5, .sleep = 1)  
-## download_google_drive : function (.id, .dir = NULL, .read_fun = NULL, .overwrite = FALSE)  
-## fnc_fix_cost : function (.cf, .v, .vm)  
-## fnc_fix_mult : function (.v, .vm)  
-## fnc_fix_unit : function (.cf, .v, .vm)  
-## fnc_rev : function (.p, .v)  
-## fnc_rev_sigmoid : function (.v)  
-## fnc_rev_unit : function (.p, .v)  
-## fnc_var_cost : function (.cv, .v, .vb, .vc, .vd, .d)  
-## fnc_var_disc : function (.v, .vb, .vc, .vd, .d)  
-## fnc_var_unit : function (.cv, .v, .vb, .vc, .vd, .d)  
-## get_amortization : function (.tab, .years, .invest, .discount)  
-## get_cm_table : function (.tab)  
+## download_edgar_files : function (.tab, .dir, 
+##     .retry = 5, .sleep = 1)  
+## download_google_drive : function (.id, .dir = NULL, 
+##     .read_fun = NULL, 
+##     .overwrite = FALSE)  
 ## get_company_table : function (.url)  
 ## get_f500 : function ()  
 ## get_infos : function (.path)  
-## get_input_table : function (.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, .vc = 0, .vd = 0, .d = 0, 
-##     .vm = 0, .ca = 0)  
-## get_lm_stop : function ()  
-## get_ngrams : function (.path, .ngram, .stop = tibble(word = &quot;&quot;, .rows = 0), .rm_num = TRUE)  
-## get_profit : function (.tab)  
-## list_files_tab : function (dirs, reg = &quot;*&quot;, id = &quot;doc_id&quot;, rec = FALSE, info = FALSE)  
-## map_company_filings : function (.tickers, .ownership = FALSE, .type = &quot;&quot;, .before = &quot;&quot;, .count = 100, 
-##     .page = 1, .progress = TRUE, .sleep = 0, .retry = 5)  
-## map_filing_details : function (.id, .hrefs, .progress = TRUE, .sleep = 0, .retry = 5)  
+## list_files_tab : function (dirs, reg = &quot;*&quot;, 
+##     id = &quot;doc_id&quot;, rec = FALSE, 
+##     info = FALSE)  
+## map_company_filings : function (.tickers, .ownership = FALSE, 
+##     .type = &quot;&quot;, .before = &quot;&quot;, 
+##     .count = 100, .page = 1, 
+##     .progress = TRUE, 
+##     .sleep = 0, .retry = 5)  
+## map_filing_details : function (.id, .hrefs, 
+##     .progress = TRUE, 
+##     .sleep = 0, .retry = 5)  
 ## own_get_fs : function (.path, .dir_cache)  
 ## own_XBRL : function ()  
-## own_xbrlDoAll : function (file.inst, cache.dir = &quot;xbrl.Cache&quot;, prefix.out = NULL, verbose = FALSE, 
+## own_xbrlDoAll : function (file.inst, 
+##     cache.dir = &quot;xbrl.Cache&quot;, 
+##     prefix.out = NULL, 
+##     verbose = FALSE, 
 ##     delete.cached.inst = TRUE)  
-## pdf_read_and_tokenize : function (.path, .dir)  
-## plot_amortization : function (.tab, .size)  
-## plot_monte_carlo : function (.tab, .size)  
-## plot_points : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, .title = &quot;&quot;, .size)  
-## plot_profits : function (.tab, .x, .y, .xlab = &quot;&quot;, .ylab = &quot;&quot;, .title = &quot;&quot;, .size = 16)  
-## prep_top_n_by : function (.tab_word, .tab_data, .col, .n = 10)  
 ## remove_html_tags : function (.string, rm_linebreaks = TRUE)  
 ## safe_get_company_table : function (...)  
-## sec_read_and_tokenize : function (.path, .dir = NULL)  
-## show_sentiment : function (.tab, .type = c(&quot;pos/neg&quot;, &quot;uncertainty&quot;, &quot;litigious&quot;, &quot;constraining&quot;, 
-##     &quot;superfluous&quot;))  
 ## show_table : function (.tab, .n = Inf)  
 ## standardize_name : function (.name)  
-## xbrl_extract_elements : function (.zip, .dir_tmp, .dir_out)  
-## xbrl_extract_line_items : function (.tab, .tags)  
+## xbrl_extract_elements : function (.zip, .dir_tmp, 
+##     .dir_out)  
 ## xbrl_process_elements : function (.inst)</code></pre>
 <hr />
 </div>
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code></pre></div>
-<pre><code>## - Session info ----------------------------------------------------------------
+<pre><code>## - Session info -------------
 ##  setting  value
 ##  version  R version 4.1.2 (2021-11-01)
 ##  os       Windows 10 x64 (build 22000)
@@ -1737,11 +1723,11 @@ NA
 ##  collate  English_Germany.1252
 ##  ctype    English_Germany.1252
 ##  tz       Europe/Berlin
-##  date     2022-05-30
+##  date     2022-06-01
 ##  rstudio  2022.02.2+485 Prairie Trillium (desktop)
 ##  pandoc   2.17.1.1 @ C:/Program Files/RStudio/bin/quarto/bin/ (via rmarkdown)
 ## 
-## - Packages --------------------------------------------------------------------
+## - Packages -----------------
 ##  package        * version    date (UTC) lib source
 ##  assertthat       0.2.1      2019-03-21 [1] CRAN (R 4.1.0)
 ##  backports        1.4.1      2021-12-13 [1] CRAN (R 4.1.2)
@@ -1766,14 +1752,11 @@ NA
 ##  fastmap          1.1.0      2021-01-25 [1] CRAN (R 4.1.0)
 ##  forcats        * 0.5.1      2021-01-27 [1] CRAN (R 4.1.0)
 ##  fs               1.5.2      2021-12-08 [1] CRAN (R 4.1.2)
-##  fst            * 0.9.8      2022-02-08 [1] CRAN (R 4.1.2)
-##  fstcore        * 0.9.8      2022-02-04 [1] CRAN (R 4.1.2)
 ##  furrr          * 0.2.3      2021-06-25 [1] CRAN (R 4.1.0)
 ##  future         * 1.23.0     2021-10-31 [1] CRAN (R 4.1.1)
 ##  fuzzyjoin      * 0.1.6      2020-05-15 [1] CRAN (R 4.1.0)
 ##  generics         0.1.2      2022-01-31 [1] CRAN (R 4.1.2)
 ##  ggplot2        * 3.3.5      2021-06-25 [1] CRAN (R 4.1.0)
-##  ggthemes       * 4.2.4      2021-01-20 [1] CRAN (R 4.1.2)
 ##  globals          0.14.0     2020-11-22 [1] CRAN (R 4.1.0)
 ##  glue             1.6.2      2022-02-24 [1] CRAN (R 4.1.2)
 ##  gtable           0.3.0      2019-03-25 [1] CRAN (R 4.1.0)
@@ -1800,29 +1783,20 @@ NA
 ##  magrittr         2.0.2      2022-01-26 [1] CRAN (R 4.1.2)
 ##  Matrix           1.4-0      2021-12-08 [1] CRAN (R 4.1.2)
 ##  modelr           0.1.8      2020-05-19 [1] CRAN (R 4.1.0)
-##  modeltools       0.2-23     2020-03-05 [1] CRAN (R 4.1.1)
 ##  munsell          0.5.0      2018-06-12 [1] CRAN (R 4.1.0)
-##  NLP              0.2-1      2020-10-14 [1] CRAN (R 4.1.0)
 ##  openxlsx       * 4.2.5      2021-12-14 [1] CRAN (R 4.1.2)
 ##  parallelly       1.30.0     2021-12-17 [1] CRAN (R 4.1.2)
 ##  patchwork      * 1.1.1      2020-12-17 [1] CRAN (R 4.1.0)
 ##  pillar           1.7.0      2022-02-01 [1] CRAN (R 4.1.2)
 ##  pkgconfig        2.0.3      2019-09-22 [1] CRAN (R 4.1.0)
-##  plyr             1.8.6      2020-03-03 [1] CRAN (R 4.1.0)
 ##  prettyunits      1.1.1      2020-01-24 [1] CRAN (R 4.1.0)
 ##  progress         1.2.2      2019-05-16 [1] CRAN (R 4.1.0)
 ##  purrr          * 0.3.4      2020-04-17 [1] CRAN (R 4.1.0)
-##  R.cache          0.15.0     2021-04-30 [1] CRAN (R 4.1.0)
-##  R.methodsS3      1.8.1      2020-08-26 [1] CRAN (R 4.1.0)
-##  R.oo             1.24.0     2020-08-26 [1] CRAN (R 4.1.0)
-##  R.utils          2.11.0     2021-09-26 [1] CRAN (R 4.1.1)
 ##  R6               2.5.1      2021-08-19 [1] CRAN (R 4.1.1)
 ##  Rcpp             1.0.8      2022-01-13 [1] CRAN (R 4.1.2)
 ##  readr          * 2.1.2      2022-01-30 [1] CRAN (R 4.1.2)
-##  readtext       * 0.81       2021-07-14 [1] CRAN (R 4.1.0)
 ##  readxl           1.3.1      2019-03-13 [1] CRAN (R 4.1.0)
 ##  reprex           2.0.1      2021-08-05 [1] CRAN (R 4.1.1)
-##  reshape2         1.4.4      2020-04-09 [1] CRAN (R 4.1.0)
 ##  rlang            1.0.1      2022-02-03 [1] CRAN (R 4.1.2)
 ##  rmarkdown        2.11       2021-09-14 [1] CRAN (R 4.1.1)
 ##  rprojroot        2.0.2      2020-11-15 [1] CRAN (R 4.1.0)
@@ -1831,13 +1805,11 @@ NA
 ##  sass             0.4.0      2021-05-12 [1] CRAN (R 4.1.0)
 ##  scales         * 1.1.1      2020-05-11 [1] CRAN (R 4.1.0)
 ##  sessioninfo      1.2.2      2021-12-06 [1] CRAN (R 4.1.2)
-##  slam             0.1-50     2022-01-08 [1] CRAN (R 4.1.2)
 ##  snakecase        0.11.0     2019-05-25 [1] CRAN (R 4.1.0)
 ##  SnowballC        0.7.0      2020-04-01 [1] CRAN (R 4.1.0)
 ##  stringdist     * 0.9.8      2021-09-09 [1] CRAN (R 4.1.1)
 ##  stringi        * 1.7.6      2021-11-29 [1] CRAN (R 4.1.2)
 ##  stringr        * 1.4.0      2019-02-10 [1] CRAN (R 4.1.0)
-##  styler           1.6.2      2021-09-23 [1] CRAN (R 4.1.1)
 ##  svglite          2.1.0      2022-02-03 [1] CRAN (R 4.1.2)
 ##  sylly          * 0.1-6      2020-09-20 [1] CRAN (R 4.1.3)
 ##  sylly.en         0.1-3      2018-03-19 [1] CRAN (R 4.1.3)
@@ -1848,16 +1820,13 @@ NA
 ##  tidyselect       1.1.1      2021-04-30 [1] CRAN (R 4.1.0)
 ##  tidytext       * 0.3.2      2021-09-30 [1] CRAN (R 4.1.1)
 ##  tidyverse      * 1.3.1      2021-04-15 [1] CRAN (R 4.1.0)
-##  tm               0.7-8      2020-11-18 [1] CRAN (R 4.1.0)
 ##  tokenizers       0.2.1      2018-03-29 [1] CRAN (R 4.1.0)
-##  topicmodels    * 0.2-12     2021-01-29 [1] CRAN (R 4.1.3)
 ##  tzdb             0.2.0      2021-10-27 [1] CRAN (R 4.1.1)
 ##  utf8             1.2.2      2021-07-24 [1] CRAN (R 4.1.1)
 ##  vctrs            0.3.8      2021-04-29 [1] CRAN (R 4.1.0)
 ##  viridisLite      0.4.0      2021-04-13 [1] CRAN (R 4.1.0)
 ##  webshot          0.5.2      2019-11-22 [1] CRAN (R 4.1.0)
 ##  withr            2.4.3      2021-11-30 [1] CRAN (R 4.1.2)
-##  XBRL             0.99.19    2021-10-18 [1] CRAN (R 4.1.1)
 ##  xfun             0.29       2021-12-14 [1] CRAN (R 4.1.2)
 ##  xml2           * 1.3.3      2021-11-30 [1] CRAN (R 4.1.2)
 ##  yaml             2.2.2      2022-01-25 [1] CRAN (R 4.1.2)
@@ -1866,7 +1835,7 @@ NA
 ##  [1] E:/R/R_library
 ##  [2] C:/Program Files/R/R-4.1.2/library
 ## 
-## -------------------------------------------------------------------------------</code></pre>
+## ----------------------------</code></pre>
 </div>
 
 

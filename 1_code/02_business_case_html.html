@@ -250,7 +250,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Business Case</h1>
 <h4 class="author">Matthias Uckert</h4>
-<h4 class="date">28 May, 2022</h4>
+<h4 class="date">31 May, 2022</h4>
 
 </div>
 
@@ -287,6 +287,7 @@ discount.</p></li>
 <li><p><strong>.d (Discount):</strong> The discount we get for ever x
 (.vd) additional unit over the base volume (.vb)</p></li>
 </ul>
+<pre class="r"><code>.cv &lt;- 500; .v &lt;- 7500; .vb &lt;- 3000; .vc &lt;- 8000; .vd &lt;- 750; .d &lt;- .05</code></pre>
 <pre class="r"><code>fnc_var_disc &lt;- function(.v, .vb, .vc, .vd, .d) {
   vu_ &lt;- dplyr::case_when(
     .v &lt; .vb ~ .vb,
@@ -296,14 +297,42 @@ discount.</p></li>
   floor((vu_ - .vb) / .vd) * .d
 }
 
-fnc_var_unit &lt;- function(.cv, .v, .vb, .vc, .vd, .d) {
+for (i in c(1000, 3750, 4000, 8000, 9000)) {
+  cat(&quot;\nDiscount - Volume:&quot;, i, &quot;:&quot;, percent(fnc_var_disc(i, .vb, .vc, .vd, .d)))
+}</code></pre>
+<pre><code>## 
+## Discount - Volume: 1000 : 0%
+## Discount - Volume: 3750 : 5%
+## Discount - Volume: 4000 : 5%
+## Discount - Volume: 8000 : 30%
+## Discount - Volume: 9000 : 30%</code></pre>
+<pre class="r"><code>fnc_var_unit &lt;- function(.cv, .v, .vb, .vc, .vd, .d) {
   disc_ &lt;- fnc_var_disc(.v, .vb, .vc, .vd, .d)
   .cv * (1 - disc_)
 }
 
-fnc_var_cost &lt;- function(.cv, .v, .vb, .vc, .vd, .d) {
-  .v * fnc_var_unit(.cv, .v, .vb, .vc, .vd, .d)
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat(&quot;\nUnit Cost - Volume:&quot;, i, &quot;:&quot;, comma(fnc_var_unit(.cv, i, .vb, .vc, .vd, .d)))
 }</code></pre>
+<pre><code>## 
+## Unit Cost - Volume: 1000 : 500
+## Unit Cost - Volume: 3000 : 500
+## Unit Cost - Volume: 4000 : 475
+## Unit Cost - Volume: 8000 : 350
+## Unit Cost - Volume: 9000 : 350</code></pre>
+<pre class="r"><code>fnc_var_cost &lt;- function(.cv, .v, .vb, .vc, .vd, .d) {
+  .v * fnc_var_unit(.cv, .v, .vb, .vc, .vd, .d)
+}
+
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat(&quot;\nTotal Cost - Volume:&quot;, i, &quot;:&quot;, comma(fnc_var_cost(.cv, i, .vb, .vc, .vd, .d)))
+}</code></pre>
+<pre><code>## 
+## Total Cost - Volume: 1000 : 500,000
+## Total Cost - Volume: 3000 : 1,500,000
+## Total Cost - Volume: 4000 : 1,900,000
+## Total Cost - Volume: 8000 : 2,800,000
+## Total Cost - Volume: 9000 : 3,150,000</code></pre>
 <p>For convenience we added two helper functions <em>fnc_var_disc() and
 fnc_var_unit()</em> that calculate the discount as a function of volume
 and the unit cost of our product. Those functions will result in
@@ -318,7 +347,7 @@ with the following values:</p>
 <li><p><strong>.vd (Volume Discount):</strong> 1,000</p></li>
 <li><p><strong>.d (Discount):</strong> 5.00%</p></li>
 </ul>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="function-fixed-cost" class="section level2">
 <h2>Function: Fixed Cost</h2>
@@ -332,17 +361,46 @@ total variable cost for.</p></li>
 <li><p><strong>.vm (Volume Multiplier):</strong> Fixed Cost double at
 this point</p></li>
 </ul>
+<pre class="r"><code>.cf&lt;- 50000; .vm &lt;- 1000</code></pre>
 <pre class="r"><code>fnc_fix_mult &lt;- function(.v, .vm) {
   ceiling(.v / .vm)
 }
 
-fnc_fix_cost &lt;- function(.cf, .v, .vm) {
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat(&quot;\nFixed Cost Multiplier - Volume:&quot;, i, &quot;:&quot;, comma(fnc_fix_mult(i, .vm)))
+}</code></pre>
+<pre><code>## 
+## Fixed Cost Multiplier - Volume: 1000 : 1
+## Fixed Cost Multiplier - Volume: 3000 : 3
+## Fixed Cost Multiplier - Volume: 4000 : 4
+## Fixed Cost Multiplier - Volume: 8000 : 8
+## Fixed Cost Multiplier - Volume: 9000 : 9</code></pre>
+<pre class="r"><code>fnc_fix_cost &lt;- function(.cf, .v, .vm) {
   .cf * fnc_fix_mult(.v, .vm)
 }
 
-fnc_fix_unit &lt;- function(.cf, .v, .vm) {
-  (.cf * fnc_fix_mult(.v, .vm)) / .v
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat(&quot;\nFixed Cost - Volume:&quot;, i, &quot;:&quot;, comma(fnc_fix_cost(.cf, i, .vm)))
 }</code></pre>
+<pre><code>## 
+## Fixed Cost - Volume: 1000 : 50,000
+## Fixed Cost - Volume: 3000 : 150,000
+## Fixed Cost - Volume: 4000 : 200,000
+## Fixed Cost - Volume: 8000 : 400,000
+## Fixed Cost - Volume: 9000 : 450,000</code></pre>
+<pre class="r"><code>fnc_fix_unit &lt;- function(.cf, .v, .vm) {
+  (.cf * fnc_fix_mult(.v, .vm)) / .v
+}
+
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat(&quot;\nUnit Fixed Cost - Volume:&quot;, i, &quot;:&quot;, comma(fnc_fix_unit(.cf, i, .vm)))
+}</code></pre>
+<pre><code>## 
+## Unit Fixed Cost - Volume: 1000 : 50
+## Unit Fixed Cost - Volume: 3000 : 50
+## Unit Fixed Cost - Volume: 4000 : 50
+## Unit Fixed Cost - Volume: 8000 : 50
+## Unit Fixed Cost - Volume: 9000 : 50</code></pre>
 <p>For convenience we added two helper functions <em>fnc_fix_disc() and
 fnc_fix_unit()</em> that calculate the multiplier as a function of
 volume and the directly attributable unit fix cost of our product. Next
@@ -353,7 +411,7 @@ we plot this functions with the following values:</p>
 10,000</p></li>
 <li><p><strong>.vm (Volume Multiplier):</strong> 1,000</p></li>
 </ul>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 <div id="function-price-revenue" class="section level2">
 <h2>Function: Price (Revenue)</h2>
@@ -369,24 +427,53 @@ so-called sigmoid function.</p>
 <p>We limit the resulting S-Curve between .6 to 1. The idea behind this
 is, that for every addition unit we want to sell, we have to lower the
 price by a certain amount.</p>
+<pre class="r"><code>.p &lt;- 750</code></pre>
 <pre class="r"><code>fnc_rev_sigmoid &lt;- function(.v) {
   (1 - (1 / (1 + exp(-((.v / 1000) - 4.25))))) * .4 + .6
 }
 
-fnc_rev_unit &lt;- function(.p, .v) {
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat(&quot;\nSigmoid - Volume:&quot;, i, &quot;:&quot;, percent(fnc_rev_sigmoid(i)))
+}</code></pre>
+<pre><code>## 
+## Sigmoid - Volume: 1000 : 99%
+## Sigmoid - Volume: 3000 : 91%
+## Sigmoid - Volume: 4000 : 82%
+## Sigmoid - Volume: 8000 : 61%
+## Sigmoid - Volume: 9000 : 60%</code></pre>
+<pre class="r"><code>fnc_rev_unit &lt;- function(.p, .v) {
   .p * fnc_rev_sigmoid(.v)
 }
 
-fnc_rev &lt;- function(.p, .v) {
-  .v * fnc_rev_unit(.p, .v)
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat(&quot;\nUnit Revenue (Price) - Volume:&quot;, i, &quot;:&quot;, comma(fnc_rev_unit(.p, i)))
 }</code></pre>
+<pre><code>## 
+## Unit Revenue (Price) - Volume: 1000 : 739
+## Unit Revenue (Price) - Volume: 3000 : 683
+## Unit Revenue (Price) - Volume: 4000 : 619
+## Unit Revenue (Price) - Volume: 8000 : 457
+## Unit Revenue (Price) - Volume: 9000 : 453</code></pre>
+<pre class="r"><code>fnc_rev &lt;- function(.p, .v) {
+  .v * fnc_rev_unit(.p, .v)
+}
+
+for (i in c(1000, 3000, 4000, 8000, 9000)) {
+  cat(&quot;\nRevenue- Volume:&quot;, i, &quot;:&quot;, comma(fnc_rev(.p, i)))
+}</code></pre>
+<pre><code>## 
+## Revenue- Volume: 1000 : 738,802
+## Revenue- Volume: 3000 : 2,049,570
+## Revenue- Volume: 4000 : 2,474,612
+## Revenue- Volume: 8000 : 3,655,146
+## Revenue- Volume: 9000 : 4,073,159</code></pre>
 <p>Next we plot this functions with the following values:</p>
 <ul>
 <li><p><strong>.p(Price):</strong> 750</p></li>
 <li><p><strong>.v (Volume):</strong> Range between 500 and
 10,000</p></li>
 </ul>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 </div>
 </div>
 <div id="define-other-functions" class="section level1">
@@ -407,6 +494,7 @@ Variable Cost)</strong></u>, <u><strong>.vd (Volume Discount - for
 Variable Cost)</strong></u>, <u><strong>.d (Discount - for Variable
 Cost)</strong></u>, <u><strong>.vm (Volume Multiplier - for Fixed
 Cost)</strong></u>, .<u><strong>ca (Company Cost)</strong>.</u></p>
+<pre class="r"><code>.ca &lt;- 250000</code></pre>
 <pre class="r"><code>get_input_table &lt;- function(.v = 0, .p = 0, .cv = 0, .cf = 0, .vb = 0, .vc = 0, 
                             .vd = 0, .d = 0, .vm = 0, .ca = 0) {
   tibble::tibble(
@@ -414,12 +502,87 @@ Cost)</strong></u>, .<u><strong>ca (Company Cost)</strong>.</u></p>
     vd = .vd, d = .d, vm = .vm,
   )
 }
-get_input_table(.v = 7500, .p = 750, .cv = 500, .cf = 50000, .vb = 3000, .vc = 8000, 
-                .vd = 750, .d = .05, .vm = 1000, .ca = 250000)</code></pre>
-<pre><code>## # A tibble: 1 x 10
-##       v     p    cv    cf     ca    vb    vc    vd     d    vm
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-## 1  7500   750   500 50000 250000  3000  8000   750  0.05  1000</code></pre>
+
+get_input_table(
+  .v = .v, .p = .p, .cv = .cv, .cf = .cf, .vb = .vb, .vc = .vc,
+  .vd = .vd, .d = .d, .vm = .vm, .ca = .ca
+) %&gt;%
+  mutate(
+    across(!matches(&quot;^d$&quot;), comma), 
+    d = percent(d)
+    ) %&gt;%
+  kbl(align = &quot;c&quot;) %&gt;%
+  kable_paper(full_width = FALSE)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+v
+</th>
+<th style="text-align:center;">
+p
+</th>
+<th style="text-align:center;">
+cv
+</th>
+<th style="text-align:center;">
+cf
+</th>
+<th style="text-align:center;">
+ca
+</th>
+<th style="text-align:center;">
+vb
+</th>
+<th style="text-align:center;">
+vc
+</th>
+<th style="text-align:center;">
+vd
+</th>
+<th style="text-align:center;">
+d
+</th>
+<th style="text-align:center;">
+vm
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+7,500
+</td>
+<td style="text-align:center;">
+750
+</td>
+<td style="text-align:center;">
+500
+</td>
+<td style="text-align:center;">
+50,000
+</td>
+<td style="text-align:center;">
+250,000
+</td>
+<td style="text-align:center;">
+3,000
+</td>
+<td style="text-align:center;">
+8,000
+</td>
+<td style="text-align:center;">
+750
+</td>
+<td style="text-align:center;">
+5%
+</td>
+<td style="text-align:center;">
+1,000
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="function-profit" class="section level2">
 <h2>Function: Profit</h2>
@@ -427,16 +590,101 @@ get_input_table(.v = 7500, .p = 750, .cv = 500, .cf = 50000, .vb = 3000, .vc = 8
 and the Profit for our input factor. This function takes a dataframe as
 only argument which is the dataframe we produce with the function
 <strong>get_input_table()</strong></p>
-<pre class="r"><code>get_input_table(.v = 7500, .p = 750, .cv = 500, .cf = 50000, .vb = 3000, .vc = 8000, 
-                .vd = 750, .d = .05, .vm = 1000, .ca = 250000) %&gt;%
-  get_profit()</code></pre>
-<pre><code>## # A tibble: 1 x 22
-##       v     p    cv    cf     ca    vb    vc    vd     d    vm discount var_unit
-##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1  7500   750   500 50000 250000  3000  8000   750  0.05  1000      0.3      350
-## # ... with 10 more variables: var_cost &lt;dbl&gt;, multiple &lt;dbl&gt;, fix_unit &lt;dbl&gt;,
-## #   fix_cost &lt;dbl&gt;, sigmoid &lt;dbl&gt;, price &lt;dbl&gt;, revenue &lt;dbl&gt;, cm1 &lt;dbl&gt;,
-## #   cm2 &lt;dbl&gt;, profit &lt;dbl&gt;</code></pre>
+<pre class="r"><code>get_input_table(
+  .v = .v, .p = .p, .cv = .cv, .cf = .cf, .vb = .vb, .vc = .vc,
+  .vd = .vd, .d = .d, .vm = .vm, .ca = .ca
+) %&gt;%
+  get_profit() %&gt;%
+  mutate(
+    across(!matches(&quot;^d$|discount&quot;), comma), 
+    d = percent(d),
+    discount = percent(discount)
+    ) %&gt;%
+  select(discount:profit) %&gt;%
+  kbl(align = &quot;c&quot;) %&gt;%
+  kable_paper(full_width = FALSE)</code></pre>
+<table class=" lightable-paper" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+discount
+</th>
+<th style="text-align:center;">
+var_unit
+</th>
+<th style="text-align:center;">
+var_cost
+</th>
+<th style="text-align:center;">
+multiple
+</th>
+<th style="text-align:center;">
+fix_unit
+</th>
+<th style="text-align:center;">
+fix_cost
+</th>
+<th style="text-align:center;">
+sigmoid
+</th>
+<th style="text-align:center;">
+price
+</th>
+<th style="text-align:center;">
+revenue
+</th>
+<th style="text-align:center;">
+cm1
+</th>
+<th style="text-align:center;">
+cm2
+</th>
+<th style="text-align:center;">
+profit
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+30%
+</td>
+<td style="text-align:center;">
+350
+</td>
+<td style="text-align:center;">
+2,625,000
+</td>
+<td style="text-align:center;">
+8
+</td>
+<td style="text-align:center;">
+53
+</td>
+<td style="text-align:center;">
+400,000
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+461
+</td>
+<td style="text-align:center;">
+3,458,985
+</td>
+<td style="text-align:center;">
+833,985
+</td>
+<td style="text-align:center;">
+433,985
+</td>
+<td style="text-align:center;">
+183,985
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="functions-other" class="section level2">
 <h2>Functions: Other</h2>
@@ -460,9 +708,8 @@ data.</p>
       value = scales::comma(value),
       perc = scales::percent(perc)
     )
-}
-
-get_amortization &lt;- function(.tab, .years, .invest, .discount) {
+}</code></pre>
+<pre class="r"><code>get_amortization &lt;- function(.tab, .years, .invest, .discount) {
   .tab %&gt;%
     tidyr::expand_grid(year = seq_len(.years)) %&gt;%
     dplyr::select(year, dplyr::everything()) %&gt;%
@@ -772,7 +1019,7 @@ get_input_table(
 ) %&gt;%
   get_profit() %&gt;%
   plot_profits(v, profit, .xlab = &quot;Volume&quot;, &quot;Profit&quot;, &quot;Profit (Volume)&quot;, .size = 11)</code></pre>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <pre class="r"><code>.seq &lt;- seq(500, 1000, 5)
 get_input_table(
   .v = .def_v, .p = .seq, .cv = .def_cv, .cf = .def_cf,
@@ -781,7 +1028,7 @@ get_input_table(
 ) %&gt;%
   get_profit() %&gt;%
   plot_profits(p, profit, .xlab = &quot;Price&quot;, &quot;Profit&quot;, &quot;Profit (Price)&quot;, .size = 11)</code></pre>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-23-2.png" width="672" /></p>
 <pre class="r"><code>.seq &lt;- seq(250, 1000, 5)
 get_input_table(
   .v = .def_v, .p = .def_p, .cv = .seq, .cf = .def_cf,
@@ -790,7 +1037,7 @@ get_input_table(
 ) %&gt;%
   get_profit() %&gt;%
   plot_profits(cv, profit, .xlab = &quot;Variable Cost&quot;, &quot;Profit&quot;, &quot;Profit (Variable Cost)&quot;, .size = 11)</code></pre>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-3.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-23-3.png" width="672" /></p>
 <pre class="r"><code>.seq &lt;- seq(25000, 100000, 1000)
 get_input_table(
   .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .seq,
@@ -799,7 +1046,7 @@ get_input_table(
 ) %&gt;%
   get_profit() %&gt;%
   plot_profits(cf, profit, .xlab = &quot;Fixed Cost&quot;, &quot;Profit&quot;, &quot;Profit (Fixed Cost)&quot;, .size = 11)</code></pre>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-4.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-23-4.png" width="672" /></p>
 <pre class="r"><code>.seq &lt;- seq(.01, .1, .001)
 get_input_table(
   .v = .def_v, .p = .def_p, .cv = .def_cv, .cf = .def_cv,
@@ -808,7 +1055,7 @@ get_input_table(
 ) %&gt;%
   get_profit() %&gt;%
   plot_profits(d, profit, .xlab = &quot;Discount&quot;, &quot;Profit&quot;, &quot;Profit (Discount)&quot;, .size = 11)</code></pre>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-12-5.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-23-5.png" width="672" /></p>
 </div>
 <div id="amortization" class="section level1">
 <h1>Amortization</h1>
@@ -817,7 +1064,7 @@ amortization time of our business case. Again this function takes the
 dataframe of get_input_table() as input. Additionally, it has other 3
 Arguments: <strong>.years (NUmber of Years to plot), .invest (Initial
 Investment), .discount (Required Rate of Return)</strong></p>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 </div>
 <div id="monte-carlo" class="section level1">
 <h1>Monte Carlo</h1>
@@ -832,7 +1079,7 @@ random inputs (with defined probability distributions) and calculates
 the profit. With this we can observe the profit distribution and get a
 feeling how robust our business model is to changing input factors
 (uncertainty).</p>
-<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="02_business_case_html_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <table class=" lightable-paper table" style="font-family: Times New Roman; margin-left: auto; margin-right: auto; width: auto !important; margin-left: auto; margin-right: auto;">
 <tbody>
 <tr>
@@ -856,7 +1103,7 @@ Profit &lt; 0
 Mean
 </td>
 <td style="text-align:center;">
-118,780
+115,758
 </td>
 </tr>
 <tr>
@@ -864,7 +1111,7 @@ Mean
 Median
 </td>
 <td style="text-align:center;">
-89,773
+81,684
 </td>
 </tr>
 <tr>
@@ -872,7 +1119,7 @@ Median
 Minimum
 </td>
 <td style="text-align:center;">
--13,204,871
+-147,284,221
 </td>
 </tr>
 <tr>
@@ -880,14 +1127,11 @@ Minimum
 Maximum
 </td>
 <td style="text-align:center;">
-8,942,726
+2,403,191,611
 </td>
 </tr>
 </tbody>
 </table>
-</div>
-<div id="section" class="section level1">
-<h1></h1>
 </div>
 
 
